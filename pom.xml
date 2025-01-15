@@ -40,7 +40,7 @@
     <dependency>
       <groupId>org.xerial</groupId>
       <artifactId>sqlite-jdbc</artifactId>
-      <version>3.41.2.1</version> <!-- Use the latest version -->
+      <version>3.41.2.2</version>
     </dependency>
   </dependencies>
 
@@ -64,7 +64,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>com.example.dal/dal.HelloApplication</mainClass>
+              <mainClass>com.example.dal/dal.Main</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
