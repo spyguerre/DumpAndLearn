@@ -2,10 +2,10 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -66,11 +66,11 @@
                   </GridPane>
                </children>
             </VBox>
-            <Button alignment="TOP_CENTER" mnemonicParsing="false" text="Register new word" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+            <Button alignment="TOP_CENTER" mnemonicParsing="false" onAction="#addNewWord" text="Register new word" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
             <HBox alignment="CENTER" spacing="42.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                <children>
                   <TextField fx:id="searchTextBox" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" promptText="Look for a word..." />
-                  <ScrollPane fx:id="searchScrollPane" maxHeight="150.0" maxWidth="242.0" minHeight="100.0" minWidth="242.0" prefHeight="150.0" prefWidth="242.0" />
+                  <ListView fx:id="searchListView" maxHeight="175.0" maxWidth="242.0" minWidth="242.0" prefHeight="200.0" prefWidth="242.0" />
                </children>
                <opaqueInsets>
                   <Insets />

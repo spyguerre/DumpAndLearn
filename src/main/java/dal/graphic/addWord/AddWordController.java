@@ -1,15 +1,21 @@
 package dal.graphic.addWord;
 
 import dal.Db;
+import dal.word.Word;
+import dal.word.WordType;
 import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
 import javafx.event.ActionEvent;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
 public class AddWordController {
+    ObservableList<String> wordsList = FXCollections.observableArrayList();
+
     @FXML
     private TextField foreignTextField;
 
@@ -20,7 +26,7 @@ public class AddWordController {
     private TextField searchTextBox;
 
     @FXML
-    private ScrollPane searchScrollPane;
+    private ListView<String> searchListView;
 
     @FXML
     public void initialize() {
@@ -29,10 +35,14 @@ public class AddWordController {
         searchTextBox.textProperty().addListener((observable, oldValue, newValue) -> {
             // Reset the debounce timer whenever the text changes
             pause.setOnFinished(event -> {
-                updateSearchScrollPane(newValue);
+                updateSearchListView();
             });
             pause.playFromStart();
         });
+
+        // Attach the words list to the ListView and fill it
+        searchListView.setItems(wordsList);
+        updateSearchListView();
     }
 
     @FXML
@@ -41,12 +51,23 @@ public class AddWordController {
     }
 
     @FXML
+    void addNewWord() {
+        Db.insertNewWord(nativeTextBox.getText(), foreignTextField.getText());
+        updateSearchListView();
+    }
+
+    @FXML
     void quit(ActionEvent event) {
         Db.closeConnection();
         System.exit(0);
     }
 
-    private void updateSearchScrollPane(String query) {
-        System.out.println(query);
+    private void updateSearchListView() {
+        wordsList.clear();
+        wordsList.addAll(
+                Db.searchForWords(searchTextBox.getText(), WordType.ANY, 20).stream().map(
+                        (Word word) -> word.getNative_() + " = " + word.getForeign()
+                ).toList()
+        );
     }
 }
