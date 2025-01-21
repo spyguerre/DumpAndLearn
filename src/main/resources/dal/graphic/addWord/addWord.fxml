@@ -57,7 +57,7 @@
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Word in native language:" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Word in foreign language:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                        <TextField fx:id="nativeTextBox" GridPane.rowIndex="1" />
+                        <TextField fx:id="nativeTextField" GridPane.rowIndex="1" />
                         <TextField fx:id="foreignTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                      </children>
                      <padding>
@@ -69,7 +69,7 @@
             <Button alignment="TOP_CENTER" mnemonicParsing="false" onAction="#addNewWord" text="Register new word" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
             <HBox alignment="CENTER" spacing="42.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                <children>
-                  <TextField fx:id="searchTextBox" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" promptText="Look for a word..." />
+                  <TextField fx:id="searchTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" promptText="Look for a word..." />
                   <ListView fx:id="searchListView" maxHeight="175.0" maxWidth="242.0" minWidth="242.0" prefHeight="200.0" prefWidth="242.0" />
                </children>
                <opaqueInsets>

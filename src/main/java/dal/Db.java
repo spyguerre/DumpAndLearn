@@ -132,6 +132,11 @@ public abstract class Db {
         update(sql, new Object[]{native_, foreign, System.currentTimeMillis()});
     }
 
+    public static void removeWord(String native_, String foreign) {
+        String sql = "DELETE FROM words WHERE native = ? AND [foreign] = ?";
+        update(sql, new Object[]{native_, foreign});
+    }
+
     private static String getSqlWithParams(String sql, Object[] params) {
         StringBuilder sqlWithParams = new StringBuilder(sql);
         for (Object param : params) {
