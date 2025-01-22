@@ -1,6 +1,9 @@
 package dal.graphic.addWord;
 
 import dal.Db;
+import dal.graphic.Controller;
+import dal.graphic.SceneManager;
+import dal.graphic.SceneType;
 import dal.word.Word;
 import dal.word.WordType;
 import javafx.animation.PauseTransition;
@@ -13,9 +16,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class AddWordController {
+public class AddWordController extends Controller {
     private ObservableList<String> wordsList = FXCollections.observableArrayList();
     private String wordsSeparator = " = ";
 
@@ -32,7 +36,7 @@ public class AddWordController {
     private ListView<String> searchListView;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         // Set listener to update the scrollPane
         PauseTransition pause = new PauseTransition(Duration.millis(500));
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -76,7 +80,7 @@ public class AddWordController {
     }
 
     @FXML
-    public void deleteLast(ActionEvent event) {
+    private void deleteLast(ActionEvent event) {
 
     }
 
@@ -88,9 +92,8 @@ public class AddWordController {
     }
 
     @FXML
-    public void quit(ActionEvent event) {
-        Db.closeConnection();
-        System.exit(0);
+    private void startReviewSession() {
+        SceneManager.switchScene(SceneType.START_REVIEW, (Stage) root.getScene().getWindow());
     }
 
     private void updateSearchListView() {
