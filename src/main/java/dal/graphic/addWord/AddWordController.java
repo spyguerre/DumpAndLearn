@@ -16,6 +16,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -93,7 +94,7 @@ public class AddWordController extends Controller {
 
     @FXML
     private void startReviewSession() {
-        SceneManager.switchScene(SceneType.START_REVIEW, (Stage) root.getScene().getWindow());
+        SceneManager.switchScene(SceneType.START_REVIEW, (Stage) root.getScene().getWindow(), new int[]{(int)((BorderPane)root).getWidth(), (int)((BorderPane)root).getHeight()});
     }
 
     private void updateSearchListView() {

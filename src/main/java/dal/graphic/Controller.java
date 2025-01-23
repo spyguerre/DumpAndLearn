@@ -10,6 +10,7 @@ public abstract class Controller {
 
     @FXML
     public void quit() {
+        System.out.println("Quitting...");
         Db.closeConnection();
         System.exit(0);
     }
