@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
@@ -58,8 +57,8 @@
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Word in native language:" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Word in foreign language:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                        <TextField fx:id="nativeTextField" GridPane.rowIndex="1" />
-                        <TextField fx:id="foreignTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="nativeTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <TextField fx:id="foreignTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                      </children>
                      <padding>
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -68,18 +67,25 @@
                </children>
             </VBox>
             <Button alignment="TOP_CENTER" mnemonicParsing="false" onAction="#addNewWord" text="Register new word" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
-            <HBox alignment="CENTER" spacing="42.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-               <children>
-                  <TextField fx:id="searchTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" promptText="Look for a word..." />
-                  <ListView fx:id="searchListView" maxHeight="175.0" maxWidth="242.0" minWidth="242.0" prefHeight="200.0" prefWidth="242.0" />
-               </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
+            <GridPane hgap="42.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
-            </HBox>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" percentHeight="100.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <TextField fx:id="searchTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" promptText="Look for a word..." GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <ListView fx:id="searchListView" maxHeight="175.0" maxWidth="242.0" minWidth="242.0" prefHeight="200.0" prefWidth="242.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </GridPane>
          </children>
       </GridPane>
    </center>

@@ -13,12 +13,16 @@ import javafx.stage.Stage;
 public class startReviewController extends Controller {
     private int wordCount;
     private ReviewPreference reviewPreferance;
+    private WriteIn writeIn;
 
     @FXML
     private MenuButton wordCountDropdown;
 
     @FXML
     private MenuButton preferDropdown;
+
+    @FXML
+    private MenuButton writeInDropdown;
 
     @FXML
     private void initialize() {
@@ -32,21 +36,30 @@ public class startReviewController extends Controller {
     }
 
     @FXML
-    public void updateWordCount(Event event) {
+    private void updateWordCount(Event event) {
         MenuItem clickedButton = (MenuItem) event.getSource();
 
         wordCountDropdown.setText(clickedButton.getText());
 
-        wordCount = Integer.parseInt(wordCountDropdown.getText());
+        wordCount = Integer.parseInt(clickedButton.getText());
     }
 
     @FXML
-    public void updatePrefer(Event event) {
+    private void updatePrefer(Event event) {
         MenuItem clickedButton = (MenuItem) event.getSource();
 
         preferDropdown.setText(clickedButton.getText());
 
-        reviewPreferance = ReviewPreference.getReviewPreference(preferDropdown.getText());
+        reviewPreferance = ReviewPreference.getReviewPreference(clickedButton.getText());
+    }
+
+    @FXML
+    private void updateWriteIn(Event event) {
+        MenuItem clickedButton = (MenuItem) event.getSource();
+
+        writeInDropdown.setText(clickedButton.getText());
+
+        writeIn = WriteIn.getWriteIn(clickedButton.getText());
     }
 
     @FXML
@@ -54,5 +67,6 @@ public class startReviewController extends Controller {
         System.out.println("Starting review");
         System.out.println("Word count: " + wordCount);
         System.out.println("Review preferance: " + reviewPreferance);
+        System.out.println("Write in: " + writeIn);
     }
 }

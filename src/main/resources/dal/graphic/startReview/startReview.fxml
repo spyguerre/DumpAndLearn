@@ -42,6 +42,7 @@
               <rowConstraints>
                 <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <Label alignment="CENTER_RIGHT" text="Words Count: " GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
@@ -64,10 +65,18 @@
                         <MenuItem mnemonicParsing="false" onAction="#updatePrefer" text="Review Often Failed Words" />
                      </items>
                   </MenuButton>
+                  <Label alignment="CENTER_RIGHT" text="Write in..." GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                  <MenuButton fx:id="writeInDropdown" mnemonicParsing="false" text="Both" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#updateWriteIn" text="Both" />
+                        <MenuItem mnemonicParsing="false" onAction="#updateWriteIn" text="Native Language" />
+                        <MenuItem mnemonicParsing="false" onAction="#updateWriteIn" text="Foreign Language" />
+                     </items>
+                  </MenuButton>
                </children>
-               <padding>
+               <VBox.margin>
                   <Insets bottom="42.0" left="42.0" right="42.0" top="42.0" />
-               </padding>
+               </VBox.margin>
             </GridPane>
             <Button mnemonicParsing="false" onAction="#startReview" text="Start Review" />
          </children>
