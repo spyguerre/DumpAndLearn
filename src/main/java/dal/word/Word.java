@@ -7,9 +7,9 @@ public class Word {
     private long timeStamp;
     private int reviewsCount;
     private int failedReviews;
-    private int lastReviewsTimestamp;
+    private long lastReviewsTimestamp;
 
-    public Word(long id, String native_, String foreign, long timeStamp, int reviewsCount, int failedReviews, int lastReviewsTimestamp) {
+    public Word(long id, String native_, String foreign, long timeStamp, int reviewsCount, int failedReviews, long lastReviewsTimestamp) {
         this.id = id;
         this.native_ = native_;
         this.foreign = foreign;
@@ -67,7 +67,7 @@ public class Word {
         this.failedReviews = failedReviews;
     }
 
-    public int getLastReviewsTimestamp() {
+    public long getLastReviewsTimestamp() {
         return lastReviewsTimestamp;
     }
 

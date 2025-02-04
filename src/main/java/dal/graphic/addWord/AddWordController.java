@@ -2,6 +2,7 @@ package dal.graphic.addWord;
 
 import dal.Db;
 import dal.graphic.Controller;
+import dal.graphic.ErrorDisplayer;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
 import dal.word.Word;
@@ -21,8 +22,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class AddWordController extends Controller {
-    private ObservableList<String> wordsList = FXCollections.observableArrayList();
-    private String wordsSeparator = " = ";
+    private final ObservableList<String> wordsList = FXCollections.observableArrayList();
+    private final String wordsSeparator = " = ";
 
     @FXML
     private TextField foreignTextField;
@@ -42,9 +43,7 @@ public class AddWordController extends Controller {
         PauseTransition pause = new PauseTransition(Duration.millis(500));
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             // Reset the debounce timer whenever the text changes
-            pause.setOnFinished(event -> {
-                updateSearchListView();
-            });
+            pause.setOnFinished(event -> updateSearchListView());
             pause.playFromStart();
         });
 
@@ -87,6 +86,15 @@ public class AddWordController extends Controller {
 
     @FXML
     public void addNewWord() {
+        System.out.println("Adding new word...");
+
+        // Ensure that there is a word in both textFields
+        if (nativeTextField.getText().isEmpty() || foreignTextField.getText().isEmpty()) {
+            System.out.println("Couldn't find native or foreign word.");
+            ErrorDisplayer.displayError("Please fill both languages for the word.");
+            return;
+        }
+
         Db.insertNewWord(nativeTextField.getText(), foreignTextField.getText());
         resetInputTextFields();
         updateSearchListView();
@@ -98,6 +106,8 @@ public class AddWordController extends Controller {
     }
 
     private void updateSearchListView() {
+        System.out.println("Updating search list...");
+
         wordsList.clear();
         wordsList.addAll(
                 Db.searchForWords(searchTextField.getText(), WordType.ANY, 20).stream().map(

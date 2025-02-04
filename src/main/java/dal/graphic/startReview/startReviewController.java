@@ -1,18 +1,25 @@
 package dal.graphic.startReview;
 
+import dal.Db;
 import dal.graphic.Controller;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
+import dal.graphic.review.ReviewController;
+import dal.word.Word;
+import dal.word.WordSelector;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+
+import java.util.Collection;
 
 public class startReviewController extends Controller {
     private int wordCount;
-    private ReviewPreference reviewPreferance;
+    private ReviewPreference reviewPreference;
     private WriteIn writeIn;
 
     @FXML
@@ -27,7 +34,7 @@ public class startReviewController extends Controller {
     @FXML
     private void initialize() {
         wordCount = Integer.parseInt(wordCountDropdown.getText());
-        reviewPreferance = ReviewPreference.getReviewPreference(preferDropdown.getText());
+        reviewPreference = ReviewPreference.getReviewPreference(preferDropdown.getText());
     }
 
     @FXML
@@ -50,7 +57,7 @@ public class startReviewController extends Controller {
 
         preferDropdown.setText(clickedButton.getText());
 
-        reviewPreferance = ReviewPreference.getReviewPreference(clickedButton.getText());
+        reviewPreference = ReviewPreference.getReviewPreference(clickedButton.getText());
     }
 
     @FXML
@@ -66,7 +73,20 @@ public class startReviewController extends Controller {
     public void startReview() {
         System.out.println("Starting review");
         System.out.println("Word count: " + wordCount);
-        System.out.println("Review preferance: " + reviewPreferance);
+        System.out.println("Review preferance: " + reviewPreference);
         System.out.println("Write in: " + writeIn);
+
+        // Get the words given the parameters
+        Collection<Word> wordsToReview = WordSelector.getSelection(wordCount, reviewPreference);
+
+        // Check that the list exists (i.e. there are enough words in database) before switching scene
+        if (wordsToReview == null) {return;}
+
+        // Switch Scene
+        SceneManager.switchScene(SceneType.REVIEW, (Stage) root.getScene().getWindow(), new int[]{(int)((BorderPane)root).getWidth(), (int)((BorderPane)root).getHeight()});
+
+        // Give the words to the new controller
+        ReviewController controller = (ReviewController) SceneManager.getCurrentController();
+        controller.setWords(wordsToReview);
     }
 }

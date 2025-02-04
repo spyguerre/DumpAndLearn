@@ -162,7 +162,11 @@ public abstract class Db {
         return param.toString();
     }
 
-    private static void update(String insertion, Object[] args) {
+    public static void update(String insertion) {
+        update(insertion, new Object[]{});
+    }
+
+    public static void update(String insertion, Object[] args) {
         try {
             PreparedStatement stmt = getConnection().prepareStatement(insertion);
             for (int i = 0; i < args.length; i++) {
@@ -184,11 +188,23 @@ public abstract class Db {
         }
     }
 
-    private static ResultSet query(String query, String[] args) {
+    public static ResultSet query(String insertion) {
+        return query(insertion, new Object[]{});
+    }
+
+    public static ResultSet query(String query, Object[] args) {
         try {
             PreparedStatement stmt = getConnection().prepareStatement(query);
             for (int i = 0; i < args.length; i++) {
-                stmt.setString(i + 1, args[i]);
+                switch (args[i]) {
+                    case String s -> stmt.setString(i + 1, s);
+                    case Integer integer -> stmt.setInt(i + 1, integer);
+                    case Long l -> stmt.setLong(i + 1, l);
+                    case null, default -> {
+                        assert args[i] != null;
+                        throw new RuntimeException("Unsupported argument type: " + args[i].getClass());
+                    }
+                }
             }
             System.out.println("Executing query: " + getSqlWithParams(query, args));
             return stmt.executeQuery();
