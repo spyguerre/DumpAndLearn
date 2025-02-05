@@ -19,6 +19,10 @@ public class Word {
         this.lastReviewsTimestamp = lastReviewsTimestamp;
     }
 
+    public String toString() {
+        return getNative_() + " = " + getForeign();
+    }
+
     public long getId() {
         return id;
     }

@@ -3,13 +3,14 @@ package dal.word;
 import dal.Db;
 import dal.graphic.ErrorDisplayer;
 import dal.graphic.startReview.ReviewPreference;
+import dal.graphic.startReview.WriteIn;
 
 import java.sql.*;
 import java.util.*;
 
 public abstract class WordSelector {
-    public static List<Word> getSelection(int n, ReviewPreference preference) {
-        List<Word> selectedWords = new ArrayList<>();
+    public static List<WordReviewed> getSelection(int n, ReviewPreference preference, WriteIn writeIn) {
+        List<WordReviewed> selectedWords = new ArrayList<>();
         Set<Long> selectedIds = new HashSet<>(); // Track selected word IDs
 
         // Ensure that there are enough words in the database
@@ -51,9 +52,9 @@ public abstract class WordSelector {
                 """, categoryLimit);
 
                 // Add priority words and track their IDs
-                addUniqueWords(selectedWords, selectedIds, recentWords, (int) (1./3. * categoryLimit));
-                addUniqueWords(selectedWords, selectedIds, oldWords, (int) (2./3. * categoryLimit));
-                addUniqueWords(selectedWords, selectedIds, difficultWords, categoryLimit);
+                addUniqueWords(selectedWords, selectedIds, recentWords, writeIn, (int) (1./3. * categoryLimit));
+                addUniqueWords(selectedWords, selectedIds, oldWords, writeIn, (int) (2./3. * categoryLimit));
+                addUniqueWords(selectedWords, selectedIds, difficultWords, writeIn, categoryLimit);
             }
             case RECENT -> {
                 List<Word> recentWords = fetchWords("""
@@ -63,7 +64,7 @@ public abstract class WordSelector {
                 """, categoryLimit);
 
                 // Add priority words and track their IDs
-                addUniqueWords(selectedWords, selectedIds, recentWords, categoryLimit);
+                addUniqueWords(selectedWords, selectedIds, recentWords, writeIn, categoryLimit);
             }
             case OLD -> {
                 List<Word> oldWords = fetchWords("""
@@ -72,7 +73,7 @@ public abstract class WordSelector {
                 LIMIT ?
                 """, categoryLimit);
 
-                addUniqueWords(selectedWords, selectedIds, oldWords, categoryLimit);
+                addUniqueWords(selectedWords, selectedIds, oldWords, writeIn, categoryLimit);
             }
             case OFTEN_FAILED -> {
                 List<Word> difficultWords = fetchWords("""
@@ -82,7 +83,7 @@ public abstract class WordSelector {
                 LIMIT ?
                 """, categoryLimit);
 
-                addUniqueWords(selectedWords, selectedIds, difficultWords, categoryLimit);
+                addUniqueWords(selectedWords, selectedIds, difficultWords, writeIn, categoryLimit);
             }
         }
 
@@ -90,7 +91,7 @@ public abstract class WordSelector {
         List<Word> randomWords = fetchWords("SELECT * FROM words ORDER BY RANDOM() LIMIT ?", n * 2); // Fetch extra to avoid conflicts
 
         // Add unique random words
-        addUniqueWords(selectedWords, selectedIds, randomWords, n);
+        addUniqueWords(selectedWords, selectedIds, randomWords, writeIn, n);
 
         // And finally shuffle the selection
         Collections.shuffle(selectedWords);
@@ -121,11 +122,11 @@ public abstract class WordSelector {
         return words;
     }
 
-    private static void addUniqueWords(List<Word> selectedWords, Set<Long> selectedIds, List<Word> words, int limit) {
+    private static void addUniqueWords(List<WordReviewed> selectedWords, Set<Long> selectedIds, List<Word> words, WriteIn writeIn, int limit) {
         for (Word word : words) {
             if (selectedWords.size() >= limit) break; // Stop when we have enough words
             if (!selectedIds.contains(word.getId())) {
-                selectedWords.add(word);
+                selectedWords.add(new WordReviewed(word, writeIn));
                 selectedIds.add(word.getId());
             }
         }

@@ -1,11 +1,10 @@
 package dal.graphic.startReview;
 
-import dal.Db;
 import dal.graphic.Controller;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
 import dal.graphic.review.ReviewController;
-import dal.word.Word;
+import dal.word.WordReviewed;
 import dal.word.WordSelector;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -13,9 +12,8 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
-import java.util.Collection;
+import java.util.List;
 
 public class startReviewController extends Controller {
     private int wordCount;
@@ -77,7 +75,7 @@ public class startReviewController extends Controller {
         System.out.println("Write in: " + writeIn);
 
         // Get the words given the parameters
-        Collection<Word> wordsToReview = WordSelector.getSelection(wordCount, reviewPreference);
+        List<WordReviewed> wordsToReview = WordSelector.getSelection(wordCount, reviewPreference, writeIn);
 
         // Check that the list exists (i.e. there are enough words in database) before switching scene
         if (wordsToReview == null) {return;}

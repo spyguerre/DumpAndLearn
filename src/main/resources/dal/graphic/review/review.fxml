@@ -56,14 +56,14 @@
       </VBox>
    </center>
    <left>
-      <Button mnemonicParsing="false" onAction="#previous" text="Previous" BorderPane.alignment="BOTTOM_LEFT">
+      <Button fx:id="previousButton" mnemonicParsing="false" onAction="#previous" text="Previous" BorderPane.alignment="BOTTOM_LEFT">
          <BorderPane.margin>
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
          </BorderPane.margin>
       </Button>
    </left>
    <right>
-      <Button mnemonicParsing="false" onAction="#next" text="Next" BorderPane.alignment="BOTTOM_RIGHT">
+      <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" text="Next" BorderPane.alignment="BOTTOM_RIGHT">
          <BorderPane.margin>
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
          </BorderPane.margin>
