@@ -4,15 +4,17 @@ public class Word {
     private long id;
     private String native_;
     private String foreign;
+    private String description;
     private long timeStamp;
     private int reviewsCount;
     private int failedReviews;
     private long lastReviewsTimestamp;
 
-    public Word(long id, String native_, String foreign, long timeStamp, int reviewsCount, int failedReviews, long lastReviewsTimestamp) {
+    public Word(long id, String native_, String foreign, String description, long timeStamp, int reviewsCount, int failedReviews, long lastReviewsTimestamp) {
         this.id = id;
         this.native_ = native_;
         this.foreign = foreign;
+        this.description = description;
         this.timeStamp = timeStamp;
         this.reviewsCount = reviewsCount;
         this.failedReviews = failedReviews;
@@ -45,6 +47,14 @@ public class Word {
 
     public void setForeign(String foreign) {
         this.foreign = foreign;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public long getTimeStamp() {

@@ -9,12 +9,12 @@ public class WordReviewed extends Word {
     private String userAnswer = "";
 
     public WordReviewed(Word word, Boolean isWrittenInForeign) {
-        super(word.getId(), word.getNative_(), word.getForeign(), word.getTimeStamp(), word.getReviewsCount(), word.getFailedReviews(), word.getLastReviewsTimestamp());
+        super(word.getId(), word.getNative_(), word.getForeign(), word.getDescription(), word.getTimeStamp(), word.getReviewsCount(), word.getFailedReviews(), word.getLastReviewsTimestamp());
         this.isWrittenInForeign = isWrittenInForeign;
     }
 
     public WordReviewed(Word word, WriteIn writeIn) {
-        super(word.getId(), word.getNative_(), word.getForeign(), word.getTimeStamp(), word.getReviewsCount(), word.getFailedReviews(), word.getLastReviewsTimestamp());
+        super(word.getId(), word.getNative_(), word.getForeign(), word.getDescription(), word.getTimeStamp(), word.getReviewsCount(), word.getFailedReviews(), word.getLastReviewsTimestamp());
         if (writeIn == WriteIn.NATIVE) {
             this.isWrittenInForeign = false;
         } else if (writeIn == WriteIn.FOREIGN) {

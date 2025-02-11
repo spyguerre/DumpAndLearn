@@ -109,6 +109,7 @@ public abstract class WordSelector {
                         rs.getInt("id"),
                         rs.getString("native"),
                         rs.getString("foreign"),
+                        rs.getString("description"),
                         rs.getLong("timestamp"),
                         rs.getInt("reviewsCount"),
                         rs.getInt("failedReviews"),

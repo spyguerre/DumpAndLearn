@@ -66,7 +66,17 @@
                   </GridPane>
                </children>
             </VBox>
-            <Button alignment="TOP_CENTER" mnemonicParsing="false" onAction="#addNewWord" text="Register new word" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+            <VBox alignment="TOP_CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description (optional):" />
+                  <TextField fx:id="descriptionTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0">
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Button alignment="BOTTOM_CENTER" mnemonicParsing="false" onAction="#addNewWord" text="Register new word" textAlignment="CENTER" />
+               </children>
+            </VBox>
             <GridPane hgap="42.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets />

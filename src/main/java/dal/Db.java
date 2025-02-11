@@ -49,6 +49,7 @@ public abstract class Db {
                                                     DEFAULT (0),
                         native              TEXT    NOT NULL,
                         [foreign]           TEXT    NOT NULL,
+                        description         TEXT,
                         timestamp           NUMERIC NOT NULL,
                         reviewsCount        INTEGER NOT NULL
                                                     DEFAULT (0),
@@ -109,6 +110,7 @@ public abstract class Db {
                         rs.getLong("id"),
                         rs.getString("native"),
                         rs.getString("foreign"),
+                        rs.getString("description"),
                         rs.getLong("timestamp"),
                         rs.getInt("reviewsCount"),
                         rs.getInt("failedReviews"),
@@ -128,8 +130,12 @@ public abstract class Db {
     }
 
     public static void insertNewWord(String native_, String foreign) {
-        String sql = "INSERT INTO words (native, [foreign], timestamp) VALUES (?, ?, ?);";
-        update(sql, new Object[]{native_, foreign, System.currentTimeMillis()});
+        insertNewWord(native_, foreign, null);
+    }
+
+    public static void insertNewWord(String native_, String foreign, String description) {
+        String sql = "INSERT INTO words (native, [foreign], description, timestamp) VALUES (?, ?, ?, ?);";
+        update(sql, new Object[]{native_, foreign, description, System.currentTimeMillis()});
     }
 
     public static void removeWord(String native_, String foreign) {
@@ -171,13 +177,11 @@ public abstract class Db {
             PreparedStatement stmt = getConnection().prepareStatement(insertion);
             for (int i = 0; i < args.length; i++) {
                 switch (args[i]) {
+                    case null -> stmt.setNull(i + 1, Types.NULL);
                     case String s -> stmt.setString(i + 1, s);
                     case Integer integer -> stmt.setInt(i + 1, integer);
                     case Long l -> stmt.setLong(i + 1, l);
-                    case null, default -> {
-                        assert args[i] != null;
-                        throw new RuntimeException("Unsupported argument type: " + args[i].getClass());
-                    }
+                    default -> throw new RuntimeException("Unsupported argument type: " + args[i].getClass());
                 }
             }
             System.out.println("Executing update: " + getSqlWithParams(insertion, args));

@@ -32,6 +32,9 @@ public class AddWordController extends Controller {
     private TextField nativeTextField;
 
     @FXML
+    private TextField descriptionTextField;
+
+    @FXML
     private TextField searchTextField;
 
     @FXML
@@ -73,6 +76,7 @@ public class AddWordController extends Controller {
 
         nativeTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this));
         foreignTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this));
+        descriptionTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this));
 
         // Attach the words list to the ListView and fill it
         searchListView.setItems(wordsList);
@@ -95,7 +99,12 @@ public class AddWordController extends Controller {
             return;
         }
 
-        Db.insertNewWord(nativeTextField.getText(), foreignTextField.getText());
+        String description = null;
+        if (!descriptionTextField.getText().isEmpty()) {
+            description = descriptionTextField.getText();
+        }
+
+        Db.insertNewWord(nativeTextField.getText(), foreignTextField.getText(), description);
         resetInputTextFields();
         updateSearchListView();
     }
@@ -117,7 +126,10 @@ public class AddWordController extends Controller {
     }
 
     private void resetInputTextFields() {
-        nativeTextField.setText("");
-        foreignTextField.setText("");
+        nativeTextField.clear();
+        foreignTextField.clear();
+        descriptionTextField.clear();
+
+        nativeTextField.requestFocus();
     }
 }
