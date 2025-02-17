@@ -143,6 +143,21 @@ public abstract class Db {
         update(sql, new Object[]{native_, foreign});
     }
 
+    public static void incrReviewsCount(Long id) {
+        String sql = "UPDATE words SET reviewsCount = reviewsCount + 1 WHERE id = ?";
+        update(sql, new Object[]{id});
+    }
+
+    public static void incrFailedReviews(Long id) {
+        String sql = "UPDATE words SET failedReviews = failedReviews + 1 WHERE id = ?";
+        update(sql, new Object[]{id});
+    }
+
+    public static void updateLastReviewTimestamp(Long id) {
+        String sql = "UPDATE words SET lastReviewTimestamp = ? WHERE id = ?";
+        update(sql, new Object[]{System.currentTimeMillis(), id});
+    }
+
     private static String getSqlWithParams(String sql, Object[] params) {
         StringBuilder sqlWithParams = new StringBuilder(sql);
         for (Object param : params) {

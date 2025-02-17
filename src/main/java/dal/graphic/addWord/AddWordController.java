@@ -1,10 +1,7 @@
 package dal.graphic.addWord;
 
 import dal.Db;
-import dal.graphic.Controller;
-import dal.graphic.ErrorDisplayer;
-import dal.graphic.SceneManager;
-import dal.graphic.SceneType;
+import dal.graphic.*;
 import dal.word.Word;
 import dal.word.WordType;
 import javafx.animation.PauseTransition;
@@ -74,9 +71,9 @@ public class AddWordController extends Controller {
             }
         });
 
-        nativeTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this));
-        foreignTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this));
-        descriptionTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this));
+        nativeTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::addNewWord));
+        foreignTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::addNewWord));
+        descriptionTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::addNewWord));
 
         // Attach the words list to the ListView and fill it
         searchListView.setItems(wordsList);

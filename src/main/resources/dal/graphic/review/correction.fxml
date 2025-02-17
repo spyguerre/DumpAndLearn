@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="dal.graphic.review.CorrectionController">
+   <content>
+      <VBox fx:id="mainVBox" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
+         <children>
+            <Text stroke="BLACK" strokeWidth="0.5" text="Words Correction:" textAlignment="CENTER" underline="true" />
+            <Text fx:id="rightWordsCount" strokeType="OUTSIDE" strokeWidth="0.0" text="?/? correct words!" textAlignment="CENTER">
+               <VBox.margin>
+                  <Insets bottom="42.0" />
+               </VBox.margin>
+            </Text>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>
