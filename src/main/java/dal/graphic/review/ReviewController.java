@@ -6,7 +6,6 @@ import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
 import dal.word.WordReviewed;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -105,12 +104,6 @@ public class ReviewController extends Controller {
         }
 
         System.out.println("Saved user answer");
-    }
-
-    private void clearUserAnswers() {
-        for (WordReviewed currentWord : words) {
-            currentWord.setUserAnswer("");
-        }
     }
 
     public List<WordReviewed> getWords() {
