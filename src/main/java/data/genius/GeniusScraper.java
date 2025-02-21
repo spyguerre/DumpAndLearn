@@ -13,7 +13,7 @@ import java.util.List;
 public class GeniusScraper {
     // Fuzzy match for artist name
     private static String findClosestMatchingArtist(String userArtist) {
-        List<String> artists = Db.getAllArtists();  // Assume this method exists
+        List<String> artists = Db.getAllArtists();
         if (artists.isEmpty()) return null;
 
         String closestMatch = null;
@@ -58,11 +58,15 @@ public class GeniusScraper {
     }
 
     public static String getLyricsWithDatabase(String title, String artist) {
+        System.out.println("Looking for an exact match in the database...");
+
         // First, check for an exact match in the database
         String lyrics = Db.getLyricsFromDatabase(title, artist);
 
         if (lyrics != null) {
             System.out.println("✅ Lyrics found in database!");
+            System.out.println("Title found: " + title);
+            System.out.println("Artist found: " + artist);
             return lyrics;
         }
 
@@ -73,34 +77,52 @@ public class GeniusScraper {
         String closestTitle = findClosestMatchingTitle(title);
         String closestArtist = findClosestMatchingArtist(artist);
 
-        // If no close match for the title, try scraping from Genius
-        if (closestTitle != null && !closestTitle.equals(title)) {
-            System.out.println("🔍 Did you mean the song: " + closestTitle + "? Trying the closest match.");
-        }
-        if (closestArtist != null && !closestArtist.equals(artist)) {
-            System.out.println("🔍 Did you mean the artist: " + closestArtist + "? Trying the closest match.");
-        }
-
         // If either the title or artist was fuzzy matched, use the closest match
-        if (closestTitle != null) {
-            title = closestTitle;
-        }
-        if (closestArtist != null) {
-            artist = closestArtist;
+        if (closestTitle != null || closestArtist != null) {
+            if (closestTitle != null &&!closestTitle.equals(title)) {
+                title = closestTitle;
+            }
+            if (closestArtist != null && !closestArtist.equals(artist)) {
+                artist = closestArtist;
+            }
+
+            System.out.println("Trying to retrieve lyrics from database using title: " + title + " and artist: " + artist + "...");
+
+            lyrics = Db.getLyricsFromDatabase(title, artist);
+            if (lyrics != null) {
+                System.out.println("✅ Lyrics found in database!");
+                System.out.println("Title found: " + title);
+                System.out.println("Artist found: " + artist);
+                return lyrics;
+            } else {
+                System.out.println("Couldn't find the lyrics in the database using fuzzy matching.");
+            }
         }
 
-        // Scrape lyrics from Genius using the corrected title and artist
+        // Else scrape lyrics from Genius using the corrected title and artist
+        System.out.println("Searching for the lyrics online on Genius...");
         String geniusUrl = getGeniusUrl(title, artist);
+        System.out.println("Genius URL found: " + geniusUrl);
         lyrics = getLyrics(geniusUrl);
 
+        // Save the lyrics to the database if they are found.
         if (!lyrics.equals("Couldn't find the lyrics.")) {
+            System.out.println("Lyrics found online!");
             // Scrape the title and artist from the Genius page if needed
             String[] scrapedData = getTitleAndArtistFromGenius(geniusUrl);
             String correctTitle = scrapedData[0];
+            System.out.println("Title found: " + correctTitle);
             String correctArtist = scrapedData[1];
+            System.out.println("Artist found: " + correctArtist);
 
-            // Save the correct data to the database
-            Db.saveLyricsToDatabase(correctTitle, correctArtist, lyrics);
+            // Check if the song already exists in the database before saving
+            String existingLyrics = Db.getLyricsFromDatabase(correctTitle, correctArtist);
+            if (existingLyrics == null) {
+                // Only save if it doesn't already exist
+                Db.saveLyricsToDatabase(correctTitle, correctArtist, lyrics);
+            } else {
+                System.out.println("✅ Lyrics already exist in the database, skipping save.");
+            }
         }
 
         return lyrics;
@@ -188,9 +210,9 @@ public class GeniusScraper {
             Element titleElement = doc.select("span.SongHeader-desktop-sc-d2837d6d-11.eOWfHT").first();
             String title = (titleElement != null) ? titleElement.text() : "Unknown Title";
 
-            // Extract artist name
-            Element artistElement = doc.select("a.StyledLink-sc-15c685a-0.lHPZL").first();
-            String artist = (artistElement != null) ? artistElement.text() : "Unknown Artist";
+            // Extract only the main artist (ignoring featured artists)
+            Element mainArtistElement = doc.selectFirst("div.HeaderArtistAndTracklist-desktop-sc-afd25865-1 a.StyledLink-sc-15c685a-0");
+            String artist = (mainArtistElement != null) ? mainArtistElement.text() : "Unknown Artist";
 
             return new String[]{title, artist};
         } catch (IOException e) {
