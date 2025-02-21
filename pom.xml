@@ -63,12 +63,6 @@
       <artifactId>commons-text</artifactId>
       <version>1.10.0</version>
     </dependency>
-
-    <dependency>
-      <groupId>uk.co.caprica</groupId>
-      <artifactId>vlcj</artifactId>
-      <version>4.8.2</version>
-    </dependency>
   </dependencies>
 
   <build>

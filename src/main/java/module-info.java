@@ -5,7 +5,6 @@ module dal {
     requires org.apache.commons.text;
     requires javafx.web;
     requires javafx.media;
-    requires uk.co.caprica.vlcj;
     requires javafx.swing;
 
     exports dal;
