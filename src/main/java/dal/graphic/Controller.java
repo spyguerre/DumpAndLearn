@@ -1,6 +1,6 @@
 package dal.graphic;
 
-import data.db.Db;
+import dal.data.db.Db;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 

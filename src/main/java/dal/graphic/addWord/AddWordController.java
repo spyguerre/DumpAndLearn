@@ -1,9 +1,9 @@
 package dal.graphic.addWord;
 
-import data.db.Db;
+import dal.data.db.Db;
 import dal.graphic.*;
-import data.word.Word;
-import data.word.WordType;
+import dal.data.word.Word;
+import dal.data.word.WordType;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
