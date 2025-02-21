@@ -4,7 +4,7 @@ import dal.graphic.ConfirmationListener;
 import dal.graphic.Controller;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
-import dal.word.WordReviewed;
+import data.word.WordReviewed;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;

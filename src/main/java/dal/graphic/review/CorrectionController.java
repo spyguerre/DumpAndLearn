@@ -1,10 +1,10 @@
 package dal.graphic.review;
 
-import dal.Db;
+import data.db.Db;
 import dal.graphic.Controller;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
-import dal.word.WordReviewed;
+import data.word.WordReviewed;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;

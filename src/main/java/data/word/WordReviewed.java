@@ -1,4 +1,4 @@
-package dal.word;
+package data.word;
 
 import dal.graphic.startReview.WriteIn;
 

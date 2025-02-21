@@ -1,6 +1,6 @@
-package dal.word;
+package data.word;
 
-import dal.Db;
+import data.db.Db;
 import dal.graphic.ErrorDisplayer;
 import dal.graphic.startReview.ReviewPreference;
 import dal.graphic.startReview.WriteIn;

@@ -1,7 +1,7 @@
-package dal;
+package data.db;
 
-import dal.word.Word;
-import dal.word.WordType;
+import data.word.Word;
+import data.word.WordType;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ public abstract class Db {
                 System.out.println("Couldn't find SQLite driver.");
                 throw new RuntimeException(e);
             } catch (SQLException e) {
+                e.printStackTrace();
                 System.out.println("Couldn't open or initialize the database.");
                 throw new RuntimeException(e);
             }
@@ -30,41 +31,57 @@ public abstract class Db {
     }
 
     private static void initDatabase() throws SQLException {
-        String tableName = "words";
+        // Check for and create each table if necessary
+        String[] tableNames = new String[]{"words", "lyrics"};
+        for (String tableName : tableNames) {
 
-        String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name = ?";
+            String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name = ?";
 
-        PreparedStatement pstmt = getConnection().prepareStatement(sql);
-        pstmt.setString(1, tableName);
-        ResultSet rs = pstmt.executeQuery();
+            PreparedStatement pstmt = getConnection().prepareStatement(sql);
+            pstmt.setString(1, tableName);
+            ResultSet rs = pstmt.executeQuery();
 
-        if (rs.next()) {
-            System.out.println("Found table " + tableName + ".");
-        } else {
-            System.out.println("Table " + tableName + " not found.");
-            sql = """
-                    CREATE TABLE words (
-                        id                  INTEGER UNIQUE
-                                                    NOT NULL
-                                                    DEFAULT (0),
-                        native              TEXT    NOT NULL,
-                        [foreign]           TEXT    NOT NULL,
-                        description         TEXT,
-                        timestamp           NUMERIC NOT NULL,
-                        reviewsCount        INTEGER NOT NULL
-                                                    DEFAULT (0),
-                        failedReviews       INTEGER NOT NULL
-                                                    DEFAULT (0),
-                        lastReviewTimestamp NUMERIC,
-                        PRIMARY KEY (
-                            id AUTOINCREMENT
-                        )
-                    );
-                    """;
+            if (rs.next()) {
+                System.out.println("Found table " + tableName + ".");
+            } else {
+                System.out.println("Table " + tableName + " not found.");
 
-            pstmt = getConnection().prepareStatement(sql);
-            pstmt.executeUpdate();
-            System.out.println("Created table " + tableName + ".");
+                if (tableName.equals("words")) {
+                    sql = """
+                            CREATE TABLE words (
+                                id                  INTEGER UNIQUE
+                                                            NOT NULL
+                                                            DEFAULT (0),
+                                native              TEXT    NOT NULL,
+                                [foreign]           TEXT    NOT NULL,
+                                description         TEXT,
+                                timestamp           NUMERIC NOT NULL,
+                                reviewsCount        INTEGER NOT NULL
+                                                            DEFAULT (0),
+                                failedReviews       INTEGER NOT NULL
+                                                            DEFAULT (0),
+                                lastReviewTimestamp NUMERIC,
+                                PRIMARY KEY (
+                                    id AUTOINCREMENT
+                                )
+                            );
+                            """;
+                } else if (tableName.equals("lyrics")) {
+                    sql = """
+                            CREATE TABLE IF NOT EXISTS lyrics (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            title TEXT NOT NULL,
+                            artist TEXT NOT NULL,
+                            lyrics TEXT NOT NULL,
+                            UNIQUE(title, artist)
+                            );
+                            """;
+                }
+
+                pstmt = getConnection().prepareStatement(sql);
+                pstmt.executeUpdate();
+                System.out.println("Created table " + tableName + ".");
+            }
         }
     }
 
@@ -156,6 +173,90 @@ public abstract class Db {
     public static void updateLastReviewTimestamp(Long id) {
         String sql = "UPDATE words SET lastReviewTimestamp = ? WHERE id = ?";
         update(sql, new Object[]{System.currentTimeMillis(), id});
+    }
+
+    public static void saveLyricsToDatabase(String title, String artist, String lyrics) {
+        String sql = "INSERT INTO lyrics (title, artist, lyrics) VALUES (?, ?, ?)";
+        update(sql, new Object[]{title, artist, lyrics});
+        System.out.println("✅ Lyrics saved to database!");
+    }
+
+    public static void deleteSongFromDatabase(String title, String artist) {
+        String sql = "DELETE FROM lyrics WHERE title = ? AND artist = ?";
+        update(sql, new Object[]{title, artist});
+    }
+
+    public static List<String> getAllTitlesForArtist(String artist) {
+        List<String> titles = new ArrayList<>();
+        String sql = "SELECT title FROM lyrics WHERE artist = ?";
+
+        try {
+            ResultSet rs = query(sql, new Object[]{artist});
+
+            assert rs != null;
+            while (rs.next()) {
+                titles.add(rs.getString("title"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return titles;
+    }
+
+    public static String getLyricsFromDatabase(String title, String artist) {
+        String sql = "SELECT lyrics FROM lyrics WHERE title = ? AND artist = ?";
+
+        try {
+            ResultSet rs = query(sql, new Object[]{title, artist});
+
+            assert rs != null;
+            if (rs.next()) {
+                return rs.getString("lyrics");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<String> getAllArtists() {
+        List<String> artists = new ArrayList<>();
+        String query = "SELECT DISTINCT artist FROM lyrics";  // Replace 'lyrics' with the correct table name
+
+        try {
+            ResultSet rs = query(query);
+
+            // Iterate through the result set and add artists to the list
+            while (rs.next()) {
+                String artist = rs.getString("artist");
+                artists.add(artist);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error retrieving artists from database: " + e.getMessage());
+        }
+
+        return artists;
+    }
+
+    public static List<String> getAllTitles() {
+        List<String> titles = new ArrayList<>();
+        String query = "SELECT DISTINCT title FROM lyrics";  // Replace 'lyrics' with the correct table name
+
+        try {
+            ResultSet rs = query(query);
+
+            // Iterate through the result set and add titles to the list
+            while (rs.next()) {
+                String title = rs.getString("title");
+                titles.add(title);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error retrieving titles from database: " + e.getMessage());
+        }
+
+        return titles;
     }
 
     private static String getSqlWithParams(String sql, Object[] params) {
