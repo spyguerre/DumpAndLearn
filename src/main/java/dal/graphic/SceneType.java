@@ -7,6 +7,7 @@ public enum SceneType {
     START_REVIEW,
     REVIEW,
     CORRECTION,
+    SONG_MENU,
     SONG_PLAYING;
 
     public static FXMLLoader getSceneFxml(SceneType scene) {
@@ -16,6 +17,7 @@ public enum SceneType {
             case START_REVIEW -> fp = "word/startReview/startReview.fxml";
             case REVIEW -> fp = "word/review/review.fxml";
             case CORRECTION -> fp = "word/review/correction.fxml";
+            case SONG_MENU -> fp = "song/menu/songMenu.fxml";
             case SONG_PLAYING -> fp = "song/playing/playing.fxml";
         }
 

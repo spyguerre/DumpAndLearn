@@ -5,14 +5,14 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.song.menu.SongMenuController">
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.song.menu.SongMenuController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -49,7 +49,7 @@
                               <Insets />
                            </VBox.margin>
                         </Text>
-                        <TextField maxWidth="200.0" prefWidth="200.0">
+                        <TextField fx:id="titleTextField" maxWidth="200.0" prefWidth="200.0">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
@@ -66,7 +66,7 @@
                               <Insets />
                            </VBox.margin>
                         </Text>
-                        <TextField maxWidth="200.0" prefWidth="200.0" />
+                        <TextField fx:id="artistTextField" maxWidth="200.0" prefWidth="200.0" />
                      </children>
                   </VBox>
                </children>
@@ -76,6 +76,11 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </Button>
+            <ProgressBar fx:id="dlProgressBar" prefWidth="200.0" progress="0.0" visible="false">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </ProgressBar>
          </children>
       </VBox>
    </center>

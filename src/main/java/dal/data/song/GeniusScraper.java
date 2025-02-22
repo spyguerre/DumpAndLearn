@@ -7,24 +7,28 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class GeniusScraper {
     /**
      * Gets a song's lyrics online, unless there is already a close enough match saved in the database.
+     * @return the corrected (if necessary) title, artist, and lyrics.
      */
-    public static String getLyricsWithDatabase(String title, String artist) {
+    public static String[] getSongInfo(String title, String artist) {
         System.out.println("Looking for an exact match in the database...");
 
         // First, check for an exact match in the database
-        String lyrics = Db.getLyricsFromDatabase(title, artist);
+        String lyrics = Db.getLyrics(title, artist);
 
         if (lyrics != null) {
             System.out.println("✅ Lyrics found in database!");
             System.out.println("Title found: " + title);
             System.out.println("Artist found: " + artist);
-            return lyrics;
+            return new String[]{title, artist, lyrics};
         }
 
         // If no exact match is found, attempt fuzzy matching for title and artist
@@ -45,12 +49,12 @@ public class GeniusScraper {
 
             System.out.println("Trying to retrieve lyrics from database using title: " + title + " and artist: " + artist + "...");
 
-            lyrics = Db.getLyricsFromDatabase(title, artist);
+            lyrics = Db.getLyrics(title, artist);
             if (lyrics != null) {
                 System.out.println("✅ Lyrics found in database!");
                 System.out.println("Title found: " + title);
                 System.out.println("Artist found: " + artist);
-                return lyrics;
+                return new String[]{title, artist, lyrics};
             } else {
                 System.out.println("Couldn't find the lyrics in the database using fuzzy matching.");
             }
@@ -62,27 +66,28 @@ public class GeniusScraper {
         System.out.println("Genius URL found: " + geniusUrl);
         lyrics = getLyrics(geniusUrl);
 
+        // Scrape the title and artist from the Genius page if needed
+        String[] scrapedData = getTitleAndArtistFromGenius(geniusUrl);
+        String correctTitle = scrapedData[0];
+        System.out.println("Title found: " + correctTitle);
+        String correctArtist = scrapedData[1];
+        System.out.println("Artist found: " + correctArtist);
+
         // Save the lyrics to the database if they are found.
         if (!lyrics.equals("Couldn't find the lyrics.")) {
             System.out.println("Lyrics found online!");
-            // Scrape the title and artist from the Genius page if needed
-            String[] scrapedData = getTitleAndArtistFromGenius(geniusUrl);
-            String correctTitle = scrapedData[0];
-            System.out.println("Title found: " + correctTitle);
-            String correctArtist = scrapedData[1];
-            System.out.println("Artist found: " + correctArtist);
 
             // Check if the song already exists in the database before saving
-            String existingLyrics = Db.getLyricsFromDatabase(correctTitle, correctArtist);
+            String existingLyrics = Db.getLyrics(correctTitle, correctArtist);
             if (existingLyrics == null) {
                 // Only save if it doesn't already exist
-                Db.saveLyricsToDatabase(correctTitle, correctArtist, lyrics);
+                Db.saveLyricsToDatabase(correctTitle, correctArtist, geniusUrl, lyrics);
             } else {
                 System.out.println("✅ Lyrics already exist in the database, skipping save.");
             }
         }
 
-        return lyrics;
+        return new String[]{correctTitle, correctArtist, lyrics};
     }
 
     // Fuzzy match for artist name
@@ -132,24 +137,33 @@ public class GeniusScraper {
     }
 
     /**
-     * Search for the song on Bing and extract the Genius URL.
+     * Search for the song using googlesearch python module and extract the Genius URL.
      */
-    private static String getGeniusUrl(String songName, String artist) {
-        String searchUrl = "https://www.bing.com/search?q=site:genius.com+" + songName.replace(" ", "+") + "+" + artist.replace(" ", "+");
+    public static String getGeniusUrl(String songName, String artist) {
+        // Construct the search query
+        String query = songName + " " + artist + " lyrics site:genius.com";
+
+        // Python command to perform the search using googlesearch package
+        String command = "python -c \"from googlesearch import search; [print(url) for url in search('" + query.replace("'", "\\'") + "', num_results=10)]\"";
 
         try {
-            Document doc = Jsoup.connect(searchUrl)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
-                    .get();
+            // Run the Python command
+            Process process = Runtime.getRuntime().exec(command);
 
-            // Select the first Genius link from search results
-            Element link = doc.select("li.b_algo a[href*='genius.com']").first();
-            if (link != null) {
-                return link.attr("href");
+            // Capture the output from the process (the list of URLs)
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // If we find a link, return it
+                if (line.contains("genius.com")) {
+                    return line;  // We return the first Genius link we find
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // If no Genius link was found, return null
         return null;
     }
 
@@ -163,8 +177,7 @@ public class GeniusScraper {
                     .get();
 
             // Select all elements inside the lyrics container
-            Elements lyricElements = doc.select("div[dal.data-lyrics-container='true']");
-
+            Elements lyricElements = doc.select("div[data-lyrics-container='true']");
             // Check if song is instrumental = has no lyrics.
             if (lyricElements.isEmpty()) {
                 return "This song is an instrumental.";

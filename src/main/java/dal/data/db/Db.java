@@ -70,12 +70,17 @@ public abstract class Db {
                             """;
                 } else if (tableName.equals("lyrics")) {
                     sql = """
-                            CREATE TABLE IF NOT EXISTS lyrics (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            title TEXT NOT NULL,
-                            artist TEXT NOT NULL,
-                            lyrics TEXT NOT NULL,
-                            UNIQUE(title, artist)
+                            CREATE TABLE lyrics (
+                                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                                title       TEXT    NOT NULL,
+                                artist      TEXT    NOT NULL,
+                                youtubeLink TEXT,
+                                geniusLink  TEXT,
+                                lyrics      TEXT    NOT NULL,
+                                UNIQUE (
+                                    title,
+                                    artist
+                                )
                             );
                             """;
                 }
@@ -181,10 +186,15 @@ public abstract class Db {
 
     ///////// LYRICS /////////
 
-    public static void saveLyricsToDatabase(String title, String artist, String lyrics) {
-        String sql = "INSERT INTO lyrics (title, artist, lyrics) VALUES (?, ?, ?)";
-        update(sql, new Object[]{title, artist, lyrics});
+    public static void saveLyricsToDatabase(String title, String artist, String geniusLink, String lyrics) {
+        String sql = "INSERT INTO lyrics (title, artist, geniusLink, lyrics) VALUES (?, ?, ?, ?)";
+        update(sql, new Object[]{title, artist, geniusLink, lyrics});
         System.out.println("✅ Lyrics saved to database!");
+    }
+
+    public static void saveYoutubeLink(String youtubeLink, long id) {
+        String sql = "UPDATE lyrics SET youtubeLink = ? WHERE id = ?";
+        update(sql, new Object[]{youtubeLink, id});
     }
 
     public static void deleteSongFromDatabase(String title, String artist) {
@@ -209,7 +219,23 @@ public abstract class Db {
         return titles;
     }
 
-    public static String getLyricsFromDatabase(String title, String artist) {
+    public static String getLyrics(long id) {
+        String sql = "SELECT lyrics FROM lyrics WHERE id = ?";
+
+        try {
+            ResultSet rs = query(sql, new Object[]{id});
+
+            assert rs != null;
+            if (rs.next()) {
+                return rs.getString("lyrics");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String getLyrics(String title, String artist) {
         String sql = "SELECT lyrics FROM lyrics WHERE title = ? AND artist = ?";
 
         try {
@@ -263,6 +289,25 @@ public abstract class Db {
         }
 
         return titles;
+    }
+
+    public static Long getsongIDFromtitle(String title, String artist) {
+        String sql = "SELECT id FROM lyrics WHERE title = ? AND artist = ?";
+        try {
+            ResultSet rs = query(sql, new Object[]{title, artist});
+
+            assert rs != null;
+            if (rs.next()) {
+                return rs.getLong("id");
+            } else {
+                System.out.println("Couldn't retrieve song ID from title='" + title + "' and artist='" + artist + "'.");
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error retrieving song ID from database using artist='" + artist + "' and title='" + title + "': " + e.getMessage());
+            return null;
+        }
     }
 
     ///////// ATOMIC REQUESTS /////////

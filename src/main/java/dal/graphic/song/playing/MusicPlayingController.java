@@ -1,24 +1,22 @@
 package dal.graphic.song.playing;
 
+import dal.data.db.Db;
 import dal.graphic.Controller;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.text.Text;
 
 import java.io.File;
 
 public class MusicPlayingController extends Controller {
     @FXML
     private MediaView mediaView;
-
-    @FXML
-    private VBox controlsBox;
 
     @FXML
     private Slider progressSlider;
@@ -30,15 +28,20 @@ public class MusicPlayingController extends Controller {
     private Button playPauseButton;
 
     @FXML
+    private Text lyricsText;
+
+    @FXML
     public void initialize() {
         // Ensure MediaView resizes dynamically to fit the window
         BorderPane root = (BorderPane) this.root;
-        mediaView.fitWidthProperty().bind(root.widthProperty());
-        mediaView.fitHeightProperty().bind(root.heightProperty().subtract(150)); // Leaves space for controls
+        mediaView.fitWidthProperty().bind(root.widthProperty().subtract(200)); // Leaves space for lyrics
+        mediaView.fitHeightProperty().bind(root.heightProperty().subtract(100)); // Leaves space for controls
 
     }
 
-    public void setVideo(int songId) {
+    public void initVideo(long songId) {
+        System.out.println("Initializing video...");
+
         // Path to video file (use the absolute path for better reliability)
         File videoFile = new File("downloads/" + songId + ".mp4");  // Specify relative path
         String absolutePath = videoFile.getAbsolutePath();  // Convert to absolute path
@@ -48,6 +51,8 @@ public class MusicPlayingController extends Controller {
             System.out.println("File not found: " + absolutePath);
             return;
         }
+
+        System.out.println("File found, loading...");
 
         // Convert backslashes to forward slashes
         String formattedPath = absolutePath.replace("\\", "/");
@@ -78,7 +83,15 @@ public class MusicPlayingController extends Controller {
         // Adjust initial volume.
         updateVolume();
 
+
+        // Set the lyrics.
+        System.out.println("Setting the lyrics...");
+        String lyrics = Db.getLyrics(songId);
+        assert lyrics != null;
+        lyricsText.setText(lyrics.replaceAll("\\r\\n|\\r|\\n", "\n"));
+
         // Start playing the video
+        System.out.println("Video ready!");
         mediaPlayer.play();
 
         // Add key event listener for space bar pause/play.
