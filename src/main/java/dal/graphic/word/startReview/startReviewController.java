@@ -1,9 +1,9 @@
-package dal.graphic.startReview;
+package dal.graphic.word.startReview;
 
 import dal.graphic.Controller;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
-import dal.graphic.review.ReviewController;
+import dal.graphic.word.review.ReviewController;
 import dal.data.word.WordReviewed;
 import dal.data.word.WordSelector;
 import javafx.event.Event;

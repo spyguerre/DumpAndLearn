@@ -9,19 +9,21 @@ module dal {
 
     exports dal;
     exports dal.graphic;
-    exports dal.graphic.addWord;
-    exports dal.graphic.startReview;
-    exports dal.graphic.review;
-    exports dal.graphic.songMenu;
+    exports dal.graphic.word.addWord;
+    exports dal.graphic.word.startReview;
+    exports dal.graphic.word.review;
+    exports dal.graphic.song.menu;
+    exports dal.graphic.song.playing;
     exports dal.data.db;
     exports dal.data.word;
     exports dal.data.song;
 
     opens dal to javafx.fxml;
     opens dal.graphic to javafx.fxml;
-    opens dal.graphic.addWord to javafx.fxml;
-    opens dal.graphic.startReview to javafx.fxml;
-    opens dal.graphic.review to javafx.fxml;
-    opens dal.graphic.songMenu to javafx.fxml;
+    opens dal.graphic.word.addWord to javafx.fxml;
+    opens dal.graphic.word.startReview to javafx.fxml;
+    opens dal.graphic.word.review to javafx.fxml;
+    opens dal.graphic.song.menu to javafx.fxml;
+    opens dal.graphic.song.playing to javafx.fxml;
     opens dal.data.db to javafx.fxml;
 }

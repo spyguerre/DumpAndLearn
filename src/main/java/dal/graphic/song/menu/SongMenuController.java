@@ -1,4 +1,4 @@
-package dal.graphic.songMenu;
+package dal.graphic.song.menu;
 
 import dal.graphic.Controller;
 import javafx.fxml.FXML;

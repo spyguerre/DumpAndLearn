@@ -1,4 +1,4 @@
-package dal.graphic.startReview;
+package dal.graphic.word.startReview;
 
 public enum ReviewPreference {
     ANY,

@@ -1,4 +1,4 @@
-package dal.graphic.addWord;
+package dal.graphic.word.addWord;
 
 import dal.data.db.Db;
 import dal.graphic.*;

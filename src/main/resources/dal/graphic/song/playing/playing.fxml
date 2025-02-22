@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.media.MediaView?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.song.playing.MusicPlayingController">
+
+    <!-- MenuBar at the Top -->
+    <top>
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#quit" text="Close" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+
+    <!-- MediaView in a StackPane to ensure it resizes properly -->
+    <center>
+         <MediaView fx:id="mediaView" fitHeight="450.0" fitWidth="800.0" preserveRatio="true" />
+    </center>
+
+    <!-- Controls (Sliders and Button) at the Bottom -->
+    <bottom>
+        <VBox fx:id="controlsBox" alignment="CENTER" prefHeight="100.0" spacing="10">
+            <children>
+                <!-- Progress Slider -->
+                <Slider fx:id="progressSlider" max="42.0" onDragDetected="#updateVideoProgress" onDragDone="#updateVideoProgress" onDragDropped="#updateVideoProgress" onDragEntered="#updateVideoProgress" onDragExited="#updateVideoProgress" onDragOver="#updateVideoProgress" onMouseClicked="#updateVideoProgress" onMouseDragEntered="#updateVideoProgress" onMouseDragExited="#updateVideoProgress" onMouseDragOver="#updateVideoProgress" onMouseDragReleased="#updateVideoProgress" onMouseDragged="#updateVideoProgress">
+                    <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </VBox.margin>
+                </Slider>
+            <HBox>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Volume">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Text>
+                       <Slider fx:id="volumeSlider" blockIncrement="0.1" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onDragDetected="#updateVolume" onDragDone="#updateVolume" onDragDropped="#updateVolume" onDragEntered="#updateVolume" onDragExited="#updateVolume" onDragOver="#updateVolume" onMouseClicked="#updateVolume" onMouseDragEntered="#updateVolume" onMouseDragExited="#updateVolume" onMouseDragOver="#updateVolume" onMouseDragReleased="#updateVolume" onMouseDragged="#updateVolume" value="0.05" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                       </Slider>
+                       <Button fx:id="playPauseButton" mnemonicParsing="false" onAction="#togglePlayPause" text="Pause">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="42.0" right="42.0" top="10.0" />
+                     </HBox.margin>
+                       </Button>
+               </children>
+            </HBox>
+            </children>
+        </VBox>
+    </bottom>
+
+</BorderPane>

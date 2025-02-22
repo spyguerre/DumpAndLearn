@@ -1,6 +1,6 @@
 package dal.data.word;
 
-import dal.graphic.startReview.WriteIn;
+import dal.graphic.word.startReview.WriteIn;
 
 import java.util.Random;
 

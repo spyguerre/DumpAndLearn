@@ -1,4 +1,4 @@
-package dal.graphic.review;
+package dal.graphic.word.review;
 
 import dal.graphic.ConfirmationListener;
 import dal.graphic.Controller;

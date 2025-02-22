@@ -2,8 +2,8 @@ package dal.data.word;
 
 import dal.data.db.Db;
 import dal.graphic.ErrorDisplayer;
-import dal.graphic.startReview.ReviewPreference;
-import dal.graphic.startReview.WriteIn;
+import dal.graphic.word.startReview.ReviewPreference;
+import dal.graphic.word.startReview.WriteIn;
 
 import java.sql.*;
 import java.util.*;
