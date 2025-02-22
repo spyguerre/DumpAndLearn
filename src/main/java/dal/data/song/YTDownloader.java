@@ -1,6 +1,7 @@
 package dal.data.song;
 
 import dal.data.db.Db;
+import javafx.scene.control.ProgressBar;
 
 import java.io.*;
 
@@ -42,6 +43,10 @@ public class YTDownloader {
     }
 
     public static void downloadVideo(String videoUrl, String songTitle, String artist) {
+        downloadVideo(videoUrl, songTitle, artist, null);
+    }
+
+    public static void downloadVideo(String videoUrl, String songTitle, String artist, ProgressBar progressBar) {
         // Ensure the output directory exists
         File outputDir = new File("./downloads");
         if (!outputDir.exists()) {
@@ -50,6 +55,11 @@ public class YTDownloader {
 
         // Get the song ID from the database using the song title and artist
         Long songID = Db.getsongIDFromtitle(songTitle, artist);
+
+        // Update progress bar
+        if (progressBar != null) {
+            progressBar.setProgress(0.42);
+        }
 
         if (songID == null) {
             System.err.println("Couldn't get song ID for title " + songTitle + " and artist " + artist + "; aborting download.");
@@ -78,6 +88,9 @@ public class YTDownloader {
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
+                if (line.contains("[download]") && line.contains("% of") && progressBar != null) {
+                    progressBar.setProgress(.5 + .005 * Float.parseFloat(line.split("\\[download] ")[1].split("% of")[0]));
+                }
             }
 
             // Wait for the process to finish

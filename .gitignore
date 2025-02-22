@@ -4,6 +4,7 @@ target/
 !**/src/test/**/target/
 dalData.db
 downloads/
+.venv/
 
 ### IntelliJ IDEA ###
 .idea/
