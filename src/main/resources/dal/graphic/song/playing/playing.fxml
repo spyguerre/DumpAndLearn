@@ -22,7 +22,9 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#quit" text="Close" />
+                        <MenuItem mnemonicParsing="false" onAction="#mainMenu" text="Back to Main Menu" />
+                  <MenuItem mnemonicParsing="false" onAction="#learnFromSong" text="Learn another Song" />
+                  <MenuItem mnemonicParsing="false" onAction="#quit" text="Close" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">

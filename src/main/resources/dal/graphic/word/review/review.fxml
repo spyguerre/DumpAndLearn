@@ -19,7 +19,8 @@
         <menus>
           <Menu mnemonicParsing="false" text="Menu">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#quit" text="Close" />
+              <MenuItem mnemonicParsing="false" onAction="#mainMenu" text="Back to Main Menu" />
+                  <MenuItem mnemonicParsing="false" onAction="#quit" text="Close" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">

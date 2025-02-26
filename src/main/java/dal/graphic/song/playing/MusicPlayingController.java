@@ -2,6 +2,8 @@ package dal.graphic.song.playing;
 
 import dal.data.db.Db;
 import dal.graphic.Controller;
+import dal.graphic.SceneManager;
+import dal.graphic.SceneType;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -11,6 +13,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.io.File;
 
@@ -132,5 +135,10 @@ public class MusicPlayingController extends Controller {
     private void updateVideoProgress() {
         MediaPlayer mediaPlayer = mediaView.getMediaPlayer();
         mediaPlayer.seek(javafx.util.Duration.seconds(progressSlider.getValue()));
+    }
+
+    @FXML
+    private void learnFromSong() {
+        SceneManager.switchScene(SceneType.SONG_MENU, (Stage) root.getScene().getWindow(), new int[]{(int)((BorderPane)root).getWidth(), (int)((BorderPane)root).getHeight()});
     }
 }

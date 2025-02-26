@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
 <BorderPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.word.review.CorrectionController">
    <center>
       <AnchorPane>
@@ -39,7 +38,8 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#quit" text="Close" />
+              <MenuItem mnemonicParsing="false" onAction="#mainMenu" text="Back to Main Menu" />
+                  <MenuItem mnemonicParsing="false" onAction="#quit" text="Close" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
