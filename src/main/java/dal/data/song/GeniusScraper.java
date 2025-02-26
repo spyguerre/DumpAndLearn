@@ -10,15 +10,17 @@ import org.jsoup.select.Elements;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class GeniusScraper {
+    private String bestGeniusURL = null;
+    private Document geniusDoc = null;
+
     /**
      * Gets a song's lyrics online, unless there is already a close enough match saved in the database.
      * @return the corrected (if necessary) title, artist, and lyrics.
      */
-    public static String[] getSongInfo(String title, String artist) {
+    public String[] getSongInfo(String title, String artist) {
         System.out.println("Looking for an exact match in the database...");
 
         // First, check for an exact match in the database
@@ -64,34 +66,39 @@ public class GeniusScraper {
         System.out.println("Searching for the lyrics online on Genius...");
         String geniusUrl = getGeniusUrl(title, artist);
         System.out.println("Genius URL found: " + geniusUrl);
-        lyrics = getLyrics(geniusUrl);
+        lyrics = getLyrics();
 
-        // Scrape the title and artist from the Genius page if needed
-        String[] scrapedData = getTitleAndArtistFromGenius(geniusUrl);
-        String correctTitle = scrapedData[0];
-        System.out.println("Title found: " + correctTitle);
-        String correctArtist = scrapedData[1];
-        System.out.println("Artist found: " + correctArtist);
+        // Scrape the title and artist from the Genius page if possible.
+        String correctTitle = title;
+        String correctArtist = artist;
+        if (geniusUrl != null) {
+            String[] scrapedData = getTitleAndArtistFromGenius();
+            correctTitle = scrapedData[0];
+            System.out.println("Title found: " + correctTitle);
+            correctArtist = scrapedData[1];
+            System.out.println("Artist found: " + correctArtist);
+        }
 
-        // Save the lyrics to the database if they are found.
-        if (!lyrics.equals("Couldn't find the lyrics.")) {
+        // Save the lyrics to the database.
+        if (geniusUrl != null) {
             System.out.println("Lyrics found online!");
-
-            // Check if the song already exists in the database before saving
-            String existingLyrics = Db.getLyrics(correctTitle, correctArtist);
-            if (existingLyrics == null) {
-                // Only save if it doesn't already exist
-                Db.saveLyricsToDatabase(correctTitle, correctArtist, geniusUrl, lyrics);
-            } else {
-                System.out.println("✅ Lyrics already exist in the database, skipping save.");
-            }
+        } else {
+            System.out.println("Couldn't find the lyrics online.");
+        }
+        // Check if the song already exists in the database before saving
+        String existingLyrics = Db.getLyrics(correctTitle, correctArtist);
+        if (existingLyrics == null) {
+            // Only save if it doesn't already exist.
+            Db.saveLyricsToDatabase(correctTitle, correctArtist, geniusUrl, lyrics);
+        } else {
+            System.out.println("✅ Lyrics already exist in the database, skipping save.");
         }
 
         return new String[]{correctTitle, correctArtist, lyrics};
     }
 
     // Fuzzy match for artist name
-    private static String findClosestMatchingArtist(String userArtist) {
+    private String findClosestMatchingArtist(String userArtist) {
         List<String> artists = Db.getAllArtists();
         if (artists.isEmpty()) return null;
 
@@ -114,7 +121,7 @@ public class GeniusScraper {
     }
 
     // Fuzzy match for title name
-    private static String findClosestMatchingTitle(String userTitle) {
+    private String findClosestMatchingTitle(String userTitle) {
         List<String> titles = Db.getAllTitles();  // Assume this method exists
         if (titles.isEmpty()) return null;
 
@@ -139,7 +146,12 @@ public class GeniusScraper {
     /**
      * Search for the song using googlesearch python module and extract the Genius URL.
      */
-    public static String getGeniusUrl(String songName, String artist) {
+    public String getGeniusUrl(String songName, String artist) {
+        // Check if we searched for the best genius link before.
+        if (bestGeniusURL != null) {
+            return bestGeniusURL;
+        }
+
         // Construct the search query
         String query = songName + " " + artist + " lyrics site:genius.com";
 
@@ -154,9 +166,25 @@ public class GeniusScraper {
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                // If we find a link, return it
+                // If we find a link:
                 if (line.contains("genius.com")) {
-                    return line;  // We return the first Genius link we find
+                    // Check that it contains a title and artist that matches the user's input
+                    bestGeniusURL = line;
+
+                    Document doc = getGeniusDocument();
+                    assert doc != null;
+
+                    String[] scrappedData = getTitleAndArtistFromGenius();
+                    String scrappedTitle = scrappedData[0];
+                    String scrappedArtist = scrappedData[1];
+
+                    LevenshteinDistance levenshtein = new LevenshteinDistance();
+                    int titleDistance = levenshtein.apply(scrappedTitle.toLowerCase(), songName.toLowerCase());
+                    int artistDistance = levenshtein.apply(scrappedArtist.toLowerCase(), artist.toLowerCase());
+
+                    if (titleDistance <= 5 && artistDistance <= 5) {
+                        return line;  // Return the link if the distance is low enough, ie the search succeeded.
+                    }
                 }
             }
         } catch (IOException e) {
@@ -164,76 +192,91 @@ public class GeniusScraper {
         }
 
         // If no Genius link was found, return null
+        bestGeniusURL = null;
         return null;
     }
 
     /**
      * Scrape lyrics from the Genius page.
      */
-    private static String getLyrics(String geniusUrl) {
-        try {
-            Document doc = Jsoup.connect(geniusUrl)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
-                    .get();
-
-            // Select all elements inside the lyrics container
-            Elements lyricElements = doc.select("div[data-lyrics-container='true']");
-            // Check if song is instrumental = has no lyrics.
-            if (lyricElements.isEmpty()) {
-                return "This song is an instrumental.";
-            }
-
-            StringBuilder lyrics = new StringBuilder();
-            boolean firstLine = true;
-
-            for (Element element : lyricElements) {
-                // Extract text including section headers while preserving line breaks
-                String text = element.html().replaceAll("<br>", "\n"); // Replace <br> with newlines
-                text = text.replaceAll("<[^>]+>", ""); // Remove all HTML tags
-                text = text.replaceAll("\n{2,}", "\n"); // Remove excessive newlines
-
-                // Trim each line individually and add line breaks before section headers
-                String[] lines = text.split("\n");
-                for (String line : lines) {
-                    line = line.trim();
-                    if (line.matches("\\[.*\\]")) { // Check if it's a section header
-                        if (!firstLine) {
-                            lyrics.append("\n"); // Add a blank line before the header
-                        }
-                    }
-                    lyrics.append(line).append("\n");
-                    firstLine = false;
-                }
-            }
-
-            return lyrics.toString().trim();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private String getLyrics() {
+        if (bestGeniusURL == null) {
+            return "It seems lyrics aren't listed on Genius.";
         }
-        return "Couldn't find the lyrics.";
+
+        Document doc = getGeniusDocument();
+        assert doc != null;
+
+        // Select all elements inside the lyrics container
+        Elements lyricElements = doc.select("div[data-lyrics-container='true']");
+        // Check if song is instrumental = has no lyrics.
+        if (lyricElements.isEmpty()) {
+            return "This song is an instrumental.";
+        }
+
+        StringBuilder lyrics = new StringBuilder();
+        boolean firstLine = true;
+
+        for (Element element : lyricElements) {
+            // Extract text including section headers while preserving line breaks
+            String text = element.html().replaceAll("<br>", "\n"); // Replace <br> with newlines
+            text = text.replaceAll("<[^>]+>", ""); // Remove all HTML tags
+            text = text.replaceAll("\n{2,}", "\n"); // Remove excessive newlines
+
+            // Trim each line individually and add line breaks before section headers
+            String[] lines = text.split("\n");
+            for (String line : lines) {
+                line = line.trim();
+                if (line.matches("\\[.*\\]")) { // Check if it's a section header
+                    if (!firstLine) {
+                        lyrics.append("\n"); // Add a blank line before the header
+                    }
+                }
+                lyrics.append(line).append("\n");
+                firstLine = false;
+            }
+        }
+
+        return lyrics.toString().trim();
     }
 
     /**
      * Scrape the song title and artist from Genius page.
+     * @return String[]{title, artist}
      */
-    private static String[] getTitleAndArtistFromGenius(String geniusUrl) {
+    private String[] getTitleAndArtistFromGenius() {
+        assert bestGeniusURL != null;
+
+        Document doc = getGeniusDocument();
+        assert doc != null;
+
+        // Extract song title
+        Element titleElement = doc.select("span.SongHeader-desktop-sc-d2837d6d-11.eOWfHT").first();
+        String title = (titleElement != null) ? titleElement.text() : "Unknown Title";
+
+        // Extract only the main artist (ignoring featured artists)
+        Element mainArtistElement = doc.selectFirst("div.HeaderArtistAndTracklist-desktop-sc-afd25865-1 a.StyledLink-sc-15c685a-0");
+        String artist = (mainArtistElement != null) ? mainArtistElement.text() : "Unknown Artist";
+
+        return new String[]{title, artist};
+    }
+
+    private Document getGeniusDocument() {
+        assert bestGeniusURL != null;
+
+        if (geniusDoc != null) {
+            return geniusDoc;
+        }
+
         try {
-            Document doc = Jsoup.connect(geniusUrl)
+            geniusDoc = Jsoup.connect(bestGeniusURL)
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
                     .get();
-
-            // Extract song title
-            Element titleElement = doc.select("span.SongHeader-desktop-sc-d2837d6d-11.eOWfHT").first();
-            String title = (titleElement != null) ? titleElement.text() : "Unknown Title";
-
-            // Extract only the main artist (ignoring featured artists)
-            Element mainArtistElement = doc.selectFirst("div.HeaderArtistAndTracklist-desktop-sc-afd25865-1 a.StyledLink-sc-15c685a-0");
-            String artist = (mainArtistElement != null) ? mainArtistElement.text() : "Unknown Artist";
-
-            return new String[]{title, artist};
+            return geniusDoc;
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("Couldn't find the genius document.");
+            return null;
         }
-        return new String[]{"Unknown Title", "Unknown Artist"};
     }
 }

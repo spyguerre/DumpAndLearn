@@ -43,7 +43,7 @@ public class SongMenuController extends Controller {
                 dlProgressBar.setVisible(true);
 
                 // First search for the song's lyrics and correct info using Genius
-                Object[] songInfo = GeniusScraper.getSongInfo(titleTextField.getText(), artistTextField.getText());
+                Object[] songInfo = (new GeniusScraper()).getSongInfo(titleTextField.getText(), artistTextField.getText());
                 dlProgressBar.setProgress(0.1);
                 String title = (String) songInfo[0];
                 String artist = (String) songInfo[1];
