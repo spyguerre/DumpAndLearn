@@ -8,11 +8,11 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -31,7 +31,7 @@ public class MusicPlayingController extends Controller {
     private Button playPauseButton;
 
     @FXML
-    private Text lyricsText;
+    private TextArea lyricsTextArea;
 
     @FXML
     public void initialize() {
@@ -91,7 +91,7 @@ public class MusicPlayingController extends Controller {
         System.out.println("Setting the lyrics...");
         String lyrics = Db.getLyrics(songId);
         assert lyrics != null;
-        lyricsText.setText(lyrics.replaceAll("\\r\\n|\\r|\\n", "\n"));
+        lyricsTextArea.setText(lyrics.replaceAll("\\r\\n|\\r|\\n", "\n"));
 
         // Start playing the video
         System.out.println("Video ready!");
