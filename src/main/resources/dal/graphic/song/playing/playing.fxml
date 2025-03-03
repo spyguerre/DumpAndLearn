@@ -11,79 +11,92 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.song.playing.MusicPlayingController">
-
-    <!-- MenuBar at the Top -->
-    <top>
-        <MenuBar>
-            <menus>
-                <Menu mnemonicParsing="false" text="File">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#mainMenu" text="Back to Main Menu" />
-                  <MenuItem mnemonicParsing="false" onAction="#learnFromSong" text="Learn another Song" />
-                  <MenuItem mnemonicParsing="false" onAction="#quit" text="Close" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
-    </top>
-
-    <!-- MediaView in a StackPane to ensure it resizes properly -->
-    <center>
-         <MediaView fx:id="mediaView" preserveRatio="true" />
-    </center>
-
-    <!-- Controls (Sliders and Button) at the Bottom -->
-    <bottom>
-        <VBox alignment="CENTER" prefHeight="100.0" spacing="10">
-            <children>
-                <!-- Progress Slider -->
-                <Slider fx:id="progressSlider" max="42.0" onDragDetected="#updateVideoProgress" onDragDone="#updateVideoProgress" onDragDropped="#updateVideoProgress" onDragEntered="#updateVideoProgress" onDragExited="#updateVideoProgress" onDragOver="#updateVideoProgress" onMouseClicked="#updateVideoProgress" onMouseDragEntered="#updateVideoProgress" onMouseDragExited="#updateVideoProgress" onMouseDragOver="#updateVideoProgress" onMouseDragReleased="#updateVideoProgress" onMouseDragged="#updateVideoProgress">
-                    <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                    </VBox.margin>
-                </Slider>
-            <HBox>
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Volume">
-                     <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </HBox.margin>
-                  </Text>
-                       <Slider fx:id="volumeSlider" blockIncrement="0.1" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onDragDetected="#updateVolume" onDragDone="#updateVolume" onDragDropped="#updateVolume" onDragEntered="#updateVolume" onDragExited="#updateVolume" onDragOver="#updateVolume" onMouseClicked="#updateVolume" onMouseDragEntered="#updateVolume" onMouseDragExited="#updateVolume" onMouseDragOver="#updateVolume" onMouseDragReleased="#updateVolume" onMouseDragged="#updateVolume" value="0.42" HBox.hgrow="ALWAYS">
-                     <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </HBox.margin>
-                       </Slider>
-                       <Button fx:id="playPauseButton" mnemonicParsing="false" onAction="#togglePlayPause" text="Pause">
-                     <HBox.margin>
-                        <Insets bottom="10.0" left="42.0" right="42.0" top="10.0" />
-                     </HBox.margin>
-                       </Button>
-               </children>
-            </HBox>
-            </children>
-        </VBox>
-    </bottom>
-   <right>
-      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <content>
-          <AnchorPane prefWidth="200.0">
-               <children>
-                  <TextArea fx:id="lyricsTextArea" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Set&#10;Lyrics&#10;Here&#10;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-               </children>
-            </AnchorPane>
-        </content>
-      </ScrollPane>
-   </right>
-
-</BorderPane>
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.song.playing.MusicPlayingController">
+   <children>
+      <BorderPane>
+      
+          <!-- MenuBar at the Top -->
+          <top>
+              <MenuBar>
+                  <menus>
+                      <Menu mnemonicParsing="false" text="File">
+                          <items>
+                              <MenuItem mnemonicParsing="false" onAction="#mainMenu" text="Back to Main Menu" />
+                        <MenuItem mnemonicParsing="false" onAction="#learnFromSong" text="Learn another Song" />
+                        <MenuItem mnemonicParsing="false" onAction="#quit" text="Close" />
+                          </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Edit">
+                          <items>
+                              <MenuItem mnemonicParsing="false" text="Delete" />
+                          </items>
+                      </Menu>
+                  </menus>
+              </MenuBar>
+          </top>
+      
+          <!-- MediaView in a StackPane to ensure it resizes properly -->
+          <center>
+               <MediaView fx:id="mediaView" preserveRatio="true" />
+          </center>
+      
+          <!-- Controls (Sliders and Button) at the Bottom -->
+          <bottom>
+              <VBox alignment="CENTER" prefHeight="100.0" spacing="10">
+                  <children>
+                      <!-- Progress Slider -->
+                      <Slider fx:id="progressSlider" max="42.0" onDragDetected="#updateVideoProgress" onDragDone="#updateVideoProgress" onDragDropped="#updateVideoProgress" onDragEntered="#updateVideoProgress" onDragExited="#updateVideoProgress" onDragOver="#updateVideoProgress" onMouseClicked="#updateVideoProgress" onMouseDragEntered="#updateVideoProgress" onMouseDragExited="#updateVideoProgress" onMouseDragOver="#updateVideoProgress" onMouseDragReleased="#updateVideoProgress" onMouseDragged="#updateVideoProgress">
+                          <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                          </VBox.margin>
+                      </Slider>
+                  <HBox>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Volume">
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </HBox.margin>
+                        </Text>
+                             <Slider fx:id="volumeSlider" blockIncrement="0.1" max="1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onDragDetected="#updateVolume" onDragDone="#updateVolume" onDragDropped="#updateVolume" onDragEntered="#updateVolume" onDragExited="#updateVolume" onDragOver="#updateVolume" onMouseClicked="#updateVolume" onMouseDragEntered="#updateVolume" onMouseDragExited="#updateVolume" onMouseDragOver="#updateVolume" onMouseDragReleased="#updateVolume" onMouseDragged="#updateVolume" value="0.42" HBox.hgrow="ALWAYS">
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </HBox.margin>
+                             </Slider>
+                             <Button fx:id="playPauseButton" mnemonicParsing="false" onAction="#togglePlayPause" text="Pause">
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="42.0" right="42.0" top="10.0" />
+                           </HBox.margin>
+                             </Button>
+                     </children>
+                  </HBox>
+                  </children>
+              </VBox>
+          </bottom>
+         <right>
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefWidth="200.0" BorderPane.alignment="CENTER">
+              <content>
+                <AnchorPane prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="lyricsTextArea" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Set&#10;Lyrics&#10;Here&#10;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
+         </right>
+      
+      </BorderPane>
+      <StackPane fx:id="popupContainerStackPane" visible="false" StackPane.alignment="CENTER">
+         <children>
+            <Rectangle fx:id="dimBackground" fill="#0000006c" height="200.0" stroke="TRANSPARENT" strokeType="INSIDE" width="200.0" StackPane.alignment="CENTER" />
+            <Pane fx:id="PopupContainerPane" maxHeight="200.0" maxWidth="200.0" minHeight="100.0" minWidth="100.0" prefHeight="200.0" prefWidth="200.0" />
+         </children>
+      </StackPane>
+   </children>
+</StackPane>

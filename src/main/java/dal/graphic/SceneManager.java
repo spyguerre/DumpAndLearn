@@ -1,7 +1,9 @@
 package dal.graphic;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -36,6 +38,20 @@ public abstract class SceneManager {
         }
 
         stage.setScene(scene);
+    }
+
+    public static Controller loadSceneInContainer(SceneType sceneType, Pane container) {
+        try {
+            System.out.println("Loading scene " + sceneType.name() + "...");
+            FXMLLoader fxmlLoader = SceneType.getSceneFxml(sceneType);
+            Parent sceneRoot = fxmlLoader.load();
+            container.getChildren().setAll(sceneRoot);
+            return fxmlLoader.getController();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error loading scene with FXML: " + sceneType.name() + ".");
+            return null;
+        }
     }
 
     public static Controller getCurrentController() {
