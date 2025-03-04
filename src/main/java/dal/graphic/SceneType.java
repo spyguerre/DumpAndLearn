@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 
 public enum SceneType {
     MAIN_MENU,
+    SETTINGS,
     ADD_WORD,
     START_REVIEW,
     REVIEW,
@@ -16,6 +17,7 @@ public enum SceneType {
         String fp = "";
         switch (scene) {
             case MAIN_MENU -> fp = "mainMenu.fxml";
+            case SETTINGS -> fp = "settings.fxml";
             case ADD_WORD -> fp = "word/addWord/addWord.fxml";
             case START_REVIEW -> fp = "word/startReview/startReview.fxml";
             case REVIEW -> fp = "word/review/review.fxml";

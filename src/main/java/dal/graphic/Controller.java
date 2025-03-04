@@ -4,6 +4,7 @@ import dal.data.db.Db;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public abstract class Controller {
@@ -11,8 +12,13 @@ public abstract class Controller {
     protected Node root;
 
     @FXML
-    private void mainMenu() {
-        SceneManager.switchScene(SceneType.MAIN_MENU, (Stage) root.getScene().getWindow(), new int[]{(int)((BorderPane)root).getWidth(), (int)((BorderPane)root).getHeight()});
+    protected void mainMenu() {
+        SceneManager.switchScene(SceneType.MAIN_MENU, (Stage) root.getScene().getWindow(), new int[]{(int)((Pane)root).getWidth(), (int)((Pane)root).getHeight()});
+    }
+
+    @FXML
+    private void settings() {
+        SceneManager.switchScene(SceneType.SETTINGS, (Stage) root.getScene().getWindow(), new int[]{(int)((BorderPane)root).getWidth(), (int)((BorderPane)root).getHeight()});
     }
 
     @FXML

@@ -5,6 +5,7 @@ target/
 dalData.db
 downloads/
 .venv/
+settings.json
 
 ### IntelliJ IDEA ###
 .idea/

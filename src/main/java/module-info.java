@@ -6,6 +6,7 @@ module dal {
     requires javafx.web;
     requires javafx.media;
     requires javafx.swing;
+    requires com.fasterxml.jackson.databind;
 
     exports dal;
     exports dal.graphic;

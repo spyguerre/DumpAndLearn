@@ -23,8 +23,16 @@ public class TranslationPopupController extends Controller {
     @FXML
     private VBox root;
 
+    public void initTranslation(String str) {
+
+    }
+
     @FXML
-    void addNewWord(ActionEvent event) {
+    private void addNewWord(ActionEvent event) {
+
+    }
+
+    private void translate() {
 
     }
 
