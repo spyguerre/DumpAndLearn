@@ -1,7 +1,10 @@
-package dal.graphic;
+package dal.graphic.general;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dal.graphic.Controller;
+import dal.graphic.ErrorDisplayer;
+import dal.graphic.Languages;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
@@ -28,21 +31,13 @@ public class SettingsController extends Controller {
             initDefaultSettings();
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            // Read JSON file and convert it to a Map<String, String>
-            Map<String, String> settings = objectMapper.readValue(
-                    new File("settings.json"), new TypeReference<>() {}
-            );
+        // Read JSON file and convert it to a Map<String, String>
+        Map<String, String> settings = getSettings();
+        assert settings != null;
 
-            // Update the dropdowns' text to match known settings.
-            nativeDropDown.setText(settings.get("native"));
-            foreignDropDown.setText(settings.get("foreign"));
-
-            System.out.println("Successfully loaded settings from settings.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Update the dropdowns' text to match known settings.
+        nativeDropDown.setText(settings.get("native"));
+        foreignDropDown.setText(settings.get("foreign"));
     }
 
     private void initDefaultSettings() {
@@ -58,6 +53,23 @@ public class SettingsController extends Controller {
             System.out.println("Settings saved initialized in settings.json");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static Map<String, String> getSettings() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // Read JSON file and convert it to a Map<String, String>
+            Map<String, String> settings = objectMapper.readValue(
+                    new File("settings.json"), new TypeReference<>() {}
+            );
+
+            System.out.println("Successfully loaded settings from settings.json");
+            return settings;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -109,5 +121,17 @@ public class SettingsController extends Controller {
 
         // Back to Main Menu.
         mainMenu();
+    }
+
+    public static String getNativeCode() {
+        Map<String, String> settings = getSettings();
+        assert settings != null;
+        return Languages.getCode(Languages.valueOf(settings.get("native").toUpperCase()));
+    }
+
+    public static String getForeignCode() {
+        Map<String, String> settings = getSettings();
+        assert settings != null;
+        return Languages.getCode(Languages.valueOf(settings.get("foreign").toUpperCase()));
     }
 }

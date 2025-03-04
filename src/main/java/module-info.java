@@ -10,6 +10,7 @@ module dal {
 
     exports dal;
     exports dal.graphic;
+    exports dal.graphic.general;
     exports dal.graphic.word.addWord;
     exports dal.graphic.word.startReview;
     exports dal.graphic.word.review;
@@ -27,4 +28,5 @@ module dal {
     opens dal.graphic.song.menu to javafx.fxml;
     opens dal.graphic.song.playing to javafx.fxml;
     opens dal.data.db to javafx.fxml;
+    opens dal.graphic.general to javafx.fxml;
 }

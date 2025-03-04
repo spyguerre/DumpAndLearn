@@ -1,5 +1,8 @@
-package dal.graphic;
+package dal.graphic.general;
 
+import dal.graphic.Controller;
+import dal.graphic.SceneManager;
+import dal.graphic.SceneType;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
