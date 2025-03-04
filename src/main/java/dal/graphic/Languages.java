@@ -11,7 +11,7 @@ public enum Languages {
             case ENGLISH -> "en";
             case FRENCH -> "fr";
             case GERMAN -> "de";
-            case JAPANESE -> "jp";
+            case JAPANESE -> "ja";
         };
     }
 }

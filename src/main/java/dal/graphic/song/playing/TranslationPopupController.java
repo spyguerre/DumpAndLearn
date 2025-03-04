@@ -23,17 +23,13 @@ public class TranslationPopupController extends TranslationController {
     @FXML
     private VBox root;
 
+    // Sets str to the foreign TextField of the popup.
     public void initTranslation(String str) {
-
+         foreignTranslateTextField.setText(str);
     }
 
     @FXML
-    private void addNewWord(ActionEvent event) {
+    private void addNewWord() {
 
     }
-
-    private void translate() {
-
-    }
-
 }

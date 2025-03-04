@@ -10,6 +10,7 @@ import javafx.util.Duration;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 public abstract class TranslationController extends Controller {
     private Boolean translationIsUpdating = false; // Flag to avoid making infinite recursion for updates.
@@ -57,25 +58,33 @@ public abstract class TranslationController extends Controller {
         String command;
         if (!foreignWasEdited) {
             System.out.println("Translating " + nativeTranslateTextField.getText() + " from " + SettingsController.getNativeCode() + " to " + SettingsController.getForeignCode() + "...");
-            command = "python -c \"from deep_translator import GoogleTranslator; print(GoogleTranslator(source='"
+            command = "python -c \"import sys; sys.stdout.reconfigure(encoding='utf-8'); "
+                    + "from deep_translator import GoogleTranslator; print(GoogleTranslator(source='"
                     + SettingsController.getNativeCode() + "', target='" + SettingsController.getForeignCode()
-                    + "').translate('" + nativeTranslateTextField.getText() + "'))\"";
+                    + "').translate('" + nativeTranslateTextField.getText().replace("'", "\\'") + "'))\"";
         } else {
             System.out.println("Translating " + foreignTranslateTextField.getText() + " from " + SettingsController.getForeignCode() + " to " + SettingsController.getNativeCode() + "...");
-            command = "python -c \"from deep_translator import GoogleTranslator; print(GoogleTranslator(source='"
+            command = "python -c \"import sys; sys.stdout.reconfigure(encoding='utf-8'); "
+                    + "from deep_translator import GoogleTranslator; print(GoogleTranslator(source='"
                     + SettingsController.getForeignCode() + "', target='" + SettingsController.getNativeCode()
-                    + "').translate('" + foreignTranslateTextField.getText() + "'))\"";
+                    + "').translate('" + foreignTranslateTextField.getText().replace("'", "\\'") + "'))\"";
         }
 
         try {
             // Run the Python command
             Process process = Runtime.getRuntime().exec(command);
 
-            // Capture the output from the process (translation)
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            // Capture and print the python stderr for debugging.
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8));
             String line;
+            while ((line = errorReader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            // Capture the output using UTF-8 encoding (I hate accents and japanese characters).
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
             while ((line = reader.readLine()) != null) {
-                System.out.println("Translation recieved: " + line);
+                System.out.println("Translation received: " + line);
 
                 // Update the textField depending on which textField was edited.
                 if (!foreignWasEdited) {
@@ -84,6 +93,7 @@ public abstract class TranslationController extends Controller {
                     nativeTranslateTextField.setText(line);
                 }
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

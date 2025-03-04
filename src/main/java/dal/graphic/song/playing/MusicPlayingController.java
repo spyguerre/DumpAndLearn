@@ -60,7 +60,7 @@ public class MusicPlayingController extends Controller {
             if (!newText.isEmpty()) {
                 pause.setOnFinished(event -> {
                     System.out.println("User highlighted lyrics: " + newText.substring(0, Math.min(newText.length(), 42)) + (newText.length() > 42 ? "..." : ""));
-                    showTranslationPopup();
+                    showTranslationPopup(newText);
                 });
                 pause.playFromStart(); // Restart the timer on every change
             }
@@ -169,10 +169,12 @@ public class MusicPlayingController extends Controller {
         mediaPlayer.seek(javafx.util.Duration.seconds(progressSlider.getValue()));
     }
 
-    public void showTranslationPopup() {
+    public void showTranslationPopup(String str) {
         // Load the new scene in the translationPopupContainer Pane.
-        SceneManager.loadSceneInContainer(SceneType.TRANSLATION_POPUP, PopupContainerPane);
+        TranslationPopupController popupController = (TranslationPopupController) SceneManager.loadSceneInContainer(SceneType.TRANSLATION_POPUP, PopupContainerPane);
         popupContainerStackPane.setVisible(true);
+        assert popupController != null;
+        popupController.initTranslation(str);
     }
 
     @FXML
