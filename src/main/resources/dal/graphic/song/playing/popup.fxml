@@ -5,11 +5,15 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="root" alignment="CENTER" maxHeight="200.0" maxWidth="200.0" minHeight="100.0" minWidth="100.0" prefHeight="200.0" prefWidth="200.0" spacing="10.0" style="-fx-background-color: #00000042;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.song.playing.TranslationPopupController">
+<VBox fx:id="root" alignment="CENTER" maxHeight="242.0" maxWidth="200.0" minHeight="100.0" minWidth="100.0" prefHeight="242.0" prefWidth="200.0" spacing="10.0" style="-fx-background-color: #00000056;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.song.playing.TranslationPopupController">
    <children>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Translate:" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Translate">
+         <font>
+            <Font size="15.0" />
+         </font></Text>
       <HBox alignment="CENTER" spacing="10.0">
          <children>
             <VBox alignment="CENTER">
@@ -32,7 +36,11 @@
             </VBox>
          </children>
       </HBox>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Add A Word:" />
+      <TextField fx:id="descriptionTextField" alignment="CENTER" maxHeight="0.0" maxWidth="0.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="0.0" visible="false" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Add A Word">
+         <font>
+            <Font size="15.0" />
+         </font></Text>
       <HBox alignment="CENTER" spacing="10.0">
          <children>
             <VBox alignment="CENTER">
