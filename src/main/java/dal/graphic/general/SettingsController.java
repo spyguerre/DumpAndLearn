@@ -24,7 +24,9 @@ public class SettingsController extends Controller {
     private MenuButton nativeDropDown;
 
     @FXML
-    private void initialize() {
+    protected void initialize() {
+        super.initialize();
+
         // Initialize the default settings if necessary.
         File settingsFile = new File("settings.json");
         if (!settingsFile.exists()) {
@@ -121,6 +123,18 @@ public class SettingsController extends Controller {
 
         // Back to Main Menu.
         mainMenu();
+    }
+
+    public static String getNativeLanguage() {
+        Map<String, String> settings = getSettings();
+        assert settings != null;
+        return settings.get("native");
+    }
+
+    public static String getForeignLanguage() {
+        Map<String, String> settings = getSettings();
+        assert settings != null;
+        return settings.get("foreign");
     }
 
     public static String getNativeCode() {

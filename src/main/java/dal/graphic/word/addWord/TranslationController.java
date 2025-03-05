@@ -36,6 +36,8 @@ public abstract class TranslationController extends Controller {
 
     @FXML
     protected void initialize() {
+        super.initialize();
+
         // Set listener to update the two translateTextFields
         PauseTransition pauseNativeTranslate = new PauseTransition(Duration.millis(750));
         nativeTranslateTextField.textProperty().addListener((observable, oldValue, newValue) -> {

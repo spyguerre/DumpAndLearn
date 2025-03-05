@@ -48,6 +48,8 @@ public class MusicPlayingController extends Controller {
 
     @FXML
     public void initialize() {
+        super.initialize();
+
         // Ensure MediaView resizes dynamically to fit the window
         StackPane root = (StackPane) this.root;
         mediaView.fitWidthProperty().bind(root.widthProperty().subtract(200)); // Leaves space for lyrics

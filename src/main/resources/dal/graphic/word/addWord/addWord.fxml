@@ -51,7 +51,7 @@
                            <children>
                               <VBox alignment="CENTER" spacing="5.0">
                                  <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Native Language" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nativeText" text="Native Language" />
                                     <TextField fx:id="nativeTranslateTextField" prefWidth="242.0" />
                                  </children>
                                  <HBox.margin>
@@ -60,7 +60,7 @@
                               </VBox>
                               <VBox alignment="CENTER" spacing="5.0">
                                  <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Foreign Language" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="foreignText" text="Foreign Language" />
                                     <TextField fx:id="foreignTranslateTextField" prefWidth="242.0" />
                                  </children>
                               </VBox>
@@ -80,13 +80,13 @@
                            <children>
                               <VBox alignment="CENTER" spacing="5.0">
                                  <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Word in native language:" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nativeText" text="Word in native language:" />
                                     <TextField fx:id="nativeTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" spacing="5.0">
                                  <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Word in foreign language:" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="foreignText" text="Word in foreign language:" />
                                     <TextField fx:id="foreignTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" />
                                  </children>
                               </VBox>

@@ -184,8 +184,7 @@ public class GeniusScraper {
                     int titleDistance = levenshtein.apply(scrappedTitle.toLowerCase(), songName.toLowerCase());
                     int artistDistance = levenshtein.apply(scrappedArtist.toLowerCase(), artist.toLowerCase());
 
-                    System.out.println("Genius URL: " + bestGeniusURL);
-                    System.out.println("User title: " + songName + "Found title: " + scrappedTitle);
+                    System.out.println("Trying Genius URL: " + bestGeniusURL);
                     System.out.println("Title distance: " + titleDistance + ", Artist distance: " + artistDistance);
                     if (titleDistance <= 5 && artistDistance <= 5) {
                         return line;  // Return the link if the distance is low enough, ie the search succeeded.

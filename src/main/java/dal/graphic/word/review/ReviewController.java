@@ -32,7 +32,9 @@ public class ReviewController extends Controller {
     private Button nextButton;
 
     @FXML
-    private void initialize() {
+    protected void initialize() {
+        super.initialize();
+
         previousButton.setDisable(true);
 
         nativeTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::next));

@@ -2,16 +2,14 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.word.review.ReviewController">
    <top>
@@ -32,29 +30,28 @@
       </MenuBar>
    </top>
    <center>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" spacing="42.0" BorderPane.alignment="CENTER">
          <children>
-            <GridPane alignment="CENTER" hgap="42.0" vgap="5.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <VBox.margin>
-                  <Insets bottom="42.0" left="42.0" right="42.0" top="42.0" />
-               </VBox.margin>
+            <VBox alignment="CENTER" spacing="5.0">
                <children>
-                  <TextField fx:id="nativeTextField" GridPane.rowIndex="1" />
-                  <TextField fx:id="foreignTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label text="Word in native language:" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                  <Label text="Word in foreign language:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nativeText" text="Word in native language:" />
+                  <TextField fx:id="nativeTextField" />
                </children>
-            </GridPane>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </VBox>
+            <VBox alignment="CENTER" spacing="5.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="foreignText" text="Word in foreign language:" />
+                  <TextField fx:id="foreignTextField" />
+               </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </VBox>
          </children>
-      </VBox>
+      </HBox>
    </center>
    <left>
       <Button fx:id="previousButton" mnemonicParsing="false" onAction="#previous" text="Previous" BorderPane.alignment="BOTTOM_LEFT">

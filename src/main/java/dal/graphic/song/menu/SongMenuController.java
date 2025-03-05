@@ -28,7 +28,9 @@ public class SongMenuController extends Controller {
     private ProgressBar dlProgressBar;
 
     @FXML
-    private void initialize() {
+    protected void initialize() {
+        super.initialize();
+
         titleTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::searchForSong));
         artistTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::searchForSong));
     }

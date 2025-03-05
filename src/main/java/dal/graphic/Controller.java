@@ -1,15 +1,23 @@
 package dal.graphic;
 
 import dal.data.db.Db;
+import dal.graphic.general.SettingsController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public abstract class Controller {
     @FXML
     protected Node root;
+
+    @FXML
+    protected void initialize() {
+        customizeNativeAndForeignTexts();
+    }
 
     @FXML
     protected void mainMenu() {
@@ -26,5 +34,22 @@ public abstract class Controller {
         System.out.println("Quitting...");
         Db.closeConnection();
         System.exit(0);
+    }
+
+    protected void customizeNativeAndForeignTexts() {
+        String nativeLanguage = SettingsController.getNativeLanguage();
+        String foreignLanguage = SettingsController.getForeignLanguage();
+        Platform.runLater(() -> {
+            for (Node node : root.lookupAll(".nativeText")) {
+                if (node instanceof Text textNode) {
+                    textNode.setText(nativeLanguage);
+                }
+            }
+            for (Node node : root.lookupAll(".foreignText")) {
+                if (node instanceof Text textNode) {
+                    textNode.setText(foreignLanguage);
+                }
+            }
+        });
     }
 }

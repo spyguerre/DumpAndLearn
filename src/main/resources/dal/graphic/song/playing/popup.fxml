@@ -18,7 +18,7 @@
          <children>
             <VBox alignment="CENTER">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Native:" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nativeText" text="Native:" />
                   <TextField fx:id="nativeTranslateTextField" alignment="CENTER" maxWidth="190.0" minWidth="0.0" prefWidth="190.0" />
                </children>
                <HBox.margin>
@@ -27,7 +27,7 @@
             </VBox>
             <VBox alignment="CENTER">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Foreign:" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="foreignText" text="Foreign:" />
                   <TextField fx:id="foreignTranslateTextField" alignment="CENTER" maxWidth="190.0" minWidth="0.0" prefWidth="190.0" />
                </children>
                <HBox.margin>
@@ -45,7 +45,7 @@
          <children>
             <VBox alignment="CENTER">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Native:" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nativeText" text="Native:" />
                   <TextField fx:id="nativeTextField" alignment="CENTER" maxWidth="190.0" minWidth="0.0" prefWidth="190.0" />
                </children>
                <HBox.margin>
@@ -54,7 +54,7 @@
             </VBox>
             <VBox alignment="CENTER">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Foreign:" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="foreignText" text="Foreign:" />
                   <TextField fx:id="foreignTextField" alignment="CENTER" maxWidth="190.0" minWidth="0.0" prefWidth="190.0" />
                </children>
                <HBox.margin>

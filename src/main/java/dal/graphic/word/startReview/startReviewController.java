@@ -30,7 +30,9 @@ public class startReviewController extends Controller {
     private MenuButton writeInDropdown;
 
     @FXML
-    private void initialize() {
+    protected void initialize() {
+        super.initialize();
+
         wordCount = Integer.parseInt(wordCountDropdown.getText());
         reviewPreference = ReviewPreference.getReviewPreference(preferDropdown.getText());
     }
