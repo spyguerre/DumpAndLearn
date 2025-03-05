@@ -22,7 +22,7 @@ public abstract class Controller {
     }
 
     @FXML
-    public void quit() {
+    protected void quit() {
         System.out.println("Quitting...");
         Db.closeConnection();
         System.exit(0);

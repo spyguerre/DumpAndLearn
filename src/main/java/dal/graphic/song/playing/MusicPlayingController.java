@@ -179,6 +179,22 @@ public class MusicPlayingController extends Controller {
 
     @FXML
     private void learnFromSong() {
+        // Stop the video before switching scene.
+        mediaView.getMediaPlayer().stop();
         SceneManager.switchScene(SceneType.SONG_MENU, (Stage) root.getScene().getWindow(), new int[]{(int)((Pane)root).getWidth(), (int)((Pane)root).getHeight()});
+    }
+
+    @FXML
+    protected void mainMenu() {
+        // Stop the video before switching scene.
+        mediaView.getMediaPlayer().stop();
+        super.mainMenu();
+    }
+
+    @FXML
+    protected void quit() {
+        // Stop the video before quitting.
+        mediaView.getMediaPlayer().stop();
+        super.quit();
     }
 }
