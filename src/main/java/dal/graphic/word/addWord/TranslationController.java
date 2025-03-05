@@ -111,6 +111,13 @@ public abstract class TranslationController extends Controller {
     }
 
     @FXML
+    private void transferTranslationToAddWordFields() {
+        // Copy the textFields values from translation to addWord so user can more easily edit them.
+        nativeTextField.setText(nativeTranslateTextField.getText());
+        foreignTextField.setText(foreignTranslateTextField.getText());
+    }
+
+    @FXML
     public void addNewWord() {
         System.out.println("Adding new word...");
 

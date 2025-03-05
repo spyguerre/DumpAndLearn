@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="root" alignment="CENTER" maxHeight="242.0" maxWidth="400.0" minHeight="100.0" minWidth="100.0" prefHeight="242.0" prefWidth="400.0" spacing="10.0" style="-fx-background-color: #999999f9;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.song.playing.TranslationPopupController">
+<VBox fx:id="root" alignment="CENTER" maxHeight="266.0" maxWidth="400.0" minHeight="100.0" minWidth="100.0" prefHeight="266.0" prefWidth="400.0" spacing="10.0" style="-fx-background-color: #999999f9;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.song.playing.TranslationPopupController">
    <children>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Translate">
          <font>
@@ -36,7 +36,7 @@
             </VBox>
          </children>
       </HBox>
-      <TextField fx:id="descriptionTextField" alignment="CENTER" maxHeight="0.0" maxWidth="0.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="0.0" visible="false" />
+      <Button mnemonicParsing="false" onAction="#transferTranslationToAddWordFields" text="⏬&#10;" />
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Add A Word">
          <font>
             <Font size="15.0" />
@@ -66,6 +66,7 @@
             <Insets />
          </VBox.margin>
       </HBox>
+      <TextField fx:id="descriptionTextField" alignment="CENTER" maxHeight="0.0" maxWidth="0.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="0.0" visible="false" />
       <Button alignment="BOTTOM_CENTER" mnemonicParsing="false" onAction="#addNewWord" text="Register new word" textAlignment="CENTER">
          <VBox.margin>
             <Insets />

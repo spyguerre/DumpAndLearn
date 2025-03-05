@@ -40,39 +40,7 @@
          <content>
             <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" spacing="40.0">
                <children>
-                  <VBox alignment="BOTTOM_CENTER" spacing="10.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Add a Word">
-                           <font>
-                              <Font size="17.0" />
-                           </font>
-                        </Text>
-                        <GridPane alignment="CENTER" hgap="42.0" vgap="5.0">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" percentWidth="50.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" percentWidth="50.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="0.0" percentHeight="50.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="0.0" percentHeight="50.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Word in native language:" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Word in foreign language:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                              <TextField fx:id="nativeTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                              <TextField fx:id="foreignTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                           </children>
-                        </GridPane>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description (optional):" />
-                        <TextField fx:id="descriptionTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0">
-                           <VBox.margin>
-                              <Insets />
-                           </VBox.margin>
-                        </TextField>
-                        <Button alignment="BOTTOM_CENTER" mnemonicParsing="false" onAction="#addNewWord" text="Register new word" textAlignment="CENTER" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER">
+                  <VBox alignment="CENTER" spacing="10.0">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Translate">
                            <font>
@@ -98,6 +66,39 @@
                               </VBox>
                            </children>
                         </HBox>
+                        <Button mnemonicParsing="false" onAction="#transferTranslationToAddWordFields" text="⏬" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="BOTTOM_CENTER" spacing="10.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Add a Word">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                        </Text>
+                        <HBox alignment="CENTER" spacing="42.0">
+                           <children>
+                              <VBox alignment="CENTER" spacing="5.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Word in native language:" />
+                                    <TextField fx:id="nativeTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" spacing="5.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Word in foreign language:" />
+                                    <TextField fx:id="foreignTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description (optional):" />
+                        <TextField fx:id="descriptionTextField" alignment="CENTER" maxWidth="242.0" minWidth="0.0" prefWidth="242.0">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </TextField>
+                        <Button alignment="BOTTOM_CENTER" mnemonicParsing="false" onAction="#addNewWord" text="Register new word" textAlignment="CENTER" />
                      </children>
                   </VBox>
                   <VBox alignment="CENTER">
