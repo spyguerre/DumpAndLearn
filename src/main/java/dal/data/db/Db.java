@@ -310,6 +310,23 @@ public abstract class Db {
         }
     }
 
+    public static String getYoutubeLink(long id) {
+        String sql = "SELECT youtubeLink FROM lyrics WHERE id = ?";
+        ResultSet rs = query(sql, new Object[]{id});
+        assert rs != null;
+        try {
+            if (rs.next()) {
+                return rs.getString("youtubeLink");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error retrieving youtube link from database: " + e.getMessage());
+            return null;
+        }
+
+        return null;
+    }
+
     ///////// ATOMIC REQUESTS /////////
 
     private static String getSqlWithParams(String sql, Object[] params) {

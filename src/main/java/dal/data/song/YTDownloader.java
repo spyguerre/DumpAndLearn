@@ -11,6 +11,16 @@ public class YTDownloader {
      */
     public static String getYoutubeURL(String songName, String artist) {
         try {
+            // Try to get the Youtube URL from the database first.
+            Long id = Db.getsongIDFromtitle(songName, artist);
+            if (id != null) { // Found the song ID in the database.
+                String youtubeURL = Db.getYoutubeLink(id);
+                if (youtubeURL != null) { // Found the song's Youtube link in the database.
+                    System.out.println("Youtube URL found in the database: " + youtubeURL);
+                    return youtubeURL;
+                }
+            }
+
             // Add the ytsearch: prefix to the query
             String searchQuery = "ytsearch:\"" + songName + artist + "\"";
 
