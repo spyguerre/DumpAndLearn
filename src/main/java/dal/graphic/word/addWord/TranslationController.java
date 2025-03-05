@@ -1,10 +1,14 @@
 package dal.graphic.word.addWord;
 
+import dal.data.db.Db;
+import dal.graphic.ConfirmationListener;
 import dal.graphic.Controller;
+import dal.graphic.ErrorDisplayer;
 import dal.graphic.general.SettingsController;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
 
 import java.io.BufferedReader;
@@ -25,10 +29,10 @@ public abstract class TranslationController extends Controller {
     protected TextField descriptionTextField;
 
     @FXML
-    private TextField nativeTranslateTextField;
+    protected TextField nativeTranslateTextField;
 
     @FXML
-    private TextField foreignTranslateTextField;
+    protected TextField foreignTranslateTextField;
 
     @FXML
     protected void initialize() {
@@ -49,6 +53,11 @@ public abstract class TranslationController extends Controller {
                 pauseForeignTranslate.playFromStart();
             }
         });
+
+        // Add a Confirmation Listener to each addWord textField.
+        nativeTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::addNewWord));
+        foreignTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::addNewWord));
+        descriptionTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::addNewWord));
     }
 
     private void updateTranslate(Boolean foreignWasEdited) {
@@ -99,5 +108,33 @@ public abstract class TranslationController extends Controller {
         }
 
         translationIsUpdating = false; // Avoid infinite loops on translations.
+    }
+
+    @FXML
+    public void addNewWord() {
+        System.out.println("Adding new word...");
+
+        // Ensure that there is a word in both textFields
+        if (nativeTextField.getText().isEmpty() || foreignTextField.getText().isEmpty()) {
+            System.out.println("Couldn't find native or foreign word.");
+            ErrorDisplayer.displayError("Please fill both languages for the word.");
+            return;
+        }
+
+        String description = null;
+        if (!descriptionTextField.getText().isEmpty()) {
+            description = descriptionTextField.getText();
+        }
+
+        Db.insertNewWord(nativeTextField.getText(), foreignTextField.getText(), description);
+        resetInputTextFields();
+    }
+
+    private void resetInputTextFields() {
+        nativeTextField.clear();
+        foreignTextField.clear();
+        descriptionTextField.clear();
+
+        nativeTextField.requestFocus();
     }
 }

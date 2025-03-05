@@ -63,10 +63,6 @@ public class AddWordController extends TranslationController {
             }
         });
 
-        nativeTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::addNewWord));
-        foreignTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::addNewWord));
-        descriptionTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::addNewWord));
-
         // Attach the words list to the ListView and fill it
         searchListView.setItems(wordsList);
         updateSearchListView();
@@ -75,27 +71,6 @@ public class AddWordController extends TranslationController {
     @FXML
     private void deleteLast(ActionEvent event) {
 
-    }
-
-    @FXML
-    public void addNewWord() {
-        System.out.println("Adding new word...");
-
-        // Ensure that there is a word in both textFields
-        if (nativeTextField.getText().isEmpty() || foreignTextField.getText().isEmpty()) {
-            System.out.println("Couldn't find native or foreign word.");
-            ErrorDisplayer.displayError("Please fill both languages for the word.");
-            return;
-        }
-
-        String description = null;
-        if (!descriptionTextField.getText().isEmpty()) {
-            description = descriptionTextField.getText();
-        }
-
-        Db.insertNewWord(nativeTextField.getText(), foreignTextField.getText(), description);
-        resetInputTextFields();
-        updateSearchListView();
     }
 
     private void updateSearchListView() {
@@ -107,13 +82,5 @@ public class AddWordController extends TranslationController {
                         (Word word) -> word.getNative_() + wordsSeparator + word.getForeign()
                 ).toList()
         );
-    }
-
-    private void resetInputTextFields() {
-        nativeTextField.clear();
-        foreignTextField.clear();
-        descriptionTextField.clear();
-
-        nativeTextField.requestFocus();
     }
 }
