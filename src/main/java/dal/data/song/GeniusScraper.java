@@ -184,6 +184,9 @@ public class GeniusScraper {
                     int titleDistance = levenshtein.apply(scrappedTitle.toLowerCase(), songName.toLowerCase());
                     int artistDistance = levenshtein.apply(scrappedArtist.toLowerCase(), artist.toLowerCase());
 
+                    System.out.println("Genius URL: " + bestGeniusURL);
+                    System.out.println("User title: " + songName + "Found title: " + scrappedTitle);
+                    System.out.println("Title distance: " + titleDistance + ", Artist distance: " + artistDistance);
                     if (titleDistance <= 5 && artistDistance <= 5) {
                         return line;  // Return the link if the distance is low enough, ie the search succeeded.
                     }
@@ -254,7 +257,7 @@ public class GeniusScraper {
         assert doc != null;
 
         // Extract song title
-        Element titleElement = doc.select("span.SongHeader-desktop-sc-d2837d6d-11.eOWfHT").first();
+        Element titleElement = doc.select("span.SongHeader-desktop-sc-9c2f20c9-11.gHnRqR").first();
         String title = (titleElement != null) ? titleElement.text() : "Unknown Title";
 
         // Extract only the main artist (ignoring featured artists)
