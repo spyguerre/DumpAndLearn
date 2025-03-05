@@ -60,6 +60,8 @@ public class GeniusScraper {
             } else {
                 System.out.println("Couldn't find the lyrics in the database using fuzzy matching.");
             }
+        } else {
+            System.out.println("Couldn't find the lyrics in the database using fuzzy matching.");
         }
 
         // Else scrape lyrics from Genius using the corrected title and artist
@@ -192,6 +194,7 @@ public class GeniusScraper {
         }
 
         // If no Genius link was found, return null
+        System.out.println("The Genius links found do not match the title and artist given by the user.");
         bestGeniusURL = null;
         return null;
     }

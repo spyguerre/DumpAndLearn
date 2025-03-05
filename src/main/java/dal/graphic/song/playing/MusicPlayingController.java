@@ -97,6 +97,9 @@ public class MusicPlayingController extends Controller {
 
         // Create the MediaPlayer to control the media
         MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setOnError(() -> {
+            System.err.println("MediaPlayer error: " + mediaPlayer.getError());
+        });
         mediaView.setMediaPlayer(mediaPlayer);
 
         mediaPlayer.setOnReady(() -> {

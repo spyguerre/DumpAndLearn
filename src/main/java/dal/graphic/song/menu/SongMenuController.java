@@ -40,22 +40,28 @@ public class SongMenuController extends Controller {
             @Override
             protected Void call() {
                 // Show progressBar to indicate things are going on
-                dlProgressBar.setVisible(true);
+                Platform.runLater(() -> dlProgressBar.setVisible(true));
 
                 // First search for the song's lyrics and correct info using Genius
                 Object[] songInfo = (new GeniusScraper()).getSongInfo(titleTextField.getText(), artistTextField.getText());
-                dlProgressBar.setProgress(0.1);
+                Platform.runLater(() -> dlProgressBar.setProgress(0.1));
                 String title = (String) songInfo[0];
                 String artist = (String) songInfo[1];
-                dlProgressBar.setProgress(0.2);
+                Platform.runLater(() -> dlProgressBar.setProgress(0.2));
 
                 // Then search the song's link using yt-dlp.
                 String youtubeURL = YTDownloader.getYoutubeURL(title, artist);
                 System.out.println("Youtube URL found: " + youtubeURL);
-                dlProgressBar.setProgress(0.3);
+                Platform.runLater(() -> dlProgressBar.setProgress(0.3));
 
                 // And download the video
                 YTDownloader.downloadVideo(youtubeURL, title, artist, dlProgressBar);
+
+                try {
+                    Thread.sleep(500); // Give the system to recognize the video file properly or something.
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 // And finally once the download is complete, switch scene (in the main thread).
                 Platform.runLater(() -> {
