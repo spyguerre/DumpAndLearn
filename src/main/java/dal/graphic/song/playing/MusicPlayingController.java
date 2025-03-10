@@ -5,6 +5,7 @@ import dal.graphic.Controller;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,6 +21,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 
 public class MusicPlayingController extends Controller {
     @FXML
@@ -80,6 +84,7 @@ public class MusicPlayingController extends Controller {
 
         // Path to video file (use the absolute path for better reliability)
         File videoFile = new File("downloads/" + songId + ".mp4");  // Specify relative path
+        System.out.println(videoFile.getAbsolutePath());
         String absolutePath = videoFile.getAbsolutePath();  // Convert to absolute path
 
         // Check if the file exists
@@ -98,10 +103,11 @@ public class MusicPlayingController extends Controller {
         Media media = new Media(videoFilePath);
 
         // Create the MediaPlayer to control the media
+        if (isFileLocked(videoFile)) {
+            System.err.println("File is locked. Try again.");
+        }
         MediaPlayer mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setOnError(() -> {
-            System.err.println("MediaPlayer error: " + mediaPlayer.getError());
-        });
+        mediaPlayer.setOnError(() -> System.err.println("MediaPlayer error: " + mediaPlayer.getError()));
         mediaView.setMediaPlayer(mediaPlayer);
 
         mediaPlayer.setOnReady(() -> {
@@ -133,8 +139,15 @@ public class MusicPlayingController extends Controller {
         lyricsTextArea.setText(lyrics.replaceAll("\\r\\n|\\r|\\n", "\n"));
 
         // Start playing the video
-        System.out.println("Video ready!");
-        mediaPlayer.play();
+        new Thread(() -> {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Platform.runLater(mediaPlayer::play);
+            System.out.println("Video ready!");
+        }).start();
 
         // Add key event listener for space bar pause/play.
         Scene scene = root.getScene();
@@ -183,6 +196,20 @@ public class MusicPlayingController extends Controller {
         popupContainerStackPane.setVisible(true);
         assert popupController != null;
         popupController.initTranslation(str);
+    }
+
+    private boolean isFileLocked(File file) {
+        try (RandomAccessFile raf = new RandomAccessFile(file, "rw");
+             FileChannel channel = raf.getChannel();
+             FileLock lock = channel.tryLock()) {
+            if (lock != null) {
+                lock.release(); // Release immediately
+                return false;   // File is NOT locked
+            }
+        } catch (Exception e) {
+            return true; // File is locked
+        }
+        return true; // Default assumption: locked
     }
 
     @FXML

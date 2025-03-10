@@ -60,7 +60,7 @@ public class SongMenuController extends Controller {
                 YTDownloader.downloadVideo(youtubeURL, title, artist, dlProgressBar);
 
                 try {
-                    Thread.sleep(1000); // Give the system to recognize the video file properly or something.
+                    Thread.sleep(250); // Give the system to recognize the video file properly or something.
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
