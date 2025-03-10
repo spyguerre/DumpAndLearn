@@ -8,10 +8,7 @@ import dal.data.word.WordReviewed;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
@@ -43,66 +40,120 @@ public class CorrectionController extends Controller {
         System.out.println("Correcting words...");
         assert words != null;
 
+        GridPane gridPane = new GridPane(); // Create a GridPane to hold the words' details
+        gridPane.setHgap(10); // Set horizontal gap between columns
+        gridPane.setVgap(5);  // Set vertical gap between rows
+        gridPane.setPadding(new Insets(10));
+
+// Column Titles (first row)
+        Text nothingColumn = new Text(""); // Empty column for the emoji
+        nothingColumn.setTextAlignment(TextAlignment.CENTER);
+        GridPane.setConstraints(nothingColumn, 0, 0);
+        gridPane.getChildren().add(nothingColumn);
+
+        Text nativeWordTitle = new Text("Native Word");
+        nativeWordTitle.setTextAlignment(TextAlignment.CENTER);
+        GridPane.setConstraints(nativeWordTitle, 1, 0);
+        gridPane.getChildren().add(nativeWordTitle);
+
+        Text foreignWordTitle = new Text("Foreign Word");
+        foreignWordTitle.setTextAlignment(TextAlignment.CENTER);
+        GridPane.setConstraints(foreignWordTitle, 2, 0);
+        gridPane.getChildren().add(foreignWordTitle);
+
+        Text attemptTitle = new Text("Attempt");
+        attemptTitle.setTextAlignment(TextAlignment.CENTER);
+        GridPane.setConstraints(attemptTitle, 3, 0);
+        gridPane.getChildren().add(attemptTitle);
+
+        Text descriptionTitle = new Text("Description");
+        descriptionTitle.setTextAlignment(TextAlignment.CENTER);
+        GridPane.setConstraints(descriptionTitle, 4, 0);
+        gridPane.getChildren().add(descriptionTitle);
+
+// Set column proportions
+        ColumnConstraints emojiColumn = new ColumnConstraints();
+        emojiColumn.setPercentWidth(3); // 3% for the emoji column
+
+        ColumnConstraints nativeColumn = new ColumnConstraints();
+        nativeColumn.setPercentWidth(20); // 20% for the native word column
+
+        ColumnConstraints foreignColumn = new ColumnConstraints();
+        foreignColumn.setPercentWidth(20); // 20% for the foreign word column
+
+        ColumnConstraints attemptColumn = new ColumnConstraints();
+        attemptColumn.setPercentWidth(20); // 20% for the attempt column
+
+        ColumnConstraints descriptionColumn = new ColumnConstraints();
+        descriptionColumn.setPercentWidth(37); // 37% for the description column (larger)
+
+        gridPane.getColumnConstraints().addAll(emojiColumn, nativeColumn, foreignColumn, attemptColumn, descriptionColumn);
+
         for (WordReviewed currentWord : words) {
             boolean typedCorrectly = !(currentWord.isWrittenInForeign() && !currentWord.getForeign().equalsIgnoreCase(currentWord.getUserAnswer())
                     || !currentWord.isWrittenInForeign() && !currentWord.getNative_().equalsIgnoreCase(currentWord.getUserAnswer()));
 
-            // Graphic update
-            TextFlow correctedWordTextFlow = new TextFlow();
-            VBox.setMargin(correctedWordTextFlow, new Insets(0, 0, 20, 0));
-            correctedWordTextFlow.setPrefWidth(Region.USE_COMPUTED_SIZE);
-            correctedWordTextFlow.setTextAlignment(TextAlignment.CENTER);
+            // Create a row in the GridPane
+            int rowIndex = gridPane.getChildren().size() / 5; // Get the row index based on current number of rows in the grid
 
-            Text emoji;
+            // Emoji Column
+            Text emoji = new Text();
+            Color emojiColor;
             if (typedCorrectly) {
-                correctedWordTextFlow.getChildren().add(new Text("✅"));
-                emoji = (Text) correctedWordTextFlow.getChildren().getFirst();
-                emoji.setStroke(Color.GREEN);
+                emoji.setText("✅");
+                emojiColor = Color.GREEN;
             } else {
-                correctedWordTextFlow.getChildren().add(new Text("❌"));
-                emoji = (Text) correctedWordTextFlow.getChildren().getFirst();
-                emoji.setStroke(Color.RED);
+                emoji.setText("❌");
+                emojiColor = Color.RED;
             }
+            emoji.setStroke(emojiColor);
+            emoji.setFill(emojiColor); // Set fill to match stroke (green or red)
             emoji.setStrokeType(StrokeType.CENTERED);
-            emoji.setStrokeWidth(1);
-            emoji.setFill(Color.WHITE);
-            correctedWordTextFlow.getChildren().add(new Text("  -  "));
-            correctedWordTextFlow.getChildren().add(new Text(currentWord.getNative_()));
-            correctedWordTextFlow.getChildren().add(new Text(" = "));
-            correctedWordTextFlow.getChildren().add(new Text(currentWord.getForeign()));
+            GridPane.setConstraints(emoji, 0, rowIndex + 1); // Start adding from row 1 (below titles)
+            gridPane.getChildren().add(emoji);
 
+            // Set color for all Texts in the row (based on correctness)
+            Color rowColor = typedCorrectly ? Color.GREEN : Color.RED;
+
+            // Native Word Column
+            Text nativeText = new Text(currentWord.getNative_());
+            nativeText.setTextAlignment(TextAlignment.CENTER);
+            nativeText.setStroke(rowColor);
+            nativeText.setFill(rowColor); // Ensure fill color is correctly applied (green or red)
+            GridPane.setConstraints(nativeText, 1, rowIndex + 1);
+            gridPane.getChildren().add(nativeText);
+
+            // Foreign Word Column
+            Text foreignText = new Text(currentWord.getForeign());
+            foreignText.setTextAlignment(TextAlignment.CENTER);
+            foreignText.setStroke(rowColor);
+            foreignText.setFill(rowColor); // Ensure fill color is correctly applied (green or red)
+            GridPane.setConstraints(foreignText, 2, rowIndex + 1);
+            gridPane.getChildren().add(foreignText);
+
+            // User Answer Column
+            Text userAnswerText = new Text(currentWord.getUserAnswer());
+            userAnswerText.setTextAlignment(TextAlignment.CENTER);
+            userAnswerText.setStroke(rowColor);
+            userAnswerText.setFill(rowColor); // Set fill color to match stroke (green or red)
             if (!typedCorrectly) {
-                // Add description to fail message if there is one.
-                if (currentWord.getDescription() == null) {
-                    correctedWordTextFlow.getChildren().add(new Text(" (and not " + currentWord.getUserAnswer() + ")"));
-                } else {
-                    correctedWordTextFlow.getChildren().add(new Text(" (and not " + currentWord.getUserAnswer() + " : \"" + currentWord.getDescription() + "\")"));
-                }
-
-                // Stroke the missed word.
-                Text failedText;
-                if (currentWord.isWrittenInForeign()) {
-                    failedText = (Text) correctedWordTextFlow.getChildren().get(4);
-                } else {
-                    failedText = (Text) correctedWordTextFlow.getChildren().get(2);
-                }
-                failedText.setStroke(Color.RED);
-                failedText.setStrokeWidth(1);
-                failedText.setStrokeType(StrokeType.CENTERED);
-            } else {
-                // Stroke the correct word in green.
-                Text failedText;
-                if (currentWord.isWrittenInForeign()) {
-                    failedText = (Text) correctedWordTextFlow.getChildren().get(4);
-                } else {
-                    failedText = (Text) correctedWordTextFlow.getChildren().get(2);
-                }
-                failedText.setStroke(Color.GREEN);
-                failedText.setStrokeWidth(.5);
-                failedText.setStrokeType(StrokeType.CENTERED);
+                userAnswerText.setFill(Color.RED); // Fill red if the answer is incorrect
             }
-            // Add the TextFlow to the mainVBox
-            mainVBox.getChildren().add(correctedWordTextFlow);
+            GridPane.setConstraints(userAnswerText, 3, rowIndex + 1);
+            gridPane.getChildren().add(userAnswerText);
+
+            // Description Column
+            Text descriptionText = new Text();
+            if (currentWord.getDescription() != null) {
+                descriptionText.setText(currentWord.getDescription());
+            } else {
+                descriptionText.setText(""); // Empty description if none is available
+            }
+            descriptionText.setTextAlignment(TextAlignment.CENTER);
+            descriptionText.setStroke(rowColor);
+            descriptionText.setFill(rowColor); // Ensure fill color is correctly applied (green or red)
+            GridPane.setConstraints(descriptionText, 4, rowIndex + 1);
+            gridPane.getChildren().add(descriptionText);
 
             // Backend update.
             Db.updateLastReviewTimestamp(currentWord.getId());
@@ -112,6 +163,10 @@ public class CorrectionController extends Controller {
                 Db.incrFailedReviews(currentWord.getId());
             }
         }
+
+        // Add the GridPane to the main container (you need to have a parent container for this)
+        mainVBox.getChildren().add(gridPane);
+
 
         // After processing every word correction, update the total count on the top label
         rightWordsCount.setText(rightWordsCount.getText().replaceFirst("\\?", String.valueOf(words.size() - wordsToCorrect.size())));

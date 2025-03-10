@@ -11,8 +11,8 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        SceneManager.start(SceneType.SONG_PLAYING, stage);
-        ((MusicPlayingController) SceneManager.getCurrentController()).initVideo(1);
+        SceneManager.start(SceneType.START_REVIEW, stage);
+        // ((MusicPlayingController) SceneManager.getCurrentController()).initVideo(1);
     }
 
     public static void main(String[] args) {
