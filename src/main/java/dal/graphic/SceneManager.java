@@ -1,12 +1,14 @@
 package dal.graphic;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public abstract class SceneManager {
     private static Controller currentController;
@@ -16,6 +18,7 @@ public abstract class SceneManager {
 
         FXMLLoader fxmlLoader = SceneType.getSceneFxml(sceneType);
         Scene scene = new Scene(fxmlLoader.load(), 600, 442);
+        attachCSS(scene);
         currentController = fxmlLoader.getController();
 
         stage.setTitle("Dump And Learn!");
@@ -30,6 +33,7 @@ public abstract class SceneManager {
         try {
             FXMLLoader fxmlLoader = SceneType.getSceneFxml(sceneType);
             scene = new Scene(fxmlLoader.load(), currentSize[0], currentSize[1]);
+            attachCSS(scene);
             currentController = fxmlLoader.getController();
         } catch (IOException e) {
             System.err.println("Could not load scene " + sceneType.name() + ".");
@@ -44,7 +48,7 @@ public abstract class SceneManager {
         try {
             System.out.println("Loading scene " + sceneType.name() + "...");
             FXMLLoader fxmlLoader = SceneType.getSceneFxml(sceneType);
-            Parent sceneRoot = fxmlLoader.load();
+            Node sceneRoot = fxmlLoader.load();
             container.getChildren().setAll(sceneRoot);
             return fxmlLoader.getController();
         } catch (IOException e) {
@@ -52,6 +56,10 @@ public abstract class SceneManager {
             System.err.println("Error loading scene with FXML: " + sceneType.name() + ".");
             return null;
         }
+    }
+
+    private static void attachCSS(Scene scene) {
+        scene.getStylesheets().add(Objects.requireNonNull(SceneManager.class.getResource("commonStyle.css")).toExternalForm());
     }
 
     public static Controller getCurrentController() {

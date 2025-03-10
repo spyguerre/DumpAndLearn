@@ -95,7 +95,7 @@
       <StackPane fx:id="popupContainerStackPane" visible="false" StackPane.alignment="CENTER">
          <children>
             <Rectangle fx:id="dimBackground" fill="#4242426c" height="200.0" stroke="TRANSPARENT" strokeType="INSIDE" width="200.0" StackPane.alignment="CENTER" />
-            <Pane fx:id="PopupContainerPane" maxHeight="266.0" maxWidth="400.0" minHeight="100.0" minWidth="100.0" prefHeight="266.0" prefWidth="400.0" />
+            <Pane fx:id="popupContainerPane" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="rounded-shadow" StackPane.alignment="CENTER" />
          </children>
       </StackPane>
    </children>

@@ -44,7 +44,7 @@ public class MusicPlayingController extends Controller {
     private Rectangle dimBackground;
 
     @FXML
-    private Pane PopupContainerPane;
+    private Pane popupContainerPane;
 
     @FXML
     public void initialize() {
@@ -122,6 +122,9 @@ public class MusicPlayingController extends Controller {
         // Adjust initial volume.
         updateVolume();
 
+        // Bind the popup Pane size
+        popupContainerPane.prefWidthProperty().bind(this.root.getScene().getWindow().widthProperty().multiply(0.8));
+        popupContainerPane.prefHeightProperty().bind(this.root.getScene().getWindow().heightProperty().multiply(0.8));
 
         // Set the lyrics.
         System.out.println("Setting the lyrics...");
@@ -175,7 +178,8 @@ public class MusicPlayingController extends Controller {
 
     public void showTranslationPopup(String str) {
         // Load the new scene in the translationPopupContainer Pane.
-        TranslationPopupController popupController = (TranslationPopupController) SceneManager.loadSceneInContainer(SceneType.TRANSLATION_POPUP, PopupContainerPane);
+        popupContainerPane.getChildren().clear(); // Remove previous content
+        TranslationPopupController popupController = (TranslationPopupController) SceneManager.loadSceneInContainer(SceneType.TRANSLATION_POPUP, popupContainerPane);
         popupContainerStackPane.setVisible(true);
         assert popupController != null;
         popupController.initTranslation(str);

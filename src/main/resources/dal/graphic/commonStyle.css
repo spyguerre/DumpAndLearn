@@ -1,0 +1,222 @@
+/* General styles for the entire application */
+.root {
+    -fx-background-color: #2e2e2e; /* Dark background */
+    -fx-font-family: 'Arial', sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: white; /* Light text color for contrast */
+}
+
+Text {
+    -fx-fill: white; /* Correct property for Text nodes */
+}
+
+/* MenuBar and Menu items */
+.menu-bar {
+    -fx-background-color: #1a1a1a; /* Darker background for the menu bar */
+    -fx-border-color: #333333; /* Darker border */
+}
+
+/* VBox, HBox and other layout containers */
+.vbox, .hbox {
+    -fx-spacing: 10px; /* Space between elements */
+    -fx-padding: 15px;
+}
+
+.text {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: #ffffff; /* White text for the description */
+}
+
+/* TextField styling */
+.text-field {
+    -fx-border-radius: 5px;
+}
+
+.text-field, .text-area {
+    -fx-background-color: #444444; /* Dark background for text fields */
+    -fx-text-fill: white; /* White text */
+    -fx-prompt-text-fill: #888888; /* Grey color for placeholder text */
+    -fx-border-color: #555555; /* Darker border */
+}
+
+/* TextArea internal area styling */
+.text-area {
+    -fx-control-inner-background: #444444; /* Dark background for the inner text area */
+    -fx-control-inner-text-fill: white; /* White text inside TextArea */
+    -fx-border-radius: 0;
+}
+
+/* Optional: Add background for the scrollbars if visible */
+.text-area .scroll-bar {
+    -fx-background-color: #333333; /* Dark background for scrollbar */
+    -fx-border-radius: 0;
+}
+
+/* Button styling */
+.button {
+    -fx-background-color: #3e5a3e; /* Green background */
+    -fx-text-fill: white;
+    -fx-border-radius: 5px;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+}
+
+.button:hover {
+    -fx-background-color: #304e31; /* Slightly darker green when hovered */
+}
+
+.button:pressed {
+    -fx-background-color: #314331; /* Even darker green when pressed */
+}
+
+/* ProgressBar styling */
+.progress-bar {
+    -fx-background-color: transparent; /* Dark background */
+    -fx-border-color: #444444; /* Subtle border */
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-pref-width: 200px;
+}
+
+/* Progress bar fill */
+.progress-bar .bar {
+    -fx-background-color: #00b0ff; /* Light blue progress color */
+    -fx-background-insets: 0;
+    -fx-background-radius: 5px;
+}
+
+/* Progress bar track (behind the progress) */
+.track {
+    -fx-background-color: #222222; /* Darker background for contrast */
+    -fx-background-radius: 5px;
+}
+
+.progress-bar:indeterminate {
+    -fx-accent: #888888; /* Grey progress color for indeterminate state */
+}
+
+/* MenuBar (top menu bar) */
+.menu-bar {
+    -fx-background-color: #222222; /* Dark background for menu bar */
+    -fx-border-color: #444444; /* Slightly lighter border */
+}
+
+.menu-bar {
+    -fx-text-fill: #dddddd; /* Lighter grey text for menus */
+    -fx-background-color: transparent; /* Transparent background for menu */
+}
+
+.menu-bar {
+    -fx-text-fill: #dddddd; /* Lighter grey text for menu items */
+    -fx-background-color: transparent; /* Transparent background for menu items */
+}
+
+/* Hover effect for menu items */
+.menu-bar {
+    -fx-background-color: #444444; /* Darken background on hover */
+    -fx-text-fill: white; /* Change text to white on hover */
+}
+
+.menu-bar .menu-item:disabled {
+    -fx-text-fill: #888888; /* Lighter grey when menu item is disabled */
+}
+
+/* Darken the dropdown menu background */
+.context-menu {
+    -fx-background-color: #222222; /* Dark background for dropdown */
+    -fx-border-color: #444444; /* Slightly lighter border */
+}
+
+/* Menu items */
+.menu-item {
+    -fx-text-fill: #dddddd; /* Light grey text */
+    -fx-background-color: #222222; /* Dark background */
+}
+
+/* Hover effect for menu items */
+.menu-item:hover {
+    -fx-background-color: #333333; /* Darker grey on hover */
+    -fx-text-fill: white; /* White text on hover */
+}
+
+/* Highlight selected or focused menu item */
+.menu-item:focused, .menu-item:selected, .menu-button:focused {
+    -fx-border-color: #0078D7; /* Windows blue */
+    -fx-border-width: 2px; /* Thicker border */
+    -fx-border-radius: 3px; /* Slight rounding */
+    -fx-background-color: #2a2a2a; /* Slightly lighter background */
+}
+
+/* General focus outline for selected input elements */
+.text-field:focused, .button:focused, .menu-item:focused, .menu-button:focused {
+    -fx-border-color: #0078D7; /* Windows blue */
+    -fx-border-width: 2px;
+    -fx-border-radius: 3px;
+}
+
+/* Highlight the focused or selected menu in the MenuBar */
+.menu:focused, .menu:selected {
+    -fx-border-color: #0078D7; /* Windows blue */
+    -fx-border-width: 2px; /* Thicker border */
+    -fx-border-radius: 3px; /* Slightly rounded corners */
+    -fx-background-color: #2a2a2a; /* Slightly lighter background */
+}
+
+/* MenuButton Styling (Dropdown summoning button, excluding MenuBar) */
+.menu-button {
+    -fx-background-color: #333333; /* Dark background for the MenuButton */
+    -fx-text-fill: #dddddd; /* Light grey text */
+    -fx-border-color: #444444; /* Dark border */
+    -fx-border-radius: 5px;
+    -fx-font-size: 14px;
+}
+
+/* MenuButton Hover Effect */
+.menu-button:hover {
+    -fx-background-color: #444444; /* Darker background on hover */
+    -fx-text-fill: white; /* Change text to white on hover */
+}
+
+/* MenuButton Pressed Effect */
+.menu-button:pressed {
+    -fx-background-color: #555555; /* Even darker background when pressed */
+}
+
+/* Ensure MenuButton inside MenuBar is not modified */
+.menu-bar .menu-button {
+    /* No changes to MenuButton in MenuBar */
+    -fx-background-color: inherit; /* Keep existing background */
+    -fx-text-fill: inherit; /* Keep existing text color */
+    -fx-border-color: inherit; /* Keep existing border color */
+}
+
+/* Ensure MenuButton inside MenuBar is not modified */
+.menu-bar .menu-button:hover {
+    /* No changes to MenuButton in MenuBar */
+    -fx-background-color: #0078D7; /* Keep existing background */
+    -fx-text-fill: inherit; /* Keep existing text color */
+    -fx-border-color: inherit; /* Keep existing border color */
+}
+
+/* Outer container (with drop shadow and transparent border) */
+.rounded-shadow {
+    /* Drop shadow effect */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.7), 10, 0.5, 0, 2);
+}
+
+/* Apply dark background to the entire scroll pane */
+.scroll-pane {
+    -fx-background-color: #2e2e2e; /* Dark background */
+}
+
+/* Apply dark background to the content area (Viewport) of the scroll pane */
+.scroll-pane .viewport {
+    -fx-background-color: #2e2e2e; /* Ensure viewport also has the dark background */
+}
+
+/* Apply dark background to the scroll bars, if they are visible */
+.scroll-pane .scroll-bar {
+    -fx-background-color: #333333; /* Dark background for scrollbar */
+    -fx-border-radius: 0;
+}

@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="root" alignment="CENTER" maxHeight="266.0" maxWidth="400.0" minHeight="100.0" minWidth="100.0" prefHeight="266.0" prefWidth="400.0" spacing="10.0" style="-fx-background-color: #999999f9;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.song.playing.TranslationPopupController">
+<VBox fx:id="root" alignment="CENTER" minHeight="100.0" minWidth="100.0" spacing="10.0" style="-fx-background-color: #999999f9;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.song.playing.TranslationPopupController">
    <children>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Translate">
          <font>
