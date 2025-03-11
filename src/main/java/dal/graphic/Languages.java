@@ -6,12 +6,21 @@ public enum Languages {
     GERMAN,
     JAPANESE;
 
-    public static String getCode(Languages lang) {
+    public static String getGGTradCode(Languages lang) {
         return switch (lang) {
             case ENGLISH -> "en";
             case FRENCH -> "fr";
             case GERMAN -> "de";
             case JAPANESE -> "ja";
+        };
+    }
+
+    public static String getTessCode(Languages lang) {
+        return switch (lang) {
+            case ENGLISH -> "eng";
+            case FRENCH -> "fra";
+            case GERMAN -> "deu";
+            case JAPANESE -> "jpn";
         };
     }
 }
