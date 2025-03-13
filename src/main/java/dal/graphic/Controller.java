@@ -25,7 +25,7 @@ public abstract class Controller {
     }
 
     @FXML
-    private void settings() {
+    protected void settings() {
         SceneManager.switchScene(SceneType.SETTINGS, (Stage) root.getScene().getWindow(), new int[]{(int)((BorderPane)root).getWidth(), (int)((BorderPane)root).getHeight()});
     }
 
@@ -33,6 +33,7 @@ public abstract class Controller {
     protected void quit() {
         System.out.println("Quitting...");
         Db.closeConnection();
+        Platform.exit();
         System.exit(0);
     }
 

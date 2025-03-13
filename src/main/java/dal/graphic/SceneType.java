@@ -11,7 +11,8 @@ public enum SceneType {
     CORRECTION,
     SONG_MENU,
     SONG_PLAYING,
-    TRANSLATION_POPUP;
+    TRANSLATION_POPUP,
+    START_OCR;
 
     public static FXMLLoader getSceneFxml(SceneType scene) {
         String fp = "";
@@ -25,6 +26,7 @@ public enum SceneType {
             case SONG_MENU -> fp = "song/menu/songMenu.fxml";
             case SONG_PLAYING -> fp = "song/playing/playing.fxml";
             case TRANSLATION_POPUP -> fp = "song/playing/popup.fxml";
+            case START_OCR -> fp = "ocr/startOcr.fxml";
         }
 
         return new FXMLLoader(SceneType.class.getResource(fp));

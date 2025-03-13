@@ -8,6 +8,7 @@ module dal {
     requires javafx.swing;
     requires com.fasterxml.jackson.databind;
     requires tess4j;
+    requires webcam.capture;
 
     exports dal;
     exports dal.graphic;
@@ -20,7 +21,8 @@ module dal {
     exports dal.data.db;
     exports dal.data.word;
     exports dal.data.song;
-    exports dal.data.OCR;
+    exports dal.data.ocr;
+    exports dal.graphic.ocr;
 
     opens dal to javafx.fxml;
     opens dal.graphic to javafx.fxml;
@@ -30,4 +32,5 @@ module dal {
     opens dal.graphic.song.menu to javafx.fxml;
     opens dal.graphic.song.playing to javafx.fxml;
     opens dal.graphic.general to javafx.fxml;
+    opens dal.graphic.ocr to javafx.fxml;
 }

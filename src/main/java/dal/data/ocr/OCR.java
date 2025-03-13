@@ -1,4 +1,4 @@
-package dal.data.OCR;
+package dal.data.ocr;
 
 import dal.graphic.Languages;
 import net.sourceforge.tess4j.Tesseract;
@@ -6,7 +6,7 @@ import net.sourceforge.tess4j.TesseractException;
 import java.io.File;
 
 public class OCR {
-    public static String read(Languages lang) {
+    public static String read(Languages lang, long imageId) {
         Tesseract tesseract = new Tesseract();
         try {
             // Set the path to tessdata (change this to your local path)
@@ -14,7 +14,7 @@ public class OCR {
             tesseract.setLanguage(Languages.getTessCode(lang));
 
             // Provide the image file
-            File imageFile = new File("./images/7.png");
+            File imageFile = new File("./images/" + imageId + ".png");
 
             // Perform OCR
             String text = tesseract.doOCR(imageFile);

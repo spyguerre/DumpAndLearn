@@ -14,7 +14,7 @@
 <junit.version>5.10.2</junit.version>  </properties>
 
   <dependencies>
-    <dependency>
+    <dependency>  <!-- Javafx -->
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
       <version>23.0.1</version>
@@ -34,52 +34,47 @@
       <artifactId>javafx-swing</artifactId>
       <version>23.0.1</version>
     </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
+
+    <dependency>  <!-- Database -->
       <groupId>org.xerial</groupId>
       <artifactId>sqlite-jdbc</artifactId>
       <version>3.41.2.2</version>
     </dependency>
 
-    <dependency>
+    <dependency>  <!-- Parse html -->
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
       <version>1.16.1</version>
     </dependency>
 
-    <dependency>
+    <dependency>  <!-- Read json -->
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.16.0</version>
     </dependency>
 
-    <dependency>
+    <dependency>  <!-- Levenshtein Distance -->
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
       <version>1.10.0</version>
     </dependency>
 
-    <dependency>
+    <dependency> <!-- OCR -->
       <groupId>net.sourceforge.tess4j</groupId>
       <artifactId>tess4j</artifactId>
       <version>5.4.0</version>
     </dependency>
 
-    <dependency>
+    <dependency>  <!-- Logging -->
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.36</version>  <!-- Match your SLF4J version -->
+      <version>1.7.36</version>
+    </dependency>
+
+    <dependency>  <!-- Take pictures -->
+      <groupId>com.github.sarxos</groupId>
+      <artifactId>webcam-capture</artifactId>
+      <version>0.3.12</version>
     </dependency>
   </dependencies>
 

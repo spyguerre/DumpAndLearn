@@ -2,6 +2,7 @@ package dal.graphic.general;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.sarxos.webcam.Webcam;
 import dal.graphic.Controller;
 import dal.graphic.ErrorDisplayer;
 import dal.graphic.Languages;
@@ -24,6 +25,9 @@ public class SettingsController extends Controller {
     private MenuButton nativeDropDown;
 
     @FXML
+    private MenuButton captureDeviceDropdown;
+
+    @FXML
     protected void initialize() {
         super.initialize();
 
@@ -33,32 +37,43 @@ public class SettingsController extends Controller {
             initDefaultSettings();
         }
 
-        // Read JSON file and convert it to a Map<String, String>
-        Map<String, String> settings = getSettings();
-        assert settings != null;
-
         // Update the dropdowns' text to match known settings.
-        nativeDropDown.setText(settings.get("native"));
-        foreignDropDown.setText(settings.get("foreign"));
+        nativeDropDown.setText(getNativeLanguage());
+        foreignDropDown.setText(getForeignLanguage());
+        captureDeviceDropdown.setText(getCaptureDevice());
+
+        // Update capture device options
+        for (Webcam webcam: Webcam.getWebcams()) {
+            // Create and add menuItem
+            MenuItem item = new MenuItem(webcam.getName());
+            item.setOnAction(this::updateCaptureDevice);
+            captureDeviceDropdown.getItems().add(item);
+        }
     }
 
-    private void initDefaultSettings() {
+    private static void initDefaultSettings() {
         // Create a dictionary with the default settings.
         Map<String, String> settings = new HashMap<>();
         settings.put("native", "French");
         settings.put("foreign", "English");
+        settings.put("captureDevice", "None");
 
         // Convert to JSON and save to a file.
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             objectMapper.writeValue(new File("settings.json"), settings);
-            System.out.println("Settings saved initialized in settings.json");
+            System.out.println("Settings initialized in settings.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private static Map<String, String> getSettings() {
+        // If settings.json doesn't exist, create it.
+        if (!new File("./settings.json").exists()) {
+            initDefaultSettings();
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             // Read JSON file and convert it to a Map<String, String>
@@ -83,6 +98,11 @@ public class SettingsController extends Controller {
     @FXML
     private void updateForeign(ActionEvent event) {
         foreignDropDown.setText(((MenuItem) event.getSource()).getText());
+    }
+
+    @FXML
+    private void updateCaptureDevice(ActionEvent event) {
+        captureDeviceDropdown.setText(((MenuItem) event.getSource()).getText());
     }
 
     @FXML
@@ -111,6 +131,7 @@ public class SettingsController extends Controller {
         Map<String, String> settings = new HashMap<>();
         settings.put("native", nativeDropDown.getText());
         settings.put("foreign", foreignDropDown.getText());
+        settings.put("captureDevice", captureDeviceDropdown.getText());
 
         // Convert to JSON and save to a file.
         ObjectMapper objectMapper = new ObjectMapper();
@@ -147,5 +168,11 @@ public class SettingsController extends Controller {
         Map<String, String> settings = getSettings();
         assert settings != null;
         return Languages.getGGTradCode(Languages.valueOf(settings.get("foreign").toUpperCase()));
+    }
+
+    public static String getCaptureDevice() {
+        Map<String, String> settings = getSettings();
+        assert settings != null;
+        return settings.get("captureDevice");
     }
 }

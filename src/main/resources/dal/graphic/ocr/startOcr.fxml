@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.ocr.StartOCRController">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#settings" text="Settings" />
+                        <MenuItem mnemonicParsing="false" onAction="#mainMenu" text="Back to Main Menu" />
+                        <MenuItem mnemonicParsing="false" onAction="#quit" text="Close" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <center>
+        <VBox fx:id="mainVBox" alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+            <StackPane BorderPane.alignment="CENTER">
+               <children>
+                        <ImageView fx:id="previewImageView" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" />
+                        <Canvas fx:id="previewCanvas" height="300.0" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased" style="-fx-opacity: .5;" width="300.0" />
+               </children>
+            </StackPane>
+            <HBox fx:id="captureHBox" alignment="CENTER" spacing="20.0">
+               <children>
+                      <Button fx:id="captureButton" mnemonicParsing="false" onAction="#captureImage" text="Capture" />
+               </children>
+            </HBox>
+            <HBox fx:id="selectionHBox" alignment="CENTER" spacing="20.0">
+               <children>
+                  <Button fx:id="resetCapture" mnemonicParsing="false" onAction="#resetCapture" text="Reset Capture" />
+                  <Button fx:id="readTextButton" mnemonicParsing="false" onAction="#readText" text="Read Text" />
+               </children>
+            </HBox>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

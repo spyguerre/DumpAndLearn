@@ -27,21 +27,26 @@
       </MenuBar>
    </top>
    <center>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="21.0" BorderPane.alignment="CENTER">
          <children>
             <Button mnemonicParsing="false" onAction="#addNewWord" text="Manage Words">
                <VBox.margin>
-                  <Insets top="21.0" />
+                  <Insets />
                </VBox.margin>
             </Button>
             <Button mnemonicParsing="false" onAction="#startReviewSession" text="Start a Review Session">
                <VBox.margin>
-                  <Insets top="21.0" />
+                  <Insets />
                </VBox.margin>
             </Button>
             <Button mnemonicParsing="false" onAction="#learnFromSong" text="Learn from a Song">
                <VBox.margin>
-                  <Insets top="21.0" />
+                  <Insets />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#scanSomeText" text="Scan some Text">
+               <VBox.margin>
+                  <Insets />
                </VBox.margin>
             </Button>
          </children>
