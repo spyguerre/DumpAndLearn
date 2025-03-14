@@ -6,7 +6,7 @@ public enum Languages {
     GERMAN,
     JAPANESE;
 
-    public static String getGGTradCode(Languages lang) {
+    public static String getStdCode(Languages lang) {
         return switch (lang) {
             case ENGLISH -> "en";
             case FRENCH -> "fr";

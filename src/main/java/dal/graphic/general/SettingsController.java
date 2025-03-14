@@ -161,13 +161,13 @@ public class SettingsController extends Controller {
     public static String getNativeCode() {
         Map<String, String> settings = getSettings();
         assert settings != null;
-        return Languages.getGGTradCode(Languages.valueOf(settings.get("native").toUpperCase()));
+        return Languages.getStdCode(Languages.valueOf(settings.get("native").toUpperCase()));
     }
 
     public static String getForeignCode() {
         Map<String, String> settings = getSettings();
         assert settings != null;
-        return Languages.getGGTradCode(Languages.valueOf(settings.get("foreign").toUpperCase()));
+        return Languages.getStdCode(Languages.valueOf(settings.get("foreign").toUpperCase()));
     }
 
     public static String getCaptureDevice() {

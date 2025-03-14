@@ -15,14 +15,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -56,12 +54,6 @@ public class StartOCRController extends Controller {
 
     @FXML
     private HBox selectionHBox;
-
-    @FXML
-    private Button readTextButton;
-
-    @FXML
-    private Button resetCapture;
 
     @FXML
     public void initialize() {
@@ -261,7 +253,13 @@ public class StartOCRController extends Controller {
 
     @FXML
     void readText() {
+        // Close resources before switching scene.
+        closeResources();
 
+        // Switch scene and initialize new controller.
+        SceneManager.switchScene(SceneType.OCR, (Stage) root.getScene().getWindow(), new int[]{(int)(root).getWidth(), (int)(root).getHeight()});
+        OCRController newController = (OCRController) SceneManager.getCurrentController();
+        newController.initText(currentImage);
     }
 
     @FXML

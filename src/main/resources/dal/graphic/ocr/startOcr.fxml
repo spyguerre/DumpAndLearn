@@ -46,8 +46,8 @@
             </HBox>
             <HBox fx:id="selectionHBox" alignment="CENTER" spacing="20.0">
                <children>
-                  <Button fx:id="resetCapture" mnemonicParsing="false" onAction="#resetCapture" text="Reset Capture" />
-                  <Button fx:id="readTextButton" mnemonicParsing="false" onAction="#readText" text="Read Text" />
+                  <Button mnemonicParsing="false" onAction="#resetCapture" text="Reset Capture" />
+                  <Button mnemonicParsing="false" onAction="#readText" text="Read Text" />
                </children>
             </HBox>
             </children>

@@ -4,7 +4,6 @@ import dal.data.db.Db;
 import dal.graphic.*;
 import dal.data.word.Word;
 import dal.data.word.WordType;
-import dal.graphic.general.SettingsController;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,7 +13,6 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
 
 public class AddWordController extends TranslationController {

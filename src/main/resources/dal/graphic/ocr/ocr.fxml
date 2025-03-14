@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
+
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.ocr.OCRController">
+   <children>
+      <BorderPane>
+      
+          <!-- MenuBar at the Top -->
+          <top>
+              <MenuBar>
+                  <menus>
+                      <Menu mnemonicParsing="false" text="File">
+                          <items>
+                              <MenuItem mnemonicParsing="false" onAction="#mainMenu" text="Back to Main Menu" />
+                        <MenuItem mnemonicParsing="false" onAction="#scanSomeText" text="Scan Another Text" />
+                        <MenuItem mnemonicParsing="false" onAction="#quit" text="Close" />
+                          </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Edit">
+                          <items>
+                              <MenuItem mnemonicParsing="false" text="Delete" />
+                          </items>
+                      </Menu>
+                  </menus>
+              </MenuBar>
+          </top>
+         <center>
+            <HBox spacing="15.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
+                     <content>
+                        <AnchorPane>
+                           <children>
+                              <TextArea fx:id="nativeTextArea" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Native Text Loading..." wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
+                    <content>
+                      <AnchorPane>
+                           <children>
+                              <TextArea fx:id="foreignTextArea" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Foreign Text Loading..." wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </ScrollPane>
+               </children>
+            </HBox>
+         </center>
+      
+      </BorderPane>
+      <StackPane fx:id="popupContainerStackPane" visible="false" StackPane.alignment="CENTER">
+         <children>
+            <Rectangle fx:id="dimBackground" fill="#4242426c" height="200.0" stroke="TRANSPARENT" strokeType="INSIDE" width="200.0" StackPane.alignment="CENTER" />
+            <Pane fx:id="popupContainerPane" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="rounded-shadow" StackPane.alignment="CENTER" />
+         </children>
+      </StackPane>
+   </children>
+</StackPane>
