@@ -18,7 +18,7 @@ public abstract class Translator {
         String nativeCode = SettingsController.getNativeCode();
         String foreignCode = SettingsController.getForeignCode();
         text = text.replace("'", "\\'").replace("\"", "\\\"").trim();  // Remove " and '
-        text = text.replaceAll("[^\\x00-\\x7F]", ""); // Keep only ASCII characters
+        // text = text.replaceAll("[^\\x00-\\x7F]", ""); // Keep only ASCII characters
         if (!isForeignText) {
             System.out.println("Translating " + text + " from " + nativeCode + " to " + foreignCode + "...");
             command = "python -c \"import sys; sys.stdout.reconfigure(encoding='utf-8'); "
@@ -49,7 +49,8 @@ public abstract class Translator {
             line = reader.readLine();
             if (line != null) {
                 System.out.println("Translation received: " + line);
-                return line;
+                // Keep only letters, numbers, common punctuation, and whitespace
+                return line.replaceAll("[^\\p{L}\\p{N}\\p{P}\\s]", "");
             } else {
                 System.out.println("Couldn't get a translation.");
                 return null;

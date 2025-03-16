@@ -81,11 +81,14 @@ public class OCRController extends Controller {
             // Perform OCR.
             System.out.println("Recognizing text...");
             String text = OCR.read(image, Languages.valueOf(SettingsController.getForeignLanguage().toUpperCase()));
+            text = text.replaceAll("\\r\\n-|\\r-|\\n-", "");  // Replace end of line with - with nothing.
+            text = text.replaceAll("\\r\\n|\\r|\\n", " ");  // And other end of lines with simple space.
 
             // Set the foreign text.
             System.out.println("Setting the foreign text...");
+            final String finalText = text;
             Platform.runLater(() ->
-                    foreignTextArea.setText(text.replaceAll("\\r\\n|\\r|\\n", "\n"))
+                    foreignTextArea.setText(finalText)
             );
 
             // Translate the text and set it in the nativeTextArea.
