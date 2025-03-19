@@ -12,10 +12,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -28,6 +28,7 @@ import java.util.concurrent.Executors;
 public class StartOCRController extends Controller {
     private Webcam webcam;
     private final ExecutorService cameraExecutor = Executors.newSingleThreadExecutor();
+    private volatile BufferedImage capturedImage; // Keep the captured image before cropping for ctrl-Z
     private volatile BufferedImage currentImage;  // Store the most recent image
     private volatile boolean isPreviewing = true;  // Flag to stop the preview feed
     private double startX, startY;  // Starting point of the rectangle
@@ -54,6 +55,9 @@ public class StartOCRController extends Controller {
 
     @FXML
     private HBox selectionHBox;
+
+    @FXML
+    private Button readTextButton;
 
     @FXML
     public void initialize() {
@@ -92,6 +96,22 @@ public class StartOCRController extends Controller {
         Platform.runLater(() -> {
             Stage stage = (Stage) root.getScene().getWindow();
             stage.setOnCloseRequest(event -> closeResources());
+
+            root.setOnKeyPressed(event -> {
+                if (event.isControlDown() && event.getCode() == KeyCode.Z) {
+                    if (!isPreviewing) {
+                        System.out.println("Undo triggered.");
+                        if (currentImage == capturedImage) { // Undo capture
+                            System.out.println("Undoing capture.");
+                            resetCapture();
+                        } else { // Undo crop instead.
+                            System.out.println("Undoing selection.");
+                            resetCrop();
+                        }
+                    }
+                    event.consume(); // Prevents event from propagating further if needed
+                }
+            });
         });
     }
 
@@ -140,6 +160,8 @@ public class StartOCRController extends Controller {
     private void captureImage() {
         // Only capture if the webcam is open and the current image is available
         if (webcam != null && webcam.isOpen() && currentImage != null) {
+            // Save the current image as capturedImage
+            capturedImage = currentImage;
             // Display the captured image in the ImageView
             Platform.runLater(() -> {
                 Image fxImage = SwingFXUtils.toFXImage(currentImage, null);
@@ -252,7 +274,7 @@ public class StartOCRController extends Controller {
     }
 
     @FXML
-    void readText() {
+    private void readText() {
         // Close resources before switching scene.
         closeResources();
 
@@ -263,8 +285,17 @@ public class StartOCRController extends Controller {
     }
 
     @FXML
-    void resetCapture() {
+    private void resetCapture() {
         showCaptureView();
+    }
+
+    @FXML
+    private void resetCrop() {
+        System.out.println("Rolling back crop...");
+        currentImage = capturedImage;
+        // Update Image View graphically.
+        Image fxImage = SwingFXUtils.toFXImage(currentImage, null);
+        previewImageView.setImage(fxImage);
     }
 
     private void resetView() {
@@ -287,6 +318,8 @@ public class StartOCRController extends Controller {
         mainVBox.getChildren().remove(captureHBox);
         mainVBox.getChildren().add(selectionHBox);
         isPreviewing = false;
+
+        readTextButton.requestFocus();
     }
 
     private void closeResources() {

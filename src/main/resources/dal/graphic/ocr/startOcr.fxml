@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.ocr.StartOCRController">
+<BorderPane fx:id="root" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.ocr.StartOCRController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
@@ -46,8 +46,9 @@
             </HBox>
             <HBox fx:id="selectionHBox" alignment="CENTER" spacing="20.0">
                <children>
+                  <Button mnemonicParsing="false" onAction="#resetCrop" text="Reset Crop" />
                   <Button mnemonicParsing="false" onAction="#resetCapture" text="Reset Capture" />
-                  <Button mnemonicParsing="false" onAction="#readText" text="Read Text" />
+                  <Button fx:id="readTextButton" mnemonicParsing="false" onAction="#readText" text="Read Text" />
                </children>
             </HBox>
             </children>
