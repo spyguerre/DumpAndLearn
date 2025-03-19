@@ -49,8 +49,7 @@ public abstract class Translator {
             line = reader.readLine();
             if (line != null) {
                 System.out.println("Translation received: " + line);
-                // Keep only letters, numbers, common punctuation, and whitespace
-                return line.replaceAll("[^\\p{L}\\p{N}\\p{P}\\s]", "");
+                return line;
             } else {
                 System.out.println("Couldn't get a translation.");
                 return null;

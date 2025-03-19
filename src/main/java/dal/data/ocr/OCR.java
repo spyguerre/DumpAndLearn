@@ -14,8 +14,8 @@ public class OCR {
             tesseract.setDatapath("./tessdata/");
             tesseract.setLanguage(Languages.getTessCode(lang));
 
-            // Perform OCR
-            return tesseract.doOCR(image);
+            // Perform OCR while keeping only letters, numbers, common punctuation, and whitespace
+            return tesseract.doOCR(image).replaceAll("[^\\p{L}\\p{N}.,;:'\"!?()\\[\\]\\-\\s]", "");
         } catch (TesseractException e) {
             System.err.println("Error: " + e.getMessage());
             return "";

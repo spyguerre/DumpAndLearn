@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -10,7 +11,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
 <StackPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dal.graphic.ocr.OCRController">
    <children>
@@ -18,7 +22,7 @@
       
           <!-- MenuBar at the Top -->
           <top>
-              <MenuBar>
+              <MenuBar prefWidth="975.0">
                   <menus>
                       <Menu mnemonicParsing="false" text="File">
                           <items>
@@ -36,26 +40,55 @@
               </MenuBar>
           </top>
          <center>
-            <HBox spacing="15.0" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER" spacing="15.0" BorderPane.alignment="CENTER">
                <children>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
-                     <content>
-                        <AnchorPane>
+                  <VBox alignment="CENTER" spacing="5.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <TextFlow textAlignment="CENTER">
                            <children>
-                              <TextArea fx:id="nativeTextArea" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Native Text Loading..." wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nativeText" text="Native" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" Translation" />
                            </children>
-                        </AnchorPane>
-                     </content>
-                  </ScrollPane>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER">
-                    <content>
-                      <AnchorPane>
+                        </TextFlow>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                           <content>
+                              <AnchorPane>
+                                 <children>
+                                    <TextArea fx:id="nativeTextArea" editable="false" text="Native Text Loading..." wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+                  <VBox alignment="CENTER" spacing="5.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <TextFlow textAlignment="CENTER">
                            <children>
-                              <TextArea fx:id="foreignTextArea" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Foreign Text Loading..." wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="foreignText" text="Foreign" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" Recognized Text" />
                            </children>
-                        </AnchorPane>
-                    </content>
-                  </ScrollPane>
+                        </TextFlow>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                          <content>
+                            <AnchorPane>
+                                 <children>
+                                    <TextArea fx:id="foreignTextArea" editable="false" text="Foreign Text Loading..." wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
                </children>
             </HBox>
          </center>
