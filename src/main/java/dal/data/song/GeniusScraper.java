@@ -185,6 +185,7 @@ public class GeniusScraper {
                     int artistDistance = levenshtein.apply(scrappedArtist.toLowerCase(), artist.toLowerCase());
 
                     System.out.println("Trying Genius URL: " + bestGeniusURL);
+                    System.out.println("Title found on Genius page: \"" + scrappedTitle + "\"; Artist found on Genius page: \"" + scrappedArtist + "\"");
                     System.out.println("Title distance: " + titleDistance + ", Artist distance: " + artistDistance);
                     if (titleDistance <= 5 && artistDistance <= 5) {
                         return line;  // Return the link if the distance is low enough, ie the search succeeded.
@@ -256,11 +257,11 @@ public class GeniusScraper {
         assert doc != null;
 
         // Extract song title
-        Element titleElement = doc.select("span.SongHeader-desktop-sc-9c2f20c9-11.gHnRqR").first();
+        Element titleElement = doc.select("span[class^=SongHeader-desktop__HiddenMask-sc-]").first();
         String title = (titleElement != null) ? titleElement.text() : "Unknown Title";
 
         // Extract only the main artist (ignoring featured artists)
-        Element mainArtistElement = doc.selectFirst("div.HeaderArtistAndTracklist-desktop-sc-afd25865-1 a.StyledLink-sc-15c685a-0");
+        Element mainArtistElement = doc.selectFirst("div[class^=HeaderArtistAndTracklist-desktop__ListArtists-sc-] a[class^=StyledLink-sc-]");
         String artist = (mainArtistElement != null) ? mainArtistElement.text() : "Unknown Artist";
 
         return new String[]{title, artist};
