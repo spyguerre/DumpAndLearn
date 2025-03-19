@@ -114,16 +114,16 @@ public abstract class Db {
             ResultSet rs = null;
             switch (wordType) {
                 case ANY -> {
-                    String sql = "SELECT * FROM words WHERE native LIKE ? OR [foreign] LIKE ?";
-                    rs = query(sql, new String[]{query+"%", query+"%"});
+                    String sql = "SELECT * FROM words WHERE native LIKE ? OR [foreign] LIKE ? LIMIT ?";
+                    rs = query(sql, new Object[]{query+"%", query+"%", limit == null ? -1 : limit});
                 }
                 case NATIVE -> {
-                    String sql = "SELECT * FROM words WHERE native LIKE ?";
-                    rs = query(sql, new String[]{query+"%"});
+                    String sql = "SELECT * FROM words WHERE native LIKE ? LIMIT ?";
+                    rs = query(sql, new Object[]{query+"%", limit == null ? -1 : limit});
                 }
                 case FOREIGN -> {
-                    String sql = "SELECT * FROM words WHERE [foreign] LIKE ?";
-                    rs = query(sql, new String[]{query+"%"});
+                    String sql = "SELECT * FROM words WHERE [foreign] LIKE ? LIMIT ?";
+                    rs = query(sql, new Object[]{query+"%", limit == null ? -1 : limit});
                 }
             }
 

@@ -220,3 +220,53 @@ Text {
     -fx-background-color: #333333; /* Dark background for scrollbar */
     -fx-border-radius: 0;
 }
+
+/* ListView Styling */
+.list-view {
+    -fx-background-color: #2e2e2e; /* Dark background for ListView */
+    -fx-border-color: #444444; /* Slightly darker border */
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* ListView ScrollPane (ensures background is consistent) */
+.list-view .scroll-bar {
+    -fx-background-color: #333333;
+}
+
+/* ListView Items */
+.list-cell {
+    -fx-background-color: #3a3a3a; /* Darker gray for list items */
+    -fx-text-fill: white; /* White text */
+    -fx-padding: 8px;
+    -fx-border-color: #444444; /* Slightly darker border */
+    -fx-border-width: 0 0 1px 0; /* Adds a subtle bottom border */
+}
+
+/* Hover effect for ListView items */
+.list-cell:hover {
+    -fx-background-color: #505050; /* Slightly lighter gray on hover */
+}
+
+/* Selected ListView item */
+.list-cell:selected {
+    -fx-background-color: #0078D7; /* Windows blue for selection */
+    -fx-text-fill: white; /* Ensures text stays readable */
+    -fx-font-weight: bold;
+}
+
+/* Focused ListView */
+.list-view:focused {
+    -fx-border-color: #0078D7; /* Blue border when focused */
+}
+
+/* Ensure ListView text is properly styled */
+.list-cell .text {
+    -fx-fill: white;
+}
+
+/* Ensure empty cells blend with the background */
+.list-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
