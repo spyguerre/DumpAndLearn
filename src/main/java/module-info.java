@@ -1,4 +1,4 @@
-module dal {
+module org.spyguerre.dal {
     requires javafx.fxml;
     requires org.xerial.sqlitejdbc;
     requires org.jsoup;
