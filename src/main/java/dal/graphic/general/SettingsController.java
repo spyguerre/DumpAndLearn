@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.sarxos.webcam.Webcam;
 import dal.graphic.Controller;
 import dal.graphic.ErrorDisplayer;
-import dal.graphic.Languages;
+import dal.data.Languages;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;

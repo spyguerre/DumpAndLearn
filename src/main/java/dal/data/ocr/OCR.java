@@ -1,6 +1,6 @@
 package dal.data.ocr;
 
-import dal.graphic.Languages;
+import dal.data.Languages;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 

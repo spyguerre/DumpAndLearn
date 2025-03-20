@@ -1,4 +1,4 @@
-package dal.graphic;
+package dal.data;
 
 public enum Languages {
     ENGLISH,

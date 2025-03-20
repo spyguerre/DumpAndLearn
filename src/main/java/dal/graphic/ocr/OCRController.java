@@ -3,7 +3,7 @@ package dal.graphic.ocr;
 import dal.data.ocr.OCR;
 import dal.data.translation.Translator;
 import dal.graphic.Controller;
-import dal.graphic.Languages;
+import dal.data.Languages;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
 import dal.graphic.general.SettingsController;

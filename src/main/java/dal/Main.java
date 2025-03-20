@@ -1,10 +1,7 @@
 package dal;
 
-import dal.data.ocr.OCR;
-import dal.graphic.Languages;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
-import dal.graphic.song.playing.MusicPlayingController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

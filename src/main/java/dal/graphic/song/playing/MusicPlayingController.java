@@ -164,10 +164,10 @@ public class MusicPlayingController extends Controller {
         MediaPlayer mediaPlayer = mediaView.getMediaPlayer();
         if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
             mediaPlayer.pause();
-            playPauseButton.setText("Play");
+            playPauseButton.setText("▶");
         } else {
             mediaPlayer.play();
-            playPauseButton.setText("Pause");
+            playPauseButton.setText("⏸");
         }
     }
 
