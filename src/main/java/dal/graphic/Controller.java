@@ -17,6 +17,9 @@ public abstract class Controller {
     @FXML
     protected void initialize() {
         customizeNativeAndForeignTexts();
+
+        // Allow the ScrollPanes to work effectively.
+        ((Pane) root).setPrefSize(50, 50); // Doesn't change the size of the window
     }
 
     @FXML

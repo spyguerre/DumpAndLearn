@@ -6,18 +6,26 @@ import com.github.sarxos.webcam.Webcam;
 import dal.graphic.Controller;
 import dal.graphic.ErrorDisplayer;
 import dal.data.Languages;
+import dal.graphic.word.startReview.ReviewPreference;
+import dal.graphic.word.startReview.WriteIn;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.VBox;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SettingsController extends Controller {
-
     @FXML
     private MenuButton foreignDropDown;
 
@@ -26,6 +34,21 @@ public class SettingsController extends Controller {
 
     @FXML
     private MenuButton captureDeviceDropdown;
+
+    @FXML
+    private MenuButton defaultWordCountDropdown;
+
+    @FXML
+    private MenuButton defaultPreferenceDropdown;
+
+    @FXML
+    private MenuButton defaultWriteInDropdown;
+
+    @FXML
+    private VBox mainVBox;
+
+    @FXML
+    private ScrollPane mainScrollPane;
 
     @FXML
     protected void initialize() {
@@ -38,25 +61,56 @@ public class SettingsController extends Controller {
         }
 
         // Update the dropdowns' text to match known settings.
-        nativeDropDown.setText(getNativeLanguage());
-        foreignDropDown.setText(getForeignLanguage());
-        captureDeviceDropdown.setText(getCaptureDevice());
+        loadSettings();
 
         // Update capture device options
         for (Webcam webcam: Webcam.getWebcams()) {
             // Create and add menuItem
             MenuItem item = new MenuItem(webcam.getName());
-            item.setOnAction(this::updateCaptureDevice);
             captureDeviceDropdown.getItems().add(item);
+        }
+
+        // Add action to all menuItems
+        List<MenuButton> allMenuButtons = new ArrayList<>();
+        findMenuButtons(mainVBox, allMenuButtons); // Fills the list
+        for (MenuButton menuButton: allMenuButtons) {
+            for (MenuItem menuItem: menuButton.getItems()) {
+                menuItem.setOnAction(event -> this.updateDropdown(event, menuButton));
+            }
+        }
+
+        // Bind mainVBox to its Parent.
+        mainVBox.prefWidthProperty().bind(mainScrollPane.widthProperty());
+        mainVBox.prefHeightProperty().bind(mainScrollPane.heightProperty());
+    }
+
+    private void findMenuButtons(Node node, List<MenuButton> menuButtons) {
+        if (node instanceof MenuButton) {
+            menuButtons.add((MenuButton) node);
+        } else if (node instanceof Parent && !(node instanceof MenuBar)) {
+            // Recursively check child nodes
+            for (Node child : ((Parent) node).getChildrenUnmodifiable()) {
+                findMenuButtons(child, menuButtons);
+            }
         }
     }
 
     private static void initDefaultSettings() {
         // Create a dictionary with the default settings.
-        Map<String, String> settings = new HashMap<>();
-        settings.put("native", "French");
-        settings.put("foreign", "English");
+        Map<String, Object> settings = new HashMap<>();
+
         settings.put("captureDevice", "None");
+
+        Map<String, String> languageSettings = new HashMap<>();
+        languageSettings.put("native", "French");
+        languageSettings.put("foreign", "English");
+        settings.put("languageSettings", languageSettings);
+
+        Map<String, String> preferredReviewSettings = new HashMap<>();
+        preferredReviewSettings.put("wordCount", "10");
+        preferredReviewSettings.put("reviewPreference", "Recent");
+        preferredReviewSettings.put("writeIn", "Both");
+        settings.put("preferredReviewSettings", preferredReviewSettings);
 
         // Convert to JSON and save to a file.
         ObjectMapper objectMapper = new ObjectMapper();
@@ -68,7 +122,18 @@ public class SettingsController extends Controller {
         }
     }
 
-    private static Map<String, String> getSettings() {
+    private void loadSettings() {
+        captureDeviceDropdown.setText(getCaptureDevice());
+
+        nativeDropDown.setText(getNativeLanguage());
+        foreignDropDown.setText(getForeignLanguage());
+
+        defaultWordCountDropdown.setText(String.valueOf(getDefaultWordCount()));
+        defaultPreferenceDropdown.setText(ReviewPreference.getString(getDefaultPreference()));
+        defaultWriteInDropdown.setText(WriteIn.getString(getDefaultWriteIn()));
+    }
+
+    private static Map<String, Object> getSettings() {
         // If settings.json doesn't exist, create it.
         if (!new File("./settings.json").exists()) {
             initDefaultSettings();
@@ -77,7 +142,7 @@ public class SettingsController extends Controller {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             // Read JSON file and convert it to a Map<String, String>
-            Map<String, String> settings = objectMapper.readValue(
+            Map<String, Object> settings = objectMapper.readValue(
                     new File("settings.json"), new TypeReference<>() {}
             );
 
@@ -91,18 +156,8 @@ public class SettingsController extends Controller {
     }
 
     @FXML
-    private void updateNative(ActionEvent event) {
-        nativeDropDown.setText(((MenuItem) event.getSource()).getText());
-    }
-
-    @FXML
-    private void updateForeign(ActionEvent event) {
-        foreignDropDown.setText(((MenuItem) event.getSource()).getText());
-    }
-
-    @FXML
-    private void updateCaptureDevice(ActionEvent event) {
-        captureDeviceDropdown.setText(((MenuItem) event.getSource()).getText());
+    private void updateDropdown(ActionEvent event, MenuButton dropdown) {
+        dropdown.setText(((MenuItem) event.getSource()).getText());
     }
 
     @FXML
@@ -128,10 +183,19 @@ public class SettingsController extends Controller {
         }
 
         // Create a dictionary with the settings.
-        Map<String, String> settings = new HashMap<>();
-        settings.put("native", nativeDropDown.getText());
-        settings.put("foreign", foreignDropDown.getText());
+        Map<String, Object> settings = new HashMap<>();
         settings.put("captureDevice", captureDeviceDropdown.getText());
+
+        Map<String, String> languageSettings = new HashMap<>();
+        languageSettings.put("native", nativeDropDown.getText());
+        languageSettings.put("foreign", foreignDropDown.getText());
+        settings.put("languageSettings", languageSettings);
+
+        Map<String, String> preferredReviewSettings = new HashMap<>();
+        preferredReviewSettings.put("wordCount", defaultWordCountDropdown.getText());
+        preferredReviewSettings.put("reviewPreference", defaultPreferenceDropdown.getText());
+        preferredReviewSettings.put("writeIn", defaultWriteInDropdown.getText());
+        settings.put("preferredReviewSettings", preferredReviewSettings);
 
         // Convert to JSON and save to a file.
         ObjectMapper objectMapper = new ObjectMapper();
@@ -147,32 +211,46 @@ public class SettingsController extends Controller {
     }
 
     public static String getNativeLanguage() {
-        Map<String, String> settings = getSettings();
+        Map<String, Object> settings = getSettings();
         assert settings != null;
-        return settings.get("native");
+        return (String) ((Map<?, ?>) settings.get("languageSettings")).get("native");
     }
 
     public static String getForeignLanguage() {
-        Map<String, String> settings = getSettings();
+        Map<String, Object> settings = getSettings();
         assert settings != null;
-        return settings.get("foreign");
+        return (String) ((Map<?, ?>) settings.get("languageSettings")).get("foreign");
     }
 
     public static String getNativeCode() {
-        Map<String, String> settings = getSettings();
-        assert settings != null;
-        return Languages.getStdCode(Languages.valueOf(settings.get("native").toUpperCase()));
+        return Languages.getStdCode(Languages.valueOf(getNativeLanguage().toUpperCase()));
     }
 
     public static String getForeignCode() {
-        Map<String, String> settings = getSettings();
-        assert settings != null;
-        return Languages.getStdCode(Languages.valueOf(settings.get("foreign").toUpperCase()));
+        return Languages.getStdCode(Languages.valueOf(getForeignLanguage().toUpperCase()));
     }
 
     public static String getCaptureDevice() {
-        Map<String, String> settings = getSettings();
+        Map<String, Object> settings = getSettings();
         assert settings != null;
-        return settings.get("captureDevice");
+        return (String) settings.get("captureDevice");
+    }
+
+    public static int getDefaultWordCount() {
+        Map<String, Object> settings = getSettings();
+        assert settings != null;
+        return Integer.parseInt((String) ((Map<?, ?>) settings.get("preferredReviewSettings")).get("wordCount"));
+    }
+
+    public static ReviewPreference getDefaultPreference() {
+        Map<String, Object> settings = getSettings();
+        assert settings != null;
+        return ReviewPreference.getReviewPreference((String) ((Map<?, ?>) settings.get("preferredReviewSettings")).get("reviewPreference"));
+    }
+
+    public static WriteIn getDefaultWriteIn() {
+        Map<String, Object> settings = getSettings();
+        assert settings != null;
+        return WriteIn.getWriteIn((String) ((Map<?, ?>) settings.get("preferredReviewSettings")).get("writeIn"));
     }
 }

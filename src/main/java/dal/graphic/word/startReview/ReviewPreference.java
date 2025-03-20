@@ -15,4 +15,13 @@ public enum ReviewPreference {
             default -> throw new IllegalArgumentException();
         };
     }
+
+    public static String getString(ReviewPreference preference) {
+        return switch (preference) {
+            case ANY -> "Any";
+            case RECENT -> "Learn Recent Words";
+            case OLD -> "Review Old Words";
+            case OFTEN_FAILED -> "Review Often Failed Words";
+        };
+    }
 }

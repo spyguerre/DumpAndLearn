@@ -6,6 +6,8 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -30,54 +32,116 @@
       </MenuBar>
    </top>
    <center>
-      <VBox alignment="CENTER" spacing="42.0" BorderPane.alignment="CENTER">
+      <AnchorPane BorderPane.alignment="CENTER">
          <children>
-            <HBox alignment="CENTER" spacing="20.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Native language:" />
-                  <MenuButton fx:id="nativeDropDown" mnemonicParsing="false" text="Choose language">
-                    <items>
-                      <MenuItem mnemonicParsing="false" onAction="#updateNative" text="English" />
-                      <MenuItem mnemonicParsing="false" onAction="#updateNative" text="French" />
-                        <MenuItem mnemonicParsing="false" onAction="#updateNative" text="German" />
-                        <MenuItem mnemonicParsing="false" onAction="#updateNative" text="Japanese" />
-                    </items>
-                  </MenuButton>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" spacing="20.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Foreign language:" />
-                  <MenuButton fx:id="foreignDropDown" mnemonicParsing="false" text="Choose language">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#updateForeign" text="English" />
-                        <MenuItem mnemonicParsing="false" onAction="#updateForeign" text="French" />
-                        <MenuItem mnemonicParsing="false" onAction="#updateForeign" text="German" />
-                        <MenuItem mnemonicParsing="false" onAction="#updateForeign" text="Japanese" />
-                     </items>
-                  </MenuButton>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" spacing="20.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Capture Device:" />
-                  <MenuButton fx:id="captureDeviceDropdown" mnemonicParsing="false" text="None">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#updateCaptureDevice" text="None" />
-                     </items>
-                  </MenuButton>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" spacing="42.0">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#cancel" text="Cancel" />
-                  <Button mnemonicParsing="false" onAction="#save" text="Save" />
-               </children>
-               <VBox.margin>
-                  <Insets top="42.0" />
-               </VBox.margin>
-            </HBox>
+            <ScrollPane fx:id="mainScrollPane" hbarPolicy="NEVER" layoutY="0.8000011444091797" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <content>
+                  <VBox fx:id="mainVBox" alignment="CENTER" spacing="21.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="General Settings:" />
+                        <HBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Capture Device:" />
+                              <MenuButton fx:id="captureDeviceDropdown" mnemonicParsing="false" text="None">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="None" />
+                                 </items>
+                              </MenuButton>
+                           </children>
+                        </HBox>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Language Settings:">
+                           <VBox.margin>
+                              <Insets top="21.0" />
+                           </VBox.margin>
+                        </Text>
+                        <HBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Native language:" />
+                              <MenuButton fx:id="nativeDropDown" mnemonicParsing="false" text="Choose language">
+                                <items>
+                                  <MenuItem mnemonicParsing="false" text="English" />
+                                  <MenuItem mnemonicParsing="false" text="French" />
+                                    <MenuItem mnemonicParsing="false" text="German" />
+                                    <MenuItem mnemonicParsing="false" text="Japanese" />
+                                </items>
+                              </MenuButton>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Foreign language:" />
+                              <MenuButton fx:id="foreignDropDown" mnemonicParsing="false" text="Choose language">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="English" />
+                                    <MenuItem mnemonicParsing="false" text="French" />
+                                    <MenuItem mnemonicParsing="false" text="German" />
+                                    <MenuItem mnemonicParsing="false" text="Japanese" />
+                                 </items>
+                              </MenuButton>
+                           </children>
+                        </HBox>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Default Review Settings:">
+                           <VBox.margin>
+                              <Insets top="21.0" />
+                           </VBox.margin>
+                        </Text>
+                        <HBox alignment="CENTER" spacing="20.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Default Word Count:" />
+                              <MenuButton fx:id="defaultWordCountDropdown" mnemonicParsing="false" text="15">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="5" />
+                                    <MenuItem mnemonicParsing="false" text="10" />
+                                    <MenuItem mnemonicParsing="false" text="15" />
+                                    <MenuItem mnemonicParsing="false" text="20" />
+                                    <MenuItem mnemonicParsing="false" text="30" />
+                                    <MenuItem mnemonicParsing="false" text="42" />
+                                 </items>
+                              </MenuButton>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="20.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Default Preference:" />
+                              <MenuButton fx:id="defaultPreferenceDropdown" mnemonicParsing="false" text="Any">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="Any" />
+                                    <MenuItem mnemonicParsing="false" text="Learn Recent Words" />
+                                    <MenuItem mnemonicParsing="false" text="Review Old Words" />
+                                    <MenuItem mnemonicParsing="false" text="Review Often Failed Words" />
+                                 </items>
+                              </MenuButton>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="20.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Default Write In..." />
+                              <MenuButton fx:id="defaultWriteInDropdown" mnemonicParsing="false" text="Both">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="Both" />
+                                    <MenuItem mnemonicParsing="false" text="Native Language" />
+                                    <MenuItem mnemonicParsing="false" text="Foreign Language" />
+                                 </items>
+                              </MenuButton>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="42.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+                              <Button mnemonicParsing="false" onAction="#save" text="Save" />
+                           </children>
+                           <VBox.margin>
+                              <Insets top="42.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+                     </padding>
+                  </VBox>
+               </content>
+            </ScrollPane>
          </children>
-      </VBox>
+      </AnchorPane>
    </center>
 </BorderPane>

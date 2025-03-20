@@ -3,6 +3,7 @@ package dal.graphic.word.startReview;
 import dal.graphic.Controller;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
+import dal.graphic.general.SettingsController;
 import dal.graphic.word.review.ReviewController;
 import dal.data.word.WordReviewed;
 import dal.data.word.WordSelector;
@@ -33,8 +34,15 @@ public class startReviewController extends Controller {
     protected void initialize() {
         super.initialize();
 
-        wordCount = Integer.parseInt(wordCountDropdown.getText());
-        reviewPreference = ReviewPreference.getReviewPreference(preferDropdown.getText());
+        // Retrieve preferred review settings
+        wordCount = SettingsController.getDefaultWordCount();
+        reviewPreference = SettingsController.getDefaultPreference();
+        writeIn = SettingsController.getDefaultWriteIn();
+
+        // Update Dropdowns
+        wordCountDropdown.setText(String.valueOf(wordCount));
+        preferDropdown.setText(ReviewPreference.getString(reviewPreference));
+        writeInDropdown.setText(WriteIn.getString(writeIn));
     }
 
     @FXML
