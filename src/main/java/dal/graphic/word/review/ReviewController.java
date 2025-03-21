@@ -18,6 +18,7 @@ import java.util.List;
 public class ReviewController extends Controller {
     private List<WordReviewed> words = new ArrayList<>();
     private int wordIndex = 0;
+    private int allowedError;
 
     @FXML
     private TextField nativeTextField;
@@ -68,7 +69,7 @@ public class ReviewController extends Controller {
 
             // Pass the words to the new Controller
             CorrectionController newController = (CorrectionController) SceneManager.getCurrentController();
-            newController.setWords(words);
+            newController.setWords(words, allowedError);
         }
 
         System.out.println("Next word (" + wordIndex + " of " + words.size() + "): " + words.get(wordIndex));
@@ -112,7 +113,8 @@ public class ReviewController extends Controller {
         return words;
     }
 
-    public void setWords(List<WordReviewed> words) {
+    public void setWords(List<WordReviewed> words, int allowedError) {
+        this.allowedError = allowedError;
         this.words = words;
         updateDisplay();
     }

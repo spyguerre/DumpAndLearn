@@ -45,6 +45,9 @@ public class SettingsController extends Controller {
     private MenuButton defaultWriteInDropdown;
 
     @FXML
+    private MenuButton defaultAllowedErrorDropdown;
+
+    @FXML
     private VBox mainVBox;
 
     @FXML
@@ -108,8 +111,9 @@ public class SettingsController extends Controller {
 
         Map<String, String> preferredReviewSettings = new HashMap<>();
         preferredReviewSettings.put("wordCount", "10");
-        preferredReviewSettings.put("reviewPreference", "Recent");
+        preferredReviewSettings.put("reviewPreference", "Learn Recent Words");
         preferredReviewSettings.put("writeIn", "Both");
+        preferredReviewSettings.put("allowedError", "1");
         settings.put("preferredReviewSettings", preferredReviewSettings);
 
         // Convert to JSON and save to a file.
@@ -131,6 +135,7 @@ public class SettingsController extends Controller {
         defaultWordCountDropdown.setText(String.valueOf(getDefaultWordCount()));
         defaultPreferenceDropdown.setText(ReviewPreference.getString(getDefaultPreference()));
         defaultWriteInDropdown.setText(WriteIn.getString(getDefaultWriteIn()));
+        defaultAllowedErrorDropdown.setText(String.valueOf(getDefaultAllowedError()));
     }
 
     private static Map<String, Object> getSettings() {
@@ -155,7 +160,6 @@ public class SettingsController extends Controller {
         }
     }
 
-    @FXML
     private void updateDropdown(ActionEvent event, MenuButton dropdown) {
         dropdown.setText(((MenuItem) event.getSource()).getText());
     }
@@ -195,6 +199,7 @@ public class SettingsController extends Controller {
         preferredReviewSettings.put("wordCount", defaultWordCountDropdown.getText());
         preferredReviewSettings.put("reviewPreference", defaultPreferenceDropdown.getText());
         preferredReviewSettings.put("writeIn", defaultWriteInDropdown.getText());
+        preferredReviewSettings.put("allowedError", defaultAllowedErrorDropdown.getText());
         settings.put("preferredReviewSettings", preferredReviewSettings);
 
         // Convert to JSON and save to a file.
@@ -252,5 +257,11 @@ public class SettingsController extends Controller {
         Map<String, Object> settings = getSettings();
         assert settings != null;
         return WriteIn.getWriteIn((String) ((Map<?, ?>) settings.get("preferredReviewSettings")).get("writeIn"));
+    }
+
+    public static int getDefaultAllowedError() {
+        Map<String, Object> settings = getSettings();
+        assert settings != null;
+        return Integer.parseInt((String) ((Map<?, ?>) settings.get("preferredReviewSettings")).get("allowedError"));
     }
 }

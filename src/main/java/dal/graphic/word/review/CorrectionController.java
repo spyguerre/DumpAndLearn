@@ -15,14 +15,18 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class CorrectionController extends Controller {
     private List<WordReviewed> words = null;
     private final List<WordReviewed> wordsToCorrect = new ArrayList<>();
+    private int allowedError;
 
     @FXML
     private VBox mainVBox;
@@ -45,7 +49,7 @@ public class CorrectionController extends Controller {
         gridPane.setVgap(5);  // Set vertical gap between rows
         gridPane.setPadding(new Insets(10));
 
-// Column Titles (first row)
+        // Column Titles (first row)
         Text nothingColumn = new Text(""); // Empty column for the emoji
         nothingColumn.setTextAlignment(TextAlignment.CENTER);
         GridPane.setConstraints(nothingColumn, 0, 0);
@@ -71,7 +75,7 @@ public class CorrectionController extends Controller {
         GridPane.setConstraints(descriptionTitle, 4, 0);
         gridPane.getChildren().add(descriptionTitle);
 
-// Set column proportions
+        // Set column proportions
         ColumnConstraints emojiColumn = new ColumnConstraints();
         emojiColumn.setPercentWidth(3); // 3% for the emoji column
 
@@ -90,8 +94,7 @@ public class CorrectionController extends Controller {
         gridPane.getColumnConstraints().addAll(emojiColumn, nativeColumn, foreignColumn, attemptColumn, descriptionColumn);
 
         for (WordReviewed currentWord : words) {
-            boolean typedCorrectly = !(currentWord.isWrittenInForeign() && !currentWord.getForeign().equalsIgnoreCase(currentWord.getUserAnswer())
-                    || !currentWord.isWrittenInForeign() && !currentWord.getNative_().equalsIgnoreCase(currentWord.getUserAnswer()));
+            boolean typedCorrectly = isWordCorrect(currentWord);
 
             // Create a row in the GridPane
             int rowIndex = gridPane.getChildren().size() / 5; // Get the row index based on current number of rows in the grid
@@ -189,6 +192,24 @@ public class CorrectionController extends Controller {
         System.out.println("Found " + rightWordsCount.getText());
     }
 
+    private boolean isWordCorrect(WordReviewed currentWord) {
+        // Normalize & remove accents, then convert to lowercase
+        String normalizedUserInput = normalizeWord(currentWord.getUserAnswer());
+        String normalizedCorrection = normalizeWord(currentWord.isWrittenInForeign() ? currentWord.getForeign() : currentWord.getNative_());
+
+        // Compute Levenshtein distance using Apache Commons Text
+        int distance = new LevenshteinDistance().apply(normalizedUserInput, normalizedCorrection);
+
+        // Check if within allowed error range
+        return distance <= allowedError;
+    }
+
+    private String normalizeWord(String input) {
+        return Normalizer.normalize(input, Normalizer.Form.NFD) // Decomposes letters with accents
+                .replaceAll("\\p{M}", "") // Removes diacritics (accents)
+                .toLowerCase(Locale.ROOT); // Ensures case insensitivity
+    }
+
     private void clearUserAnswers() {
         for (WordReviewed currentWord : wordsToCorrect) {
             currentWord.setUserAnswer("");
@@ -209,7 +230,7 @@ public class CorrectionController extends Controller {
         ReviewController newController = (ReviewController) SceneManager.getCurrentController();
         clearUserAnswers();
         Collections.shuffle(wordsToCorrect);
-        newController.setWords(wordsToCorrect);
+        newController.setWords(wordsToCorrect, allowedError);
     }
 
     private void finishReviewSession() {
@@ -220,7 +241,8 @@ public class CorrectionController extends Controller {
         return words;
     }
 
-    public void setWords(List<WordReviewed> words) {
+    public void setWords(List<WordReviewed> words, int allowedError) {
+        this.allowedError = allowedError;
         this.words = words;
         initWords();
     }
