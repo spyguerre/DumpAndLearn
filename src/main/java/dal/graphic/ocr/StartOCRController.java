@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 
 public class StartOCRController extends Controller {
     private Webcam webcam;
+    private volatile boolean isWebcamOpen = false;
     private final ExecutorService cameraExecutor = Executors.newSingleThreadExecutor();
     private volatile BufferedImage capturedImage; // Keep the captured image before cropping for ctrl-Z
     private volatile BufferedImage currentImage;  // Store the most recent image
@@ -71,7 +72,7 @@ public class StartOCRController extends Controller {
 
         if (webcam == null) {
             ErrorDisplayer.displayError("Camera \"" + requestedCamName + "\" not found. Please select another one in the settings.");
-            SceneManager.switchScene(SceneType.SETTINGS, (Stage) root.getScene().getWindow(), new int[]{(int)(root).getWidth(), (int)(root).getHeight()});
+            Platform.runLater(() -> SceneManager.switchScene(SceneType.SETTINGS, (Stage) root.getScene().getWindow(), new int[]{(int)(root).getWidth(), (int)(root).getHeight()}));
         }
 
         // Initialize UI components
@@ -92,11 +93,14 @@ public class StartOCRController extends Controller {
         // Start by showing the capture view.
         showCaptureView();
 
-        // Ensure the camera is closed when program exits by clicking X button.
         Platform.runLater(() -> {
             Stage stage = (Stage) root.getScene().getWindow();
-            stage.setOnCloseRequest(event -> closeResources());
+            if (stage != null) { // Prevent error when no camera with given name (so when app switches to settings before finishing loading)
+                // Ensure the camera is closed when program exits by clicking X button.
+                stage.setOnCloseRequest(event -> closeResources());
+            }
 
+            // Catch ctrl-Z.
             root.setOnKeyPressed(event -> {
                 if (event.isControlDown() && event.getCode() == KeyCode.Z) {
                     if (!isPreviewing) {
@@ -122,15 +126,34 @@ public class StartOCRController extends Controller {
 
             webcam.open(); // Open without blocking timeout
 
-            // Check after 1 second if the camera is still not open
+            if (webcam.isOpen()) {
+                isWebcamOpen = true;
+                Platform.runLater(() -> captureButton.setDisable(false));
+            }
+        });
+
+        // Check after 5 seconds if the camera is still not open
+        new Thread(() -> {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                System.out.println("Interrupted while waiting for camera to be opened.");
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+
             Platform.runLater(() -> {
-                if (!webcam.isOpen()) {
-                    ErrorDisplayer.displayError("Failed to open camera: " + webcam.getName());
+                if (!isWebcamOpen) {
+                    // Ensure the scene is still open after the 5 seconds.
+                    if (root.getScene().getWindow() != null) {
+                        ErrorDisplayer.displayError("Couldn't open camera: " + webcam.getName() + ". Please select another one in the settings.");
+                        mainMenu();
+                    }
                 } else {
                     captureButton.setDisable(false);
                 }
             });
-        });
+        }).start();
     }
 
     private void startPreview() {
@@ -326,6 +349,7 @@ public class StartOCRController extends Controller {
         if (SceneManager.getCurrentController() instanceof StartOCRController) {
             if (webcam != null) {
                 webcam.close();
+                isWebcamOpen = false;
             }
             cameraExecutor.shutdown();
         }
@@ -334,15 +358,15 @@ public class StartOCRController extends Controller {
     @Override
     @FXML
     protected void mainMenu() {
-        closeResources();
         super.mainMenu();
+        closeResources();
     }
 
     @Override
     @FXML
     protected void settings() {
-        closeResources();
         super.settings();
+        closeResources();
     }
 
     @Override
