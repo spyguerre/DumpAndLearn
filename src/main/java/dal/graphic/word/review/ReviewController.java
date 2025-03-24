@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -31,6 +33,12 @@ public class ReviewController extends Controller {
 
     @FXML
     private Button nextButton;
+
+    @FXML
+    private HBox hintHBox;
+
+    @FXML
+    private Text hintText;
 
     @FXML
     protected void initialize() {
@@ -60,8 +68,8 @@ public class ReviewController extends Controller {
     private void next() {
         saveUserAnswer();
 
-        // Update index
         if (wordIndex < words.size()-1) {
+            // Update index
             wordIndex++;
         } else { // "Finish" clicked instead of "next": Correct words in new scene
             // Switch Scene
@@ -93,6 +101,20 @@ public class ReviewController extends Controller {
             nativeTextField.requestFocus();
         }
 
+        // Update hint
+        // Show hint if hintRevealed is > 0, else hide it.
+        System.out.println(currentWord.getHintRevealed());
+        if (currentWord.getHintRevealed() == 0) {
+            hideHint();
+        } else {
+            int hintRevealed = words.get(wordIndex).getHintRevealed();
+            String answer = words.get(wordIndex).isWrittenInForeign() ? words.get(wordIndex).getForeign() : words.get(wordIndex).getNative_();
+            showHint();
+            // Set the hint text to the first hintRevealed characters of the correct answer, then "_"s for the rest of the word's length.
+            hintText.setText(answer.substring(0, Math.min(hintRevealed, answer.length())) + ".".repeat(Math.max(0, answer.length() - hintRevealed)));
+            showHint();
+        }
+
         // Update buttons
         previousButton.setDisable(wordIndex == 0);
         nextButton.setText(wordIndex == words.size() - 1 ? "Finish" : "Next");
@@ -117,5 +139,24 @@ public class ReviewController extends Controller {
         this.allowedError = allowedError;
         this.words = words;
         updateDisplay();
+    }
+
+    @FXML
+    private void revealHint() {
+        System.out.println("Hint revealed.");
+        words.get(wordIndex).incrHintRevealed();
+        updateDisplay();
+    }
+
+    private void showHint() {
+        // Checks if the hintButton is already in the hintHBox, else add it to its children.
+        if (!hintHBox.getChildren().contains(hintText)) {
+            hintHBox.getChildren().add(hintText);
+        }
+    }
+
+    private void hideHint() {
+        // Removes the hintButton if it is in the hintHBox' children.
+        hintHBox.getChildren().remove(hintText);
     }
 }
