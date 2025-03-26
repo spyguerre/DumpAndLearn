@@ -5,7 +5,7 @@ import javafx.scene.control.ProgressBar;
 
 import java.io.*;
 
-public class YTDownloader {
+public abstract class YTDownloader {
     /**
      * Search for the song with yt-dlp and extract the best Youtube URL.
      */
@@ -87,7 +87,7 @@ public class YTDownloader {
         }
 
         // Construct the yt-dlp command with the desired video format (mp4)
-        String command = "yt-dlp -f mp4 -o " + outputPath + " " + videoUrl;
+        String command = "yt-dlp -f \"bestvideo[height<=300][ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a][acodec^=mp4a]/best[height<=300][ext=mp4]\" --merge-output-format mp4 -o " + outputPath + " " + videoUrl;
 
         try {
             // Execute the command
@@ -101,6 +101,12 @@ public class YTDownloader {
                 if (line.contains("[download]") && line.contains("% of") && progressBar != null) {
                     progressBar.setProgress(.5 + .005 * Float.parseFloat(line.split("\\[download] ")[1].split("% of")[0]));
                 }
+            }
+
+            // Also print the stderr for debugging
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            while ((line = errorReader.readLine()) != null) {
+                System.err.println(line);
             }
 
             // Wait for the process to finish
