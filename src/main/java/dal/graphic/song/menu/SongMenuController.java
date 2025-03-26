@@ -3,14 +3,19 @@ package dal.graphic.song.menu;
 import dal.data.db.Db;
 import dal.data.song.GeniusScraper;
 import dal.data.song.YTDownloader;
+import dal.data.word.Word;
+import dal.data.word.WordType;
 import dal.graphic.ConfirmationListener;
 import dal.graphic.Controller;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
 import dal.graphic.song.playing.MusicPlayingController;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -18,6 +23,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class SongMenuController extends Controller {
+    private final ObservableList<String> songsList = FXCollections.observableArrayList();
+
     @FXML
     private TextField titleTextField;
 
@@ -28,11 +35,36 @@ public class SongMenuController extends Controller {
     private ProgressBar dlProgressBar;
 
     @FXML
+    private ListView<String> lastPlayedSongsListView;
+
+    @FXML
     protected void initialize() {
         super.initialize();
 
         titleTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::searchForSong));
         artistTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::searchForSong));
+
+        // Set the last played songs list
+        lastPlayedSongsListView.setItems(songsList);
+        songsList.addAll(Db.getLastPlayedSongs(20));
+
+        // Set listener to react to clicks on the list
+        lastPlayedSongsListView.setOnMouseClicked(event -> {
+            // Fill the text fields with the selected song's info
+            String selectedSong = lastPlayedSongsListView.getSelectionModel().getSelectedItem();
+            if (selectedSong != null) {
+                String[] songInfo = selectedSong.split(" --- ");
+                titleTextField.setText(songInfo[0]);
+                artistTextField.setText(songInfo[1]);
+
+                // If the user double-clicked, search for the song
+                if (event.getClickCount() == 2) {
+                    searchForSong();
+                }
+            }
+        });
+        // Set it to also react to Enter key
+        lastPlayedSongsListView.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::searchForSong));
     }
 
     @FXML

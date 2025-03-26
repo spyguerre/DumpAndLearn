@@ -77,6 +77,7 @@ public abstract class Db {
                                 youtubeLink TEXT,
                                 geniusLink  TEXT,
                                 lyrics      TEXT    NOT NULL,
+                                lastPlayed  NUMERIC NOT NULL,
                                 UNIQUE (
                                     title,
                                     artist
@@ -187,8 +188,8 @@ public abstract class Db {
     ///////// LYRICS /////////
 
     public static void saveLyricsToDatabase(String title, String artist, String geniusLink, String lyrics) {
-        String sql = "INSERT INTO lyrics (title, artist, geniusLink, lyrics) VALUES (?, ?, ?, ?)";
-        update(sql, new Object[]{title, artist, geniusLink, lyrics});
+        String sql = "INSERT INTO lyrics (title, artist, geniusLink, lyrics, lastPlayed) VALUES (?, ?, ?, ?, ?)";
+        update(sql, new Object[]{title, artist, geniusLink, lyrics, System.currentTimeMillis()});
         System.out.println("✅ Lyrics saved to database!");
     }
 
@@ -327,6 +328,28 @@ public abstract class Db {
         return null;
     }
 
+    public static List<String> getLastPlayedSongs(int limit) {
+        List<String> songs = new ArrayList<>();
+        String sql = "SELECT title, artist FROM lyrics ORDER BY lastPlayed DESC LIMIT ?";
+        try {
+            ResultSet rs = query(sql, new Object[]{limit});
+
+            assert rs != null;
+            while (rs.next()) {
+                songs.add(rs.getString("title") + " --- " + rs.getString("artist"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error retrieving last played songs from database: " + e.getMessage());
+        }
+        return songs;
+    }
+
+    public static void updateLastPlayed(long id) {
+        String sql = "UPDATE lyrics SET lastPlayed = ? WHERE id = ?";
+        update(sql, new Object[]{System.currentTimeMillis(), id});
+    }
+
     ///////// ATOMIC REQUESTS /////////
 
     private static String getSqlWithParams(String sql, Object[] params) {
@@ -370,7 +393,8 @@ public abstract class Db {
                     default -> throw new RuntimeException("Unsupported argument type: " + args[i].getClass());
                 }
             }
-            System.out.println("Executing update: " + getSqlWithParams(insertion, args));
+            String sqlWithParams = getSqlWithParams(insertion, args);
+            System.out.println("Executing update: " + sqlWithParams.substring(0, Math.min(sqlWithParams.length(), 3*42)) + (sqlWithParams.length() > 3*42 ? "..." : ""));
             stmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error executing insertion " + getSqlWithParams(insertion, args));
@@ -396,7 +420,8 @@ public abstract class Db {
                     }
                 }
             }
-            System.out.println("Executing query: " + getSqlWithParams(query, args));
+            String sqlWithParams = getSqlWithParams(query, args);
+            System.out.println("Executing update: " + sqlWithParams.substring(0, Math.min(sqlWithParams.length(), 3*42)) + (sqlWithParams.length() > 3*42 ? "..." : ""));
             return stmt.executeQuery();
         } catch (SQLException e) {
             System.out.println("Error executing query " + getSqlWithParams(query, args));

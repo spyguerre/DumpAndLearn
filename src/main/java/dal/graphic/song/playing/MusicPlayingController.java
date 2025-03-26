@@ -138,6 +138,9 @@ public class MusicPlayingController extends Controller {
         assert lyrics != null;
         lyricsTextArea.setText(lyrics.replaceAll("\\r\\n|\\r|\\n", "\n"));
 
+        // Update the time played
+        Db.updateLastPlayed(songId);
+
         // Start playing the video
         new Thread(() -> {
             try {
