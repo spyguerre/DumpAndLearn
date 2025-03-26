@@ -37,6 +37,9 @@ public class SongMenuController extends Controller {
 
     @FXML
     void searchForSong() {
+        // Disable everything to avoid multiple searches
+        root.setDisable(true);
+
         // And download the song using yt-dlp.
         Task<Void> downloadTask = new Task<>() {
             @Override

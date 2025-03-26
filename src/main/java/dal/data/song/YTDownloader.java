@@ -96,10 +96,17 @@ public abstract class YTDownloader {
             // Read and print the output from the process
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
+            int fileIndex = 0;
+            float percentage = 0;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
                 if (line.contains("[download]") && line.contains("% of") && progressBar != null) {
-                    progressBar.setProgress(.5 + .005 * Float.parseFloat(line.split("\\[download] ")[1].split("% of")[0]));
+                    float newPercentage = Float.parseFloat(line.split("\\[download] ")[1].split("% of")[0]);
+                    if (newPercentage < percentage) {
+                        fileIndex++;
+                    }
+                    percentage = newPercentage;
+                    progressBar.setProgress(.5 + .25 * (.001 * percentage + fileIndex));
                 }
             }
 
