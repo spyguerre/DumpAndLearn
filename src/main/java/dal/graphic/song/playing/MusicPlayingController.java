@@ -26,6 +26,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
 public class MusicPlayingController extends Controller {
+    private int retryTime = 10; // Time to wait before retrying to play the video (in milliseconds)
+
     @FXML
     private MediaView mediaView;
 
@@ -57,7 +59,7 @@ public class MusicPlayingController extends Controller {
         // Ensure MediaView resizes dynamically to fit the window
         StackPane root = (StackPane) this.root;
         mediaView.fitWidthProperty().bind(root.widthProperty().subtract(200)); // Leaves space for lyrics
-        mediaView.fitHeightProperty().bind(root.heightProperty().subtract(100)); // Leaves space for controls
+        mediaView.fitHeightProperty().bind(root.heightProperty().subtract(150)); // Leaves space for controls
 
         // Attach listener to trigger translation on lyrics highlighting.
         PauseTransition pause = new PauseTransition(Duration.millis(742)); // Timer to wait for the user to finish highlighting.
@@ -102,28 +104,12 @@ public class MusicPlayingController extends Controller {
         String videoFilePath = "file:///" + formattedPath;  // Make sure to prepend "file:///"
         Media media = new Media(videoFilePath);
 
-        // Create the MediaPlayer to control the media
         if (isFileLocked(videoFile)) {
             System.err.println("File is locked. Try again.");
         }
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setOnError(() -> System.err.println("MediaPlayer error: " + mediaPlayer.getError()));
-        mediaView.setMediaPlayer(mediaPlayer);
 
-        mediaPlayer.setOnReady(() -> {
-            // Set the video aspect ratio.
-            mediaView.setPreserveRatio(true);
-            // Set the maximum value of the progress slider when the video is ready.
-            progressSlider.setMax(mediaPlayer.getMedia().getDuration().toSeconds());
-        });
-
-        // Update the progress slider as the video plays
-        mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
-            if (!progressSlider.isValueChanging()) {
-                // Ensure the slider value updates in sync with the media's current time
-                progressSlider.setValue(newValue.toSeconds());
-            }
-        });
+        // Create the MediaPlayer to control the media
+        initMediaPlayer(media);
 
         // Adjust initial volume.
         updateVolume();
@@ -141,6 +127,56 @@ public class MusicPlayingController extends Controller {
         // Update the time played
         Db.updateLastPlayed(songId);
 
+        // Add key event listener for space bar pause/play.
+        Scene scene = root.getScene();
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode().toString().equals("SPACE")) {
+                togglePlayPause();
+            }
+        });
+    }
+
+    private void initMediaPlayer(Media media) {
+        MediaPlayer oldMediaPlayer = mediaView.getMediaPlayer();
+        if (oldMediaPlayer != null) {
+            oldMediaPlayer.stop();
+            oldMediaPlayer.dispose();
+        }
+
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setOnError(() -> {
+            Platform.runLater(() -> {
+                System.err.println("MediaPlayer error: " + mediaPlayer.getError());
+                retryTime *= 2; // Double the retry time each time video fails to load properly.
+                System.out.println("Trying to set and play the video again in " + retryTime + " milliseconds...");
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(retryTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    initMediaPlayer(media);
+                    mediaPlayer.play();
+                }).start();
+            });
+        });
+        mediaView.setMediaPlayer(mediaPlayer);
+
+        mediaPlayer.setOnReady(() -> {
+            // Set the video aspect ratio.
+            mediaView.setPreserveRatio(true);
+            // Set the maximum value of the progress slider when the video is ready.
+            progressSlider.setMax(mediaPlayer.getMedia().getDuration().toSeconds());
+        });
+
+        // Update the progress slider as the video plays
+        mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
+            if (!progressSlider.isValueChanging()) {
+                // Ensure the slider value updates in sync with the media's current time
+                progressSlider.setValue(newValue.toSeconds());
+            }
+        });
+
         // Start playing the video
         new Thread(() -> {
             try {
@@ -151,14 +187,6 @@ public class MusicPlayingController extends Controller {
             Platform.runLater(mediaPlayer::play);
             System.out.println("Video ready!");
         }).start();
-
-        // Add key event listener for space bar pause/play.
-        Scene scene = root.getScene();
-        scene.setOnKeyPressed(event -> {
-            if (event.getCode().toString().equals("SPACE")) {
-                togglePlayPause();
-            }
-        });
     }
 
     // Toggle the play/pause state and update the button text
@@ -219,6 +247,8 @@ public class MusicPlayingController extends Controller {
     private void learnFromSong() {
         // Stop the video before switching scene.
         mediaView.getMediaPlayer().stop();
+        // Release the video file that the MediaPlayer is using.
+        mediaView.getMediaPlayer().dispose();
         SceneManager.switchScene(SceneType.SONG_MENU, (Stage) root.getScene().getWindow(), new int[]{(int)((Pane)root).getWidth(), (int)((Pane)root).getHeight()});
     }
 
@@ -226,6 +256,8 @@ public class MusicPlayingController extends Controller {
     protected void mainMenu() {
         // Stop the video before switching scene.
         mediaView.getMediaPlayer().stop();
+        // Release the video file that the MediaPlayer is using.
+        mediaView.getMediaPlayer().dispose();
         super.mainMenu();
     }
 
@@ -233,6 +265,8 @@ public class MusicPlayingController extends Controller {
     protected void quit() {
         // Stop the video before quitting.
         mediaView.getMediaPlayer().stop();
+        // Release the video file that the MediaPlayer is using.
+        mediaView.getMediaPlayer().dispose();
         super.quit();
     }
 }

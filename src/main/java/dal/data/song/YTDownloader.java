@@ -9,20 +9,22 @@ public abstract class YTDownloader {
     /**
      * Search for the song with yt-dlp and extract the best Youtube URL.
      */
-    public static String getYoutubeURL(String songName, String artist) {
+    public static String getYoutubeURL(String songName, String artist, boolean forceRedownload) {
         try {
-            // Try to get the Youtube URL from the database first.
-            Long id = Db.getsongIDFromtitle(songName, artist);
-            if (id != null) { // Found the song ID in the database.
-                String youtubeURL = Db.getYoutubeLink(id);
-                if (youtubeURL != null) { // Found the song's Youtube link in the database.
-                    System.out.println("Youtube URL found in the database: " + youtubeURL);
-                    return youtubeURL;
+            if (!forceRedownload) {
+                // Try to get the Youtube URL from the database first.
+                Long id = Db.getsongIDFromtitle(songName, artist);
+                if (id != null) { // Found the song ID in the database.
+                    String youtubeURL = Db.getYoutubeLink(id);
+                    if (youtubeURL != null) { // Found the song's Youtube link in the database.
+                        System.out.println("Youtube URL found in the database: " + youtubeURL);
+                        return youtubeURL;
+                    }
                 }
             }
 
             // Add the ytsearch: prefix to the query
-            String searchQuery = "ytsearch:\"" + songName + artist + "\"";
+            String searchQuery = "\"ytsearch:" + songName + " " + artist + "\"";
 
             // Build the yt-dlp command to search for a song on YouTube
             String command = "yt-dlp --get-id --no-warnings " + searchQuery;
@@ -38,38 +40,39 @@ public abstract class YTDownloader {
             String line;
             while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
+                System.out.println(line);
             }
 
             // Wait for the process to finish
             process.waitFor();
 
             // Extract the video URL from the output (it will return video IDs or URLs)
-
             return "https://www.youtube.com/watch?v=" + output.toString().trim();
+
         } catch (Exception e) {
             e.printStackTrace();
             return "Error getting youtube link: " + e.getMessage();
         }
     }
 
-    public static void downloadVideo(String videoUrl, String songTitle, String artist) {
-        downloadVideo(videoUrl, songTitle, artist, null);
+    public static void downloadVideo(String videoUrl, String songTitle, boolean forceRedownload, String artist) {
+        downloadVideo(videoUrl, songTitle, artist, forceRedownload, null);
     }
 
-    public static void downloadVideo(String videoUrl, String songTitle, String artist, ProgressBar progressBar) {
+    public static void downloadVideo(String videoUrl, String songTitle, String artist, boolean forceRedownload, ProgressBar progressBar) {
         // Ensure the output directory exists
         File outputDir = new File("./downloads");
         if (!outputDir.exists()) {
             outputDir.mkdir();
         }
 
-        // Get the song ID from the database using the song title and artist
-        Long songID = Db.getsongIDFromtitle(songTitle, artist);
-
         // Update progress bar
         if (progressBar != null) {
             progressBar.setProgress(0.42);
         }
+
+        // Get the song ID from the database using the song title and artist
+        Long songID = Db.getsongIDFromtitle(songTitle, artist);
 
         if (songID == null) {
             System.err.println("Couldn't get song ID for title " + songTitle + " and artist " + artist + "; aborting download.");
@@ -79,11 +82,13 @@ public abstract class YTDownloader {
         // Construct the output path with the song ID as the filename
         String outputPath = "./downloads/" + songID + ".%(ext)s";  // %(ext)s will automatically get the correct file extension (e.g., mp4)
 
-        // Check if the song is already downloaded (i.e., if the file exists)
-        File downloadedFile = new File("./downloads/" + songID + ".mp4");
-        if (downloadedFile.exists()) {
-            System.out.println("Song with ID " + songID + " is already downloaded. Skipping download.");
-            return;  // Skip the download process if the file already exists
+        if (!forceRedownload) {
+            // Check if the song is already downloaded (i.e., if the file exists)
+            File downloadedFile = new File("./downloads/" + songID + ".mp4");
+            if (downloadedFile.exists()) {
+                System.out.println("Song with ID " + songID + " is already downloaded. Skipping download.");
+                return;  // Skip the download process if the file already exists
+            }
         }
 
         // Construct the yt-dlp command with the desired video format (mp4)

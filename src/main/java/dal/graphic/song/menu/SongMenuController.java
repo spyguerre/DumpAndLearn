@@ -3,8 +3,6 @@ package dal.graphic.song.menu;
 import dal.data.db.Db;
 import dal.data.song.GeniusScraper;
 import dal.data.song.YTDownloader;
-import dal.data.word.Word;
-import dal.data.word.WordType;
 import dal.graphic.ConfirmationListener;
 import dal.graphic.Controller;
 import dal.graphic.SceneManager;
@@ -15,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
@@ -38,6 +37,12 @@ public class SongMenuController extends Controller {
     private ListView<String> lastPlayedSongsListView;
 
     @FXML
+    private CheckBox forceRedownloadCheckbox;
+
+    @FXML
+    private CheckBox ensureGeniusMatchCheckbox;
+
+    @FXML
     protected void initialize() {
         super.initialize();
 
@@ -55,8 +60,7 @@ public class SongMenuController extends Controller {
             if (selectedSong != null) {
                 String[] songInfo = selectedSong.split(" --- ");
                 titleTextField.setText(songInfo[0]);
-                artistTextField.setText(songInfo[1]);
-
+                artistTextField.setText(songInfo.length > 1 ? songInfo[1] : "");
                 // If the user double-clicked, search for the song
                 if (event.getClickCount() == 2) {
                     searchForSong();
@@ -68,7 +72,7 @@ public class SongMenuController extends Controller {
     }
 
     @FXML
-    void searchForSong() {
+    private void searchForSong() {
         // Disable everything to avoid multiple searches
         root.setDisable(true);
 
@@ -80,19 +84,19 @@ public class SongMenuController extends Controller {
                 Platform.runLater(() -> dlProgressBar.setVisible(true));
 
                 // First search for the song's lyrics and correct info using Genius
-                Object[] songInfo = (new GeniusScraper()).getSongInfo(titleTextField.getText(), artistTextField.getText());
+                Object[] songInfo = (new GeniusScraper()).getSongInfo(titleTextField.getText(), artistTextField.getText(), forceRedownloadCheckbox.isSelected(), ensureGeniusMatchCheckbox.isSelected());
                 Platform.runLater(() -> dlProgressBar.setProgress(0.1));
                 String title = (String) songInfo[0];
                 String artist = (String) songInfo[1];
                 Platform.runLater(() -> dlProgressBar.setProgress(0.2));
 
                 // Then search the song's link using yt-dlp.
-                String youtubeURL = YTDownloader.getYoutubeURL(title, artist);
+                String youtubeURL = YTDownloader.getYoutubeURL(title, artist, forceRedownloadCheckbox.isSelected());
                 System.out.println("Youtube URL found: " + youtubeURL);
                 Platform.runLater(() -> dlProgressBar.setProgress(0.3));
 
                 // And download the video
-                YTDownloader.downloadVideo(youtubeURL, title, artist, dlProgressBar);
+                YTDownloader.downloadVideo(youtubeURL, title, artist, forceRedownloadCheckbox.isSelected(), dlProgressBar);
 
                 try {
                     Thread.sleep(250); // Give the system to recognize the video file properly or something.

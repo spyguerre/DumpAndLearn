@@ -20,53 +20,56 @@ public class GeniusScraper {
      * Gets a song's lyrics online, unless there is already a close enough match saved in the database.
      * @return the corrected (if necessary) title, artist, and lyrics.
      */
-    public String[] getSongInfo(String title, String artist) {
-        System.out.println("Looking for an exact match in the database...");
+    public String[] getSongInfo(String title, String artist, boolean forceRedownload, boolean ensureLyricsMatch) {
+        String lyrics;
+        if (!forceRedownload) {
+            System.out.println("Looking for an exact match in the database...");
 
-        // First, check for an exact match in the database
-        String lyrics = Db.getLyrics(title, artist);
-
-        if (lyrics != null) {
-            System.out.println("✅ Lyrics found in database!");
-            System.out.println("Title found: " + title);
-            System.out.println("Artist found: " + artist);
-            return new String[]{title, artist, lyrics};
-        }
-
-        // If no exact match is found, attempt fuzzy matching for title and artist
-        System.out.println("🔍 Lyrics not found, attempting fuzzy matching...");
-
-        // Find closest matching title and artist
-        String closestTitle = findClosestMatchingTitle(title);
-        String closestArtist = findClosestMatchingArtist(artist);
-
-        // If either the title or artist was fuzzy matched, use the closest match
-        if (closestTitle != null || closestArtist != null) {
-            if (closestTitle != null &&!closestTitle.equals(title)) {
-                title = closestTitle;
-            }
-            if (closestArtist != null && !closestArtist.equals(artist)) {
-                artist = closestArtist;
-            }
-
-            System.out.println("Trying to retrieve lyrics from database using title: " + title + " and artist: " + artist + "...");
-
+            // First, check for an exact match in the database
             lyrics = Db.getLyrics(title, artist);
+
             if (lyrics != null) {
                 System.out.println("✅ Lyrics found in database!");
                 System.out.println("Title found: " + title);
                 System.out.println("Artist found: " + artist);
                 return new String[]{title, artist, lyrics};
+            }
+
+            // If no exact match is found, attempt fuzzy matching for title and artist
+            System.out.println("🔍 Lyrics not found, attempting fuzzy matching...");
+
+            // Find closest matching title and artist
+            String closestTitle = findClosestMatchingTitle(title);
+            String closestArtist = findClosestMatchingArtist(artist);
+
+            // If either the title or artist was fuzzy matched, use the closest match
+            if (closestTitle != null || closestArtist != null) {
+                if (closestTitle != null &&!closestTitle.equals(title)) {
+                    title = closestTitle;
+                }
+                if (closestArtist != null && !closestArtist.equals(artist)) {
+                    artist = closestArtist;
+                }
+
+                System.out.println("Trying to retrieve lyrics from database using title: " + title + " and artist: " + artist + "...");
+
+                lyrics = Db.getLyrics(title, artist);
+                if (lyrics != null) {
+                    System.out.println("✅ Lyrics found in database!");
+                    System.out.println("Title found: " + title);
+                    System.out.println("Artist found: " + artist);
+                    return new String[]{title, artist, lyrics};
+                } else {
+                    System.out.println("Couldn't find the lyrics in the database using fuzzy matching.");
+                }
             } else {
                 System.out.println("Couldn't find the lyrics in the database using fuzzy matching.");
             }
-        } else {
-            System.out.println("Couldn't find the lyrics in the database using fuzzy matching.");
-        }
 
+        }
         // Else scrape lyrics from Genius using the corrected title and artist
         System.out.println("Searching for the lyrics online on Genius...");
-        String geniusUrl = getGeniusUrl(title, artist);
+        String geniusUrl = getGeniusUrl(title, artist, ensureLyricsMatch);
         System.out.println("Genius URL found: " + geniusUrl);
         lyrics = getLyrics();
 
@@ -89,8 +92,9 @@ public class GeniusScraper {
         }
         // Check if the song already exists in the database before saving
         String existingLyrics = Db.getLyrics(correctTitle, correctArtist);
-        if (existingLyrics == null) {
-            // Only save if it doesn't already exist.
+        if (existingLyrics == null || forceRedownload) {
+            // Only save if it doesn't already exist or if the user wants to force redownload.
+            Db.deleteSongFromDatabase(correctTitle, correctArtist); // Delete the song if it already exists
             Db.saveLyricsToDatabase(correctTitle, correctArtist, geniusUrl, lyrics);
         } else {
             System.out.println("✅ Lyrics already exist in the database, skipping save.");
@@ -148,7 +152,7 @@ public class GeniusScraper {
     /**
      * Search for the song using googlesearch python module and extract the Genius URL.
      */
-    public String getGeniusUrl(String songName, String artist) {
+    public String getGeniusUrl(String songName, String artist, boolean ensureLyricsMatch) {
         // Check if we searched for the best genius link before.
         if (bestGeniusURL != null) {
             return bestGeniusURL;
@@ -170,9 +174,13 @@ public class GeniusScraper {
             while ((line = reader.readLine()) != null) {
                 // If we find a link:
                 if (line.contains("genius.com")) {
-                    // Check that it contains a title and artist that matches the user's input
                     bestGeniusURL = line;
 
+                    if (!ensureLyricsMatch) { // If the user doesn't care about the lyrics matching, return the first link found.
+                        return line;
+                    }
+
+                    // Else check that it contains a title and artist that matches the user's input
                     Document doc = getGeniusDocument();
                     assert doc != null;
 
