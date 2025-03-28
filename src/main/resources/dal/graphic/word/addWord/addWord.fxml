@@ -26,14 +26,14 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#deleteLast" text="Delete" />
+              <MenuItem mnemonicParsing="false" text="Delete" />
             </items>
           </Menu>
         </menus>
       </MenuBar>
    </top>
    <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="1500.0" prefWidth="1000.0" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
+      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="1500.0" prefWidth="1000.0" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
          <content>
             <VBox minHeight="-Infinity" minWidth="-Infinity" spacing="40.0">
                <children>
@@ -108,7 +108,15 @@
                         <HBox alignment="CENTER" spacing="42.0">
                            <children>
                               <TextField fx:id="searchTextField" maxWidth="242.0" minWidth="0.0" prefWidth="242.0" promptText="Look for a word..." />
-                              <ListView fx:id="searchListView" maxHeight="300.0" maxWidth="242.0" minHeight="200.0" minWidth="242.0" prefHeight="200.0" prefWidth="242.0" />
+                              <ScrollPane fx:id="listViewScrollPane" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="NEVER">
+                                 <content>
+                                    <VBox fx:id="listViewVBox" spacing="10.0">
+                                       <children>
+                                          <ListView fx:id="searchListView" maxHeight="200.0" minHeight="200.0" minWidth="242.0" prefHeight="200.0" prefWidth="242.0" />
+                                       </children>
+                                    </VBox>
+                                 </content>
+                              </ScrollPane>
                            </children>
                            <VBox.margin>
                               <Insets />

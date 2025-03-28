@@ -36,7 +36,7 @@ public class StartOCRController extends Controller {
     private volatile boolean isPreviewing = true;  // Flag to stop the preview feed
     private double startX, startY;  // Starting point of the rectangle
     private boolean isSelecting = false;  // Flag to check if selection is happening
-    private GraphicsContext gc;
+    private GraphicsContext gc; // Graphic context for Selection Canvas
 
     @FXML
     private BorderPane root;
