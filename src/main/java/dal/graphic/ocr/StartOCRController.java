@@ -12,15 +12,17 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -177,6 +179,40 @@ public class StartOCRController extends Controller {
                 }
             }
         });
+    }
+
+    @FXML
+    private void handleImageViewDragOver(DragEvent event) {
+        if (event.getDragboard().hasFiles()) {
+            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
+        event.consume();
+    }
+
+    @FXML
+    private void handleImageViewDragDropped(DragEvent event) {
+        Dragboard dragboard = event.getDragboard();
+        if (dragboard.hasFiles()) {
+            File file = dragboard.getFiles().getFirst(); // Get the first dropped file
+            try {
+                // Switch to the selection view
+                showSelectionView();
+
+                // Convert file to JavaFX Image and display it
+                Image image = new Image(file.toURI().toString());
+
+                // Update the ImageView and the current image
+                currentImage = ImageIO.read(file);
+                capturedImage = currentImage; // Failsafe for ctrl-Z
+                previewImageView.setImage(image);
+
+                System.out.println("Image successfully loaded!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        event.setDropCompleted(true);
+        event.consume();
     }
 
     @FXML

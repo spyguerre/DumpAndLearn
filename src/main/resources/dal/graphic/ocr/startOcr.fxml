@@ -33,7 +33,7 @@
     <center>
         <VBox fx:id="mainVBox" alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
             <children>
-            <StackPane BorderPane.alignment="CENTER">
+            <StackPane onDragDropped="#handleImageViewDragDropped" onDragOver="#handleImageViewDragOver" BorderPane.alignment="CENTER">
                <children>
                         <ImageView fx:id="previewImageView" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" />
                         <Canvas fx:id="previewCanvas" height="300.0" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased" style="-fx-opacity: .5;" width="300.0" />
