@@ -61,7 +61,7 @@ public abstract class YTDownloader {
 
     public static void downloadVideo(String videoUrl, String songTitle, String artist, boolean forceRedownload, ProgressBar progressBar) {
         // Ensure the output directory exists
-        File outputDir = new File("./downloads");
+        File outputDir = new File("./downloads/music");
         if (!outputDir.exists()) {
             outputDir.mkdir();
         }
@@ -80,11 +80,11 @@ public abstract class YTDownloader {
         }
 
         // Construct the output path with the song ID as the filename
-        String outputPath = "./downloads/" + songID + ".%(ext)s";  // %(ext)s will automatically get the correct file extension (e.g., mp4)
+        String outputPath = "./downloads/music/" + songID + ".%(ext)s";  // %(ext)s will automatically get the correct file extension (e.g., mp4)
 
         if (!forceRedownload) {
             // Check if the song is already downloaded (i.e., if the file exists)
-            File downloadedFile = new File("./downloads/" + songID + ".mp4");
+            File downloadedFile = new File("./downloads/music/" + songID + ".mp4");
             if (downloadedFile.exists()) {
                 System.out.println("Song with ID " + songID + " is already downloaded. Skipping download.");
                 return;  // Skip the download process if the file already exists

@@ -85,7 +85,7 @@ public class MusicPlayingController extends Controller {
         System.out.println("Initializing video...");
 
         // Path to video file (use the absolute path for better reliability)
-        File videoFile = new File("downloads/" + songId + ".mp4");  // Specify relative path
+        File videoFile = new File("downloads/music/" + songId + ".mp4");  // Specify relative path
         System.out.println(videoFile.getAbsolutePath());
         String absolutePath = videoFile.getAbsolutePath();  // Convert to absolute path
 

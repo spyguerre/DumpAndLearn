@@ -7,6 +7,9 @@ downloads/
 .venv/
 settings.json
 images/
+__pycache__/
+voskModels/*
+!voskModels/*.zip
 
 ### IntelliJ IDEA ###
 .idea/
