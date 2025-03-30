@@ -112,7 +112,7 @@ public class SongMenuController extends Controller {
                     MusicPlayingController newController = (MusicPlayingController) SceneManager.getCurrentController();
                     Long songId = Db.getsongIDFromtitle(title, artist);
                     assert songId != null;
-                    newController.initVideo(songId);
+                    newController.initVideo("downloads/music/" + songId + ".mp4", songId);
                 });
 
                 return null;

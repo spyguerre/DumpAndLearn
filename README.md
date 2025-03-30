@@ -1,10 +1,10 @@
 # *Dump-And-Learn*
 
 *Dump-And-Learn* is an easy java app that helps you learn any
-language by yourself using media, such as listening to lyrics from a song,
-or reading a book. The app encourages you save vocabulary when
-you discover new words, and allows you to review them, based on
-your preferences.
+language by yourself using media, such as listening to a podcast or
+lyrics from a song, or reading a book. The app encourages you save
+vocabulary when you discover new words, and allows you to review
+them, based on your preferences.
 
 ## Installation
 
@@ -32,21 +32,29 @@ the MenuBar on top; and start learning!
 If your **desired language isn't listed**, feel free to add it!
 You can add almost any language you want to access all the features of
 the app:
-- First, head to
+- First, for the Text Recognition, head to
 [the tesseract OCR data repo](https://github.com/tesseract-ocr/tessdata),
-find the data file corresponding to your language, and drop it under local
-`./tessdata`.
+find the data file corresponding to your language, and drop it under
+local `./tessdata`.
+- For the podcast transcription, head to
+[Vosk models downloads page](https://alphacephei.com/vosk/models)
+and download the model corresponding to your language (there is often
+a smaller model available, which is faster to download and use). Then
+simply drop the zip file in the `./voskModels` folder,
+and rename it with the two-letters standard code of your language.
 - Then, find `src/main/java/dal/data/Languages.java`, and add
 your language:
     - In the **enum**;
     - In the **getStdCode()** method (the String must match the
-  two-letters country code of your language in google translate's url);
-    - In the **getTessCode()** method (the String must match the first few
-  letters before `.traineddata` of the file you added in `./tessdata`).
+  two-letters country code of your language in google translate's url,
+  and the one you used to rename the vosk model.);
+    - In the **getTessCode()** method (the String must match the
+  first few letters before `.traineddata` of the file
+  you added in `./tessdata`).
 
 ## Features
 
-Dump-And-Learn has 4 main features, that are available directly from
+Dump-And-Learn has 5 main features, that are available directly from
 the Main Menu.
 
 ### Manage Words
@@ -68,9 +76,17 @@ be asked to type the words.
 The app provides a correction for each session, and encourages you
 to correct the words that you misspelled until you get them right.
 
+### Listen to a Podcast
+
+This feature allows you to listen to a podcast in your target language,
+and get the transcript of it in real time along with a translation.
+You can also highlight words that you don't understand,
+and get an instant translation; with the ability to add these words
+dynamically to your word bank as well.
+
 ### Learn from a Song
 
-This third feature allows you to type the name of a song and its artist,
+This fourth feature allows you to type the name of a song and its artist,
 to automatically download its lyrics from Genius (if available), and
 its music video from youtube!
 

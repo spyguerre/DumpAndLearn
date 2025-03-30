@@ -14,7 +14,8 @@ public enum SceneType {
     TRANSLATION_POPUP,
     START_OCR,
     OCR,
-    PODCAST_MENU;
+    PODCAST_MENU,
+    PODCAST_PLAYING;
 
     public static FXMLLoader getSceneFxml(SceneType scene) {
         String fp = "";
@@ -26,11 +27,12 @@ public enum SceneType {
             case REVIEW -> fp = "word/review/review.fxml";
             case CORRECTION -> fp = "word/review/correction.fxml";
             case SONG_MENU -> fp = "song/menu/songMenu.fxml";
-            case SONG_PLAYING -> fp = "song/playing/playing.fxml";
+            case SONG_PLAYING -> fp = "song/playing/songPlaying.fxml";
             case TRANSLATION_POPUP -> fp = "song/playing/popup.fxml";
             case START_OCR -> fp = "ocr/startOcr.fxml";
             case OCR -> fp = "ocr/ocr.fxml";
             case PODCAST_MENU -> fp = "podcast/podcastMenu.fxml";
+            case PODCAST_PLAYING -> fp = "podcast/podcastPlaying.fxml";
         }
 
         return new FXMLLoader(SceneType.class.getResource(fp));

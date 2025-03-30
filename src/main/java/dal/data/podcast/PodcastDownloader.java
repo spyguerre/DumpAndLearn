@@ -8,6 +8,7 @@ import dal.graphic.podcast.PodcastMenuController;
 import javafx.application.Platform;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 
 public abstract class PodcastDownloader {
@@ -54,5 +55,39 @@ public abstract class PodcastDownloader {
             e.printStackTrace();
         }
         return title;
+    }
+
+    // Returns the transcription of the podcast at the given time in seconds and the end time of the transcription found.
+    public static Object[] getTranscription(long id, float seconds) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("downloads/podcasts/" + id + ".srt"));
+            String line;
+            StringBuilder transcription = new StringBuilder();
+            float endTime = 0f;
+            while ((line = reader.readLine()) != null) {
+                // Read the transcription file in SRT format
+                if (line.matches("\\d{2}:\\d{2}:\\d{2},\\d{3} --> \\d{2}:\\d{2}:\\d{2},\\d{3}")) {
+                    String[] timeRange = line.split(" --> ");
+                    float startTime = parseTimeToSeconds(timeRange[0]);
+                    endTime = parseTimeToSeconds(timeRange[1]);
+                    if (seconds >= startTime && seconds <= endTime) {
+                        while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                            transcription.append(line).append("\n");
+                        }
+                        break;
+                    }
+                }
+            }
+            reader.close();
+            return new Object[]{transcription.toString().trim(), endTime};
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Object[]{"", 0f};
+        }
+    }
+
+    private static float parseTimeToSeconds(String time) {
+        String[] parts = time.split("[:,]");
+        return Integer.parseInt(parts[0]) * 3600 + Integer.parseInt(parts[1]) * 60 + Integer.parseInt(parts[2]) + Integer.parseInt(parts[3]) / 1000.0f;
     }
 }

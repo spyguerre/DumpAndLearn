@@ -359,14 +359,14 @@ public abstract class Db {
         return songs;
     }
 
-    public static void updateLastPlayed(long id) {
+    public static void updateLastPlayedSong(long id) {
         String sql = "UPDATE lyrics SET lastPlayed = ? WHERE id = ?";
         update(sql, new Object[]{System.currentTimeMillis(), id});
     }
 
     ///////// PODCASTS /////////
 
-    public static int savePodcastToDatabase(String ytLink) {
+    public static long savePodcastToDatabase(String ytLink) {
         String sql = "INSERT INTO podcasts (ytLink, lastPlayedTimestamp) VALUES (?, ?)";
         update(sql, new Object[]{ytLink, System.currentTimeMillis()});
         System.out.println("✅ Podcast saved to database!");
@@ -416,7 +416,7 @@ public abstract class Db {
         return podcasts;
     }
 
-    public static int getPodcastId(String ytLink) {
+    public static long getPodcastId(String ytLink) {
         String sql = "SELECT id FROM podcasts WHERE ytLink = ?";
         try {
             ResultSet rs = query(sql, new Object[]{ytLink});
@@ -431,7 +431,7 @@ public abstract class Db {
         return -1;
     }
 
-    public static String getPodcastYoutubeLink(int id) {
+    public static String getPodcastYoutubeLink(long id) {
         String sql = "SELECT ytLink FROM podcasts WHERE id = ?";
         try {
             ResultSet rs = query(sql, new Object[]{id});
@@ -484,6 +484,16 @@ public abstract class Db {
             System.err.println("Error checking if link is already in database: " + e.getMessage());
         }
         return false;
+    }
+
+    public static void updateLastPlayedPodcast(long id) {
+        String sql = "UPDATE podcasts SET lastPlayedTimestamp = ? WHERE id = ?";
+        try {
+            update(sql, new Object[]{System.currentTimeMillis(), id});
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error updating last played podcast: " + e.getMessage());
+        }
     }
 
     ///////// ATOMIC REQUESTS /////////

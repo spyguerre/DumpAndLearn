@@ -3,9 +3,7 @@ package dal.graphic.podcast;
 import dal.data.Languages;
 import dal.data.db.Db;
 import dal.data.podcast.PodcastDownloader;
-import dal.graphic.ConfirmationListener;
-import dal.graphic.Controller;
-import dal.graphic.NotificationDisplayer;
+import dal.graphic.*;
 import dal.graphic.general.SettingsController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +11,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 public class PodcastMenuController extends Controller {
     private final ObservableList<String> loadedPodcastsList = FXCollections.observableArrayList();
@@ -76,7 +76,7 @@ public class PodcastMenuController extends Controller {
         NotificationDisplayer.displayInfo("Your podcast is being loaded. This might take a few minutes, but you can continue using the app in the mean time!");
 
         // Save the podcast to the database and get its id
-        int dlId = Db.savePodcastToDatabase(link);
+        long dlId = Db.savePodcastToDatabase(link);
 
         // Get the podcast title and update the database
         new Thread(() -> {
@@ -85,8 +85,11 @@ public class PodcastMenuController extends Controller {
         }).start();
     }
 
-    private void playPodcast(int podcastId) {
-
+    private void playPodcast(long podcastId) {
+        // Load the podcast in the player and initialize its video
+        SceneManager.switchScene(SceneType.PODCAST_PLAYING, (Stage) root.getScene().getWindow(), new int[]{(int)((Pane)root).getWidth(), (int)((Pane)root).getHeight()});
+        PodcastPlayingController podcastPlayingController = (PodcastPlayingController) SceneManager.getCurrentController();
+        podcastPlayingController.initVideo("downloads/podcasts/" + podcastId + ".mp4", podcastId);
     }
 
     public void refreshPodcastsList() {

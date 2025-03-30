@@ -85,7 +85,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Retrieve command line arguments
-    yt_code = sys.argv[1]
+    yt_link = sys.argv[1]
     language = sys.argv[2]
     dl_id = sys.argv[3]
 
@@ -107,11 +107,11 @@ if __name__ == "__main__":
     srt_file = f"downloads/podcasts/{dl_id}.srt"
     model_path = f"voskModels/{language}"
 
-    print(f"Downloading the MP4 podcast at \"https://youtube.com/watch?v={yt_code}\"...")
+    print(f"Downloading the MP4 podcast at \"{yt_link}\"...")
 
     # Download MP4 using yt-dlp
-    with yt_dlp.YoutubeDL({'format': 'mp4', 'outtmpl': mp4_file}) as ydl:
-        ydl.download([yt_code])
+    with yt_dlp.YoutubeDL({'format': 'bestvideo[height<=300][ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a][acodec^=mp4a]/best[height<=300][ext=mp4]', 'outtmpl': mp4_file}) as ydl:
+        ydl.download([yt_link])
 
     print("Download complete. Converting the MP4 podcast to WAV format...")
 
