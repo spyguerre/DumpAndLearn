@@ -18,12 +18,14 @@ module org.spyguerre.dal {
     exports dal.graphic.word.review;
     exports dal.graphic.song.menu;
     exports dal.graphic.song.playing;
+    exports dal.graphic.ocr;
+    exports dal.graphic.podcast;
     exports dal.data;
     exports dal.data.db;
     exports dal.data.word;
     exports dal.data.song;
     exports dal.data.ocr;
-    exports dal.graphic.ocr;
+    exports dal.data.podcast;
 
     opens dal to javafx.fxml;
     opens dal.graphic to javafx.fxml;
@@ -34,5 +36,6 @@ module org.spyguerre.dal {
     opens dal.graphic.song.playing to javafx.fxml;
     opens dal.graphic.general to javafx.fxml;
     opens dal.graphic.ocr to javafx.fxml;
+    opens dal.graphic.podcast to javafx.fxml;
     opens dal.data to javafx.fxml;
 }

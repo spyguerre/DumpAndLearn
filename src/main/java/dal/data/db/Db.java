@@ -34,7 +34,7 @@ public abstract class Db {
 
     private static void initDatabase() throws SQLException {
         // Check for and create each table if necessary
-        String[] tableNames = new String[]{"words", "lyrics"};
+        String[] tableNames = new String[]{"words", "lyrics", "podcasts"};
         for (String tableName : tableNames) {
 
             String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name = ?";
@@ -84,6 +84,20 @@ public abstract class Db {
                                 )
                             );
                             """;
+                } else if (tableName.equals("podcasts")) {
+                    sql = """
+                            CREATE TABLE podcasts (
+                                id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+                                title               TEXT,
+                                ytLink              TEXT    NOT NULL
+                                                            UNIQUE,
+                                lastPlayedTimestamp NUMERIC NOT NULL,
+                                fullyLoaded         BOOL    NOT NULL
+                                                            DEFAULT (0)
+                            );
+                            """;
+                } else {
+                    throw new RuntimeException("Unknown table name: " + tableName);
                 }
 
                 pstmt = getConnection().prepareStatement(sql);
@@ -348,6 +362,128 @@ public abstract class Db {
     public static void updateLastPlayed(long id) {
         String sql = "UPDATE lyrics SET lastPlayed = ? WHERE id = ?";
         update(sql, new Object[]{System.currentTimeMillis(), id});
+    }
+
+    ///////// PODCASTS /////////
+
+    public static int savePodcastToDatabase(String ytLink) {
+        String sql = "INSERT INTO podcasts (ytLink, lastPlayedTimestamp) VALUES (?, ?)";
+        update(sql, new Object[]{ytLink, System.currentTimeMillis()});
+        System.out.println("✅ Podcast saved to database!");
+        // Return the ID of the newly inserted podcast
+        return getPodcastId(ytLink);
+    }
+
+    public static boolean isPodcastFullyLoaded(String ytLink) {
+        String sql = "SELECT fullyLoaded FROM podcasts WHERE ytLink = ?";
+        try {
+            ResultSet rs = query(sql, new Object[]{ytLink});
+            assert rs != null;
+            if (rs.next()) {
+                return rs.getBoolean("fullyLoaded");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error checking if podcast is fully downloaded: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public static void setPodcastFullyLoaded(String ytLink) {
+        String sql = "UPDATE podcasts SET fullyLoaded = 1 WHERE ytLink = ?";
+        try {
+            update(sql, new Object[]{ytLink});
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error setting podcast as fully downloaded: " + e.getMessage());
+        }
+    }
+
+    public static List<String> getRecentPodcasts(int limit) {
+        List<String> podcasts = new ArrayList<>();
+        String sql = "SELECT id, title FROM podcasts ORDER BY lastPlayedTimestamp DESC LIMIT ?";
+        try {
+            ResultSet rs = query(sql, new Object[]{limit});
+
+            assert rs != null;
+            while (rs.next()) {
+                podcasts.add(rs.getInt("id") + " --- " + rs.getString("title"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error retrieving recent podcasts from database: " + e.getMessage());
+        }
+        return podcasts;
+    }
+
+    public static int getPodcastId(String ytLink) {
+        String sql = "SELECT id FROM podcasts WHERE ytLink = ?";
+        try {
+            ResultSet rs = query(sql, new Object[]{ytLink});
+            assert rs != null;
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error retrieving podcast ID from database: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    public static String getPodcastYoutubeLink(int id) {
+        String sql = "SELECT ytLink FROM podcasts WHERE id = ?";
+        try {
+            ResultSet rs = query(sql, new Object[]{id});
+            assert rs != null;
+            if (rs.next()) {
+                return rs.getString("ytLink");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error retrieving youtube link from database: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public static void setPodcastTitle(String ytLink, String title) {
+        String sql = "UPDATE podcasts SET title = ? WHERE ytLink = ?";
+        try {
+            update(sql, new Object[]{title, ytLink});
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error setting podcast title: " + e.getMessage());
+        }
+    }
+
+    public static String getPodcastTitle(String ytLink) {
+        String sql = "SELECT title FROM podcasts WHERE ytLink = ?";
+        try {
+            ResultSet rs = query(sql, new Object[]{ytLink});
+            assert rs != null;
+            if (rs.next()) {
+                return rs.getString("title");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error retrieving podcast title from database: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public static boolean isPodcastLinkAlreadyInDatabase(String ytLink) {
+        String sql = "SELECT COUNT(*) FROM podcasts WHERE ytLink = ?";
+        try {
+            ResultSet rs = query(sql, new Object[]{ytLink});
+            assert rs != null;
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error checking if link is already in database: " + e.getMessage());
+        }
+        return false;
     }
 
     ///////// ATOMIC REQUESTS /////////

@@ -73,7 +73,7 @@ public class StartOCRController extends Controller {
                 .orElse(null);
 
         if (webcam == null) {
-            ErrorDisplayer.displayError("Camera \"" + requestedCamName + "\" not found. Please select another one in the settings.");
+            NotificationDisplayer.displayError("Camera \"" + requestedCamName + "\" not found. Please select another one in the settings.");
             Platform.runLater(() -> SceneManager.switchScene(SceneType.SETTINGS, (Stage) root.getScene().getWindow(), new int[]{(int)(root).getWidth(), (int)(root).getHeight()}));
         }
 
@@ -148,7 +148,7 @@ public class StartOCRController extends Controller {
                 if (!isWebcamOpen) {
                     // Ensure the scene is still open after the 5 seconds.
                     if (root.getScene().getWindow() != null) {
-                        ErrorDisplayer.displayError("Couldn't open camera: " + webcam.getName() + ". Please select another one in the settings.");
+                        NotificationDisplayer.displayError("Couldn't open camera: " + webcam.getName() + ". Please select another one in the settings.");
                         mainMenu();
                     }
                 } else {
@@ -229,7 +229,7 @@ public class StartOCRController extends Controller {
 
             showSelectionView();
         } else {
-            ErrorDisplayer.displayError("Failed to capture image: no image available.");
+            NotificationDisplayer.displayError("Failed to capture image: no image available.");
         }
     }
 

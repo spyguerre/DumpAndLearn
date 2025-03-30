@@ -1,7 +1,7 @@
 package dal.data.word;
 
 import dal.data.db.Db;
-import dal.graphic.ErrorDisplayer;
+import dal.graphic.NotificationDisplayer;
 import dal.graphic.word.startReview.ReviewPreference;
 import dal.graphic.word.startReview.WriteIn;
 
@@ -21,7 +21,7 @@ public abstract class WordSelector {
             rs.next();
             if (!rs.getBoolean("enoughWords")) {
                 System.out.println("Not enough words found to start a review session.");
-                ErrorDisplayer.displayError("There are less than " + n + " words in the database.");
+                NotificationDisplayer.displayError("There are less than " + n + " words in the database.");
                 return null;
             }
         } catch (SQLException e) {

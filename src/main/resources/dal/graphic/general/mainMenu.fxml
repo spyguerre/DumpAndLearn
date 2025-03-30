@@ -44,6 +44,7 @@
                   <Insets />
                </VBox.margin>
             </Button>
+            <Button mnemonicParsing="false" onAction="#listenToAPodcast" text="Listen to a podcast" />
             <Button mnemonicParsing="false" onAction="#scanSomeText" text="Scan some Text">
                <VBox.margin>
                   <Insets />

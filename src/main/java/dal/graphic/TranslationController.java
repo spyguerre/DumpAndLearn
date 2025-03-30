@@ -2,7 +2,6 @@ package dal.graphic;
 
 import dal.data.db.Db;
 import dal.data.translation.Translator;
-import dal.graphic.general.SettingsController;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -10,10 +9,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class TranslationController extends Controller {
@@ -98,7 +93,7 @@ public abstract class TranslationController extends Controller {
         // Ensure that there is a word in both textFields
         if (nativeTextField.getText().isEmpty() || foreignTextField.getText().isEmpty()) {
             System.out.println("Couldn't find native or foreign word.");
-            ErrorDisplayer.displayError("Please fill both languages for the word.");
+            NotificationDisplayer.displayError("Please fill both languages for the word.");
             return;
         }
 

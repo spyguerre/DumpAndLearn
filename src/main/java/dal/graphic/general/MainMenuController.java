@@ -24,6 +24,11 @@ public class MainMenuController extends Controller {
     }
 
     @FXML
+    private void listenToAPodcast() {
+        SceneManager.switchScene(SceneType.PODCAST_MENU, (Stage) root.getScene().getWindow(), new int[]{(int)((BorderPane)root).getWidth(), (int)((BorderPane)root).getHeight()});
+    }
+
+    @FXML
     private void scanSomeText() {
         SceneManager.switchScene(SceneType.START_OCR, (Stage) root.getScene().getWindow(), new int[]{(int)((BorderPane)root).getWidth(), (int)((BorderPane)root).getHeight()});
     }

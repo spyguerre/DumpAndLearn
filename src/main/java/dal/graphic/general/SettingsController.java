@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.sarxos.webcam.Webcam;
 import dal.graphic.Controller;
-import dal.graphic.ErrorDisplayer;
+import dal.graphic.NotificationDisplayer;
 import dal.data.Languages;
 import dal.graphic.word.startReview.ReviewPreference;
 import dal.graphic.word.startReview.WriteIn;
@@ -173,16 +173,16 @@ public class SettingsController extends Controller {
     private void save() {
         // Ensure the user has selected a language for both sides.
         if (nativeDropDown.getText().equals("Choose language")) {
-            ErrorDisplayer.displayError("Please select a native language.");
+            NotificationDisplayer.displayError("Please select a native language.");
             return;
         }
         if (foreignDropDown.getText().equals("Choose language")) {
-            ErrorDisplayer.displayError("Please select a foreign language.");
+            NotificationDisplayer.displayError("Please select a foreign language.");
             return;
         }
         // Ensure the two languages are different.
         if (nativeDropDown.getText().equals(foreignDropDown.getText())) {
-            ErrorDisplayer.displayError("The native language and foreign language can't be the same.");
+            NotificationDisplayer.displayError("The native language and foreign language can't be the same.");
             return;
         }
 
