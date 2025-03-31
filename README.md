@@ -21,6 +21,9 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+Download [ffmpeg](https://www.ffmpeg.org/download.html), extract the
+bins, and add the bin folder to your PATH.
+
 Compile and run the project:
 ```
 mvnw javafx:run
