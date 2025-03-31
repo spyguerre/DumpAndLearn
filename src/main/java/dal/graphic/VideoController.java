@@ -230,10 +230,12 @@ public abstract class VideoController extends Controller {
 
     @FXML
     private void learnFromSong() {
-        // Stop the video before switching scene.
-        mediaView.getMediaPlayer().stop();
-        // Release the video file that the MediaPlayer is using.
-        mediaView.getMediaPlayer().dispose();
+        if (mediaView.getMediaPlayer() != null) {
+            // Stop the video before switching scene.
+            mediaView.getMediaPlayer().stop();
+            // Release the video file that the MediaPlayer is using.
+            mediaView.getMediaPlayer().dispose();
+        }
         SceneManager.switchScene(SceneType.SONG_MENU, (Stage) root.getScene().getWindow(), new int[]{(int)((Pane)root).getWidth(), (int)((Pane)root).getHeight()});
     }
 
