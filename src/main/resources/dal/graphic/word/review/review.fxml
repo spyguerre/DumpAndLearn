@@ -35,7 +35,7 @@
             <VBox alignment="CENTER" spacing="5.0">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nativeText" text="Word in native language:" />
-                  <TextField fx:id="nativeTextField" />
+                  <TextField fx:id="nativeTextField" onKeyTyped="#onKeyTyped" />
                </children>
                <HBox.margin>
                   <Insets />
@@ -44,7 +44,7 @@
             <VBox alignment="CENTER" spacing="5.0">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="foreignText" text="Word in foreign language:" />
-                  <TextField fx:id="foreignTextField" />
+                  <TextField fx:id="foreignTextField" onKeyTyped="#onKeyTyped" />
                </children>
                <HBox.margin>
                   <Insets />

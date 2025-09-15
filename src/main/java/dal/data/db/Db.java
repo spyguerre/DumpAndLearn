@@ -1,7 +1,9 @@
 package dal.data.db;
 
+import dal.data.word.Review;
 import dal.data.word.Word;
 import dal.data.word.WordType;
+import dal.graphic.word.startReview.ReviewPreference;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public abstract class Db {
 
     private static void initDatabase() throws SQLException {
         // Check for and create each table if necessary
-        String[] tableNames = new String[]{"words", "lyrics", "podcasts"};
+        String[] tableNames = new String[]{"words", "lyrics", "podcasts", "reviews"};
         for (String tableName : tableNames) {
 
             String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name = ?";
@@ -51,18 +53,13 @@ public abstract class Db {
                 if (tableName.equals("words")) {
                     sql = """
                             CREATE TABLE words (
-                                id                  INTEGER UNIQUE
-                                                            NOT NULL
-                                                            DEFAULT (0),
-                                native              TEXT    NOT NULL,
-                                [foreign]           TEXT    NOT NULL,
-                                description         TEXT,
-                                timestamp           NUMERIC NOT NULL,
-                                reviewsCount        INTEGER NOT NULL
-                                                            DEFAULT (0),
-                                failedReviews       INTEGER NOT NULL
-                                                            DEFAULT (0),
-                                lastReviewTimestamp NUMERIC,
+                                id          INTEGER UNIQUE
+                                                    NOT NULL
+                                                    DEFAULT (0),
+                                native      TEXT    NOT NULL,
+                                [foreign]   TEXT    NOT NULL,
+                                description TEXT,
+                                timestamp   NUMERIC NOT NULL,
                                 PRIMARY KEY (
                                     id AUTOINCREMENT
                                 )
@@ -96,6 +93,16 @@ public abstract class Db {
                                                             DEFAULT (0)
                             );
                             """;
+                } else if (tableName.equals("reviews")) {
+                    sql = """
+                            CREATE TABLE reviews (
+                                id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                                wordId                  REFERENCES words (id)\s
+                                                        NOT NULL,
+                                reviewTimestamp         NOT NULL,
+                                success
+                            );
+                            """;
                 } else {
                     throw new RuntimeException("Unknown table name: " + tableName);
                 }
@@ -103,8 +110,32 @@ public abstract class Db {
                 pstmt = getConnection().prepareStatement(sql);
                 pstmt.executeUpdate();
                 System.out.println("Created table " + tableName + ".");
+
+                // Populate the reviews table if it was just created and table words isn't empty
+                if (tableName.equals("reviews") && !searchForWords("", WordType.ANY).isEmpty()) {
+                    System.out.println("Populating reviews table...");
+                    populateTableReviews();
+                    System.out.println("Populated reviews table.");
+                }
             }
         }
+    }
+
+    private static void populateTableReviews() {
+        List<Word> words = searchForWords("", WordType.ANY);
+
+        // Populate the reviews table based on the data in the words table.
+        for (Word word : words) {
+            for (int i = 0; i < word.getReviewsCountOld(); i++) {
+                Review review = new Review(
+                        word.getId(),
+                        word.getLastReviewsTimestampOld(),
+                        i >= word.getFailedReviewsOld()
+                );
+                insertReview(review);
+            }
+        }
+
     }
 
     public static void closeConnection() {
@@ -130,15 +161,15 @@ public abstract class Db {
             switch (wordType) {
                 case ANY -> {
                     String sql = "SELECT * FROM words WHERE native LIKE ? OR [foreign] LIKE ? LIMIT ?";
-                    rs = query(sql, new Object[]{query+"%", query+"%", limit == null ? -1 : limit});
+                    rs = query(sql, new Object[]{"%"+query+"%", "%"+query+"%", limit == null ? -1 : limit});
                 }
                 case NATIVE -> {
                     String sql = "SELECT * FROM words WHERE native LIKE ? LIMIT ?";
-                    rs = query(sql, new Object[]{query+"%", limit == null ? -1 : limit});
+                    rs = query(sql, new Object[]{"%"+query+"%", limit == null ? -1 : limit});
                 }
                 case FOREIGN -> {
                     String sql = "SELECT * FROM words WHERE [foreign] LIKE ? LIMIT ?";
-                    rs = query(sql, new Object[]{query+"%", limit == null ? -1 : limit});
+                    rs = query(sql, new Object[]{"%"+query+"%", limit == null ? -1 : limit});
                 }
             }
 
@@ -152,10 +183,7 @@ public abstract class Db {
                         rs.getString("native"),
                         rs.getString("foreign"),
                         rs.getString("description"),
-                        rs.getLong("timestamp"),
-                        rs.getInt("reviewsCount"),
-                        rs.getInt("failedReviews"),
-                        rs.getInt("lastReviewTimestamp")
+                        rs.getLong("timestamp")
                 ));
 
                 nb++;
@@ -167,6 +195,74 @@ public abstract class Db {
             throw new RuntimeException("Error searching for words starting with '" + query + "': " + e);
         }
 
+        return words;
+    }
+
+    public static List<Word> fetchWords(ReviewPreference fetchType, int limit) {
+        String sql = switch (fetchType) {
+            case ANY -> """
+                SELECT * FROM words
+                ORDER BY RANDOM()
+                LIMIT ?
+                """;
+            case RECENT -> """
+                SELECT w.*, (
+                    SELECT Count(*)
+                    FROM reviews r1
+                    WHERE r1.wordId = w.id
+                ) AS reviewCount
+                FROM words w
+                ORDER BY w.timestamp DESC, reviewCount ASC
+                LIMIT ?
+                """;
+            case OLD -> """
+                SELECT w.*
+                FROM words w
+                WHERE (w.timestamp / 1000 + 2*7*24*60*60 - strftime('%s', 'now') < 0)
+                ORDER BY RANDOM() DESC
+                LIMIT ?
+                """;
+            case OFTEN_FAILED -> """
+                SELECT sq.*, (CAST(failedReviews AS FLOAT) / (reviewsCount + 1)) AS difficulty
+                FROM (
+                    SELECT w.*, (
+                            SELECT COUNT(*)
+                            FROM reviews r1
+                            WHERE r1.wordId = w.id
+                        ) AS reviewsCount, (
+                            SELECT COUNT(*)
+                            FROM reviews r1
+                            WHERE r1.wordId = w.id
+                            AND NOT r1.success
+                        ) AS failedReviews
+                    FROM words w
+                ) sq
+                ORDER BY difficulty DESC
+                LIMIT ?
+                """;
+        };
+
+        return fetchWords(sql, limit);
+    }
+
+    private static List<Word> fetchWords(String sql, int limit) {
+        List<Word> words = new ArrayList<>();
+        try {
+            ResultSet rs = Db.query(sql, new Object[]{limit});
+            assert rs != null;
+            while (rs.next()) {
+                words.add(new Word(
+                        rs.getInt("id"),
+                        rs.getString("native"),
+                        rs.getString("foreign"),
+                        rs.getString("description"),
+                        rs.getLong("timestamp")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error fetching words: " + e.getMessage());
+        }
         return words;
     }
 
@@ -184,19 +280,26 @@ public abstract class Db {
         update(sql, new Object[]{native_, foreign});
     }
 
-    public static void incrReviewsCount(Long id) {
+    public static void incrReviewsCountOld(Long id) {
         String sql = "UPDATE words SET reviewsCount = reviewsCount + 1 WHERE id = ?";
         update(sql, new Object[]{id});
     }
 
-    public static void incrFailedReviews(Long id) {
+    public static void incrFailedReviewsOld(Long id) {
         String sql = "UPDATE words SET failedReviews = failedReviews + 1 WHERE id = ?";
         update(sql, new Object[]{id});
     }
 
-    public static void updateLastReviewTimestamp(Long id) {
+    public static void updateLastReviewTimestampOld(Long id) {
         String sql = "UPDATE words SET lastReviewTimestamp = ? WHERE id = ?";
         update(sql, new Object[]{System.currentTimeMillis(), id});
+    }
+
+    ///////// REVIEWS /////////
+
+    public static void insertReview(Review review) {
+        String sql = "INSERT INTO reviews (wordId, reviewTimestamp, success) VALUES (?, ?, ?)";
+        update(sql, new Object[]{review.getWordId(), review.getReviewTimestamp(), review.isSuccess() ? 1 : 0});
     }
 
     ///////// LYRICS /////////

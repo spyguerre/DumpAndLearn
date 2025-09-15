@@ -10,12 +10,12 @@ public class WordReviewed extends Word {
     private int hintRevealed = 0;
 
     public WordReviewed(Word word, Boolean isWrittenInForeign) {
-        super(word.getId(), word.getNative_(), word.getForeign(), word.getDescription(), word.getTimeStamp(), word.getReviewsCount(), word.getFailedReviews(), word.getLastReviewsTimestamp());
+        super(word.getId(), word.getNative_(), word.getForeign(), word.getDescription(), word.getTimeStamp());
         this.isWrittenInForeign = isWrittenInForeign;
     }
 
     public WordReviewed(Word word, WriteIn writeIn) {
-        super(word.getId(), word.getNative_(), word.getForeign(), word.getDescription(), word.getTimeStamp(), word.getReviewsCount(), word.getFailedReviews(), word.getLastReviewsTimestamp());
+        super(word.getId(), word.getNative_(), word.getForeign(), word.getDescription(), word.getTimeStamp());
         if (writeIn == WriteIn.NATIVE) {
             this.isWrittenInForeign = false;
         } else if (writeIn == WriteIn.FOREIGN) {
@@ -52,5 +52,9 @@ public class WordReviewed extends Word {
         if (this.hintRevealed > ansLength) {
             this.hintRevealed = ansLength;
         }
+    }
+
+    public void resetHintRevealed() {
+        this.hintRevealed = 0;
     }
 }

@@ -6,10 +6,22 @@ public class Word {
     private String foreign;
     private String description;
     private long timeStamp;
-    private int reviewsCount;
-    private int failedReviews;
-    private long lastReviewsTimestamp;
+    private Integer reviewsCount;
+    private Integer failedReviews;
+    private Long lastReviewsTimestamp;
 
+    public Word(long id, String native_, String foreign, String description, long timeStamp) {
+        this.id = id;
+        this.native_ = native_;
+        this.foreign = foreign;
+        this.description = description;
+        this.timeStamp = timeStamp;
+        this.reviewsCount = null;
+        this.failedReviews = null;
+        this.lastReviewsTimestamp = null;
+    }
+
+    // Deprecated constructor
     public Word(long id, String native_, String foreign, String description, long timeStamp, int reviewsCount, int failedReviews, long lastReviewsTimestamp) {
         this.id = id;
         this.native_ = native_;
@@ -65,7 +77,7 @@ public class Word {
         this.timeStamp = timeStamp;
     }
 
-    public int getReviewsCount() {
+    public int getReviewsCountOld() {
         return reviewsCount;
     }
 
@@ -73,7 +85,7 @@ public class Word {
         this.reviewsCount = reviewsCount;
     }
 
-    public int getFailedReviews() {
+    public int getFailedReviewsOld() {
         return failedReviews;
     }
 
@@ -81,11 +93,11 @@ public class Word {
         this.failedReviews = failedReviews;
     }
 
-    public long getLastReviewsTimestamp() {
+    public long getLastReviewsTimestampOld() {
         return lastReviewsTimestamp;
     }
 
     public void setLastReviewsTimestamp(int lastReviewsTimestamp) {
-        this.lastReviewsTimestamp = lastReviewsTimestamp;
+        this.lastReviewsTimestamp = (long) lastReviewsTimestamp;
     }
 }

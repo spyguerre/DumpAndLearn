@@ -1,6 +1,7 @@
 package dal.graphic.word.review;
 
 import dal.data.db.Db;
+import dal.data.word.Review;
 import dal.graphic.Controller;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
@@ -158,12 +159,8 @@ public class CorrectionController extends Controller {
             gridPane.getChildren().add(descriptionText);
 
             // Backend update.
-            Db.updateLastReviewTimestamp(currentWord.getId());
-            Db.incrReviewsCount(currentWord.getId());
-            if (!typedCorrectly) {
-                wordsToCorrect.add(currentWord); // Add the failed word to the wordsToCorrect list to keep reviewing later
-                Db.incrFailedReviews(currentWord.getId());
-            }
+            Review review = new Review(currentWord.getId(), System.currentTimeMillis(), typedCorrectly);
+            Db.insertReview(review);
         }
 
         // Add the GridPane to the main container (you need to have a parent container for this)
@@ -212,6 +209,7 @@ public class CorrectionController extends Controller {
     private void clearUserAnswers() {
         for (WordReviewed currentWord : wordsToCorrect) {
             currentWord.setUserAnswer("");
+            currentWord.resetHintRevealed();
         }
     }
 

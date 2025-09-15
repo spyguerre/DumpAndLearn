@@ -85,6 +85,11 @@ public class ReviewController extends Controller {
         updateDisplay();
     }
 
+    @FXML
+    private void onKeyTyped() {
+        saveUserAnswer();
+    }
+
     private void updateDisplay() {
         WordReviewed currentWord = words.get(wordIndex);
 
@@ -95,10 +100,12 @@ public class ReviewController extends Controller {
             nativeTextField.setText(currentWord.getNative_());
             foreignTextField.setText(currentWord.getUserAnswer());
             foreignTextField.requestFocus();
+            foreignTextField.positionCaret(foreignTextField.getText().length()); // Move caret to the end
         } else {
             nativeTextField.setText(currentWord.getUserAnswer());
             foreignTextField.setText(currentWord.getForeign());
             nativeTextField.requestFocus();
+            nativeTextField.positionCaret(nativeTextField.getText().length()); // Move caret to the end
         }
 
         // Update hint
@@ -127,8 +134,6 @@ public class ReviewController extends Controller {
         } else {
             currentWord.setUserAnswer(nativeTextField.getText());
         }
-
-        System.out.println("Saved user answer");
     }
 
     public List<WordReviewed> getWords() {
