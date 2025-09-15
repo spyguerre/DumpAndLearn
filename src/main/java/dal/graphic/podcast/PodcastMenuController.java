@@ -47,7 +47,7 @@ public class PodcastMenuController extends Controller {
             }
         });
         // Set it to also react to Enter key
-        podcastsListView.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(() -> {
+        podcastsListView.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(() -> {
             String selectedPodcast = podcastsListView.getSelectionModel().getSelectedItem();
             if (selectedPodcast != null) {
                 String[] podcastInfo = selectedPodcast.split(" --- ");

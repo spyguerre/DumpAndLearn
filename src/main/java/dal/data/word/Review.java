@@ -5,17 +5,19 @@ public class Review {
     private long wordId;
     private long reviewTimestamp;
     private boolean success;
+    private int hintUsed;
 
-    public Review(Long id, long wordId, long reviewTimestamp, boolean success) {
-        this(wordId, reviewTimestamp, success);
+    public Review(Long id, long wordId, long reviewTimestamp, boolean success, int hintUsed) {
+        this(wordId, reviewTimestamp, success, hintUsed);
         this.id = id;
     }
 
-    public Review(long wordId, long reviewTimestamp, boolean success) {
+    public Review(long wordId, long reviewTimestamp, boolean success, int hintUsed) {
         this.id = null;
         this.wordId = wordId;
         this.reviewTimestamp = reviewTimestamp;
         this.success = success;
+        this.hintUsed = hintUsed;
     }
 
     public long getId() {
@@ -48,5 +50,13 @@ public class Review {
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public int getHintUsed() {
+        return hintUsed;
+    }
+
+    public void setHintUsed(int hintUsed) {
+        this.hintUsed = hintUsed;
     }
 }

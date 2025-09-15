@@ -100,7 +100,8 @@ public abstract class Db {
                                 wordId                  REFERENCES words (id)\s
                                                         NOT NULL,
                                 reviewTimestamp         NOT NULL,
-                                success
+                                success,
+                                hintUsed
                             );
                             """;
                 } else {
@@ -130,7 +131,8 @@ public abstract class Db {
                 Review review = new Review(
                         word.getId(),
                         word.getLastReviewsTimestampOld(),
-                        i >= word.getFailedReviewsOld()
+                        i >= word.getFailedReviewsOld(),
+                        0
                 );
                 insertReview(review);
             }
@@ -298,8 +300,8 @@ public abstract class Db {
     ///////// REVIEWS /////////
 
     public static void insertReview(Review review) {
-        String sql = "INSERT INTO reviews (wordId, reviewTimestamp, success) VALUES (?, ?, ?)";
-        update(sql, new Object[]{review.getWordId(), review.getReviewTimestamp(), review.isSuccess() ? 1 : 0});
+        String sql = "INSERT INTO reviews (wordId, reviewTimestamp, success, hintUsed) VALUES (?, ?, ?, ?)";
+        update(sql, new Object[]{review.getWordId(), review.getReviewTimestamp(), review.isSuccess() ? 1 : 0, review.getHintUsed()});
     }
 
     ///////// LYRICS /////////

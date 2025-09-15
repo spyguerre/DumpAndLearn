@@ -159,13 +159,15 @@ public class CorrectionController extends Controller {
             gridPane.getChildren().add(descriptionText);
 
             // Backend update.
-            Review review = new Review(currentWord.getId(), System.currentTimeMillis(), typedCorrectly);
+            Review review = new Review(currentWord.getId(), System.currentTimeMillis(), typedCorrectly, currentWord.getHintRevealed());
             Db.insertReview(review);
+            if (!typedCorrectly) {
+                wordsToCorrect.add(currentWord);
+            }
         }
 
         // Add the GridPane to the main container (you need to have a parent container for this)
         mainVBox.getChildren().add(gridPane);
-
 
         // After processing every word correction, update the total count on the top label
         rightWordsCount.setText(rightWordsCount.getText().replaceFirst("\\?", String.valueOf(words.size() - wordsToCorrect.size())));

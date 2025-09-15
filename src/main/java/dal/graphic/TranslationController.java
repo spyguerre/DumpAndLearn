@@ -57,9 +57,9 @@ public abstract class TranslationController extends Controller {
         });
 
         // Add a Confirmation Listener to each addWord textField.
-        nativeTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::addNewWord));
-        foreignTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::addNewWord));
-        descriptionTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::addNewWord));
+        nativeTextField.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(this::addNewWord));
+        foreignTextField.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(this::addNewWord));
+        descriptionTextField.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(this::addNewWord));
     }
 
     private void updateTranslate(Boolean foreignWasEdited) {

@@ -1,6 +1,6 @@
 package dal.graphic.word.review;
 
-import dal.graphic.ConfirmationListener;
+import dal.graphic.KeyboardListener;
 import dal.graphic.Controller;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
@@ -8,6 +8,7 @@ import dal.data.word.WordReviewed;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -46,8 +47,17 @@ public class ReviewController extends Controller {
 
         previousButton.setDisable(true);
 
-        nativeTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::next));
-        foreignTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::next));
+        // Add listeners for enter
+        nativeTextField.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(this::next));
+        foreignTextField.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(this::next));
+
+        // Add listeners for shift enter
+        nativeTextField.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(this::previous, KeyCode.ENTER, true, false, false));
+        foreignTextField.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(this::previous, KeyCode.ENTER, true, false, false));
+
+        // Add listener for ctrl + h
+        nativeTextField.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(this::revealHint, KeyCode.H, false, true, false));
+        foreignTextField.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(this::revealHint, KeyCode.H, false, true, false));
     }
 
     @FXML

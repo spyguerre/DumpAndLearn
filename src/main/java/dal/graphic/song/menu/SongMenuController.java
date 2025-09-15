@@ -3,7 +3,7 @@ package dal.graphic.song.menu;
 import dal.data.db.Db;
 import dal.data.song.GeniusScraper;
 import dal.data.song.YTDownloader;
-import dal.graphic.ConfirmationListener;
+import dal.graphic.KeyboardListener;
 import dal.graphic.Controller;
 import dal.graphic.SceneManager;
 import dal.graphic.SceneType;
@@ -46,8 +46,8 @@ public class SongMenuController extends Controller {
     protected void initialize() {
         super.initialize();
 
-        titleTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::searchForSong));
-        artistTextField.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::searchForSong));
+        titleTextField.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(this::searchForSong));
+        artistTextField.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(this::searchForSong));
 
         // Set the last played songs list
         lastPlayedSongsListView.setItems(songsList);
@@ -68,7 +68,7 @@ public class SongMenuController extends Controller {
             }
         });
         // Set it to also react to Enter key
-        lastPlayedSongsListView.addEventHandler(KeyEvent.KEY_PRESSED, new ConfirmationListener(this::searchForSong));
+        lastPlayedSongsListView.addEventHandler(KeyEvent.KEY_PRESSED, new KeyboardListener(this::searchForSong));
     }
 
     @FXML
