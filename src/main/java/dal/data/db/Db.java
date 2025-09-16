@@ -282,14 +282,68 @@ public abstract class Db {
         update(sql, new Object[]{native_, foreign});
     }
 
+    public static int getReviewsCount(Long id) {
+        String sql = "SELECT COUNT(*) AS reviewCount FROM reviews WHERE wordId = ?";
+        try {
+            ResultSet rs = query(sql, new Object[]{id});
+            assert rs != null;
+            if (rs.next()) {
+                return rs.getInt("reviewCount");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error retrieving reviews count from database: " + e.getMessage());
+        }
+        return 0;
+    }
+
     public static void incrReviewsCountOld(Long id) {
         String sql = "UPDATE words SET reviewsCount = reviewsCount + 1 WHERE id = ?";
         update(sql, new Object[]{id});
     }
 
+    public static int getFailedReviewsCount(Long id) {
+        String sql = "SELECT COUNT(*) AS failedReviewCount FROM reviews WHERE wordId = ? AND success = 0";
+        try {
+            ResultSet rs = query(sql, new Object[]{id});
+            assert rs != null;
+            if (rs.next()) {
+                return rs.getInt("failedReviewCount");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error retrieving failed reviews count from database: " + e.getMessage());
+        }
+        return 0;
+    }
+
     public static void incrFailedReviewsOld(Long id) {
         String sql = "UPDATE words SET failedReviews = failedReviews + 1 WHERE id = ?";
         update(sql, new Object[]{id});
+    }
+
+    public static Long getLastReviewTimestamp(Long id) {
+        String sql = """
+                SELECT r.reviewTimestamp AS lastReviewTimestamp
+                FROM words w, reviews r
+                WHERE w.id = r.wordId
+                AND w.id = ?
+                ORDER BY r.reviewTimestamp DESC
+                LIMIT 1
+                """;
+        try {
+            ResultSet rs = query(sql, new Object[]{id});
+            assert rs != null;
+            if (rs.next()) {
+                return rs.getLong("lastReviewTimestamp");
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error retrieving last review timestamp from database: " + e.getMessage());
+        }
+        return null;
     }
 
     public static void updateLastReviewTimestampOld(Long id) {

@@ -30,9 +30,13 @@ public class WordCell extends GridPane {
         add(new Label(word.getForeign()), 1, 0);
         add(new Label(word.getDescription() == null ? "/" : word.getDescription()), 2, 0);
         add(new Label(java.time.format.DateTimeFormatter.ofPattern("MM/dd/yy").format(java.time.Instant.ofEpochMilli(word.getTimeStamp()).atZone(java.time.ZoneId.systemDefault()).toLocalDate())), 3, 0);
-        add(new Label(word.getReviewsCountOld() == 0 ? "/" : String.valueOf(word.getReviewsCountOld())), 4, 0);
-        add(new Label(word.getFailedReviewsOld() == 0 ? "/" : String.valueOf(word.getFailedReviewsOld())), 5, 0);
-        add(new Label(word.getLastReviewsTimestampOld() == 0 ? "/" : java.time.format.DateTimeFormatter.ofPattern("MM/dd/yy").format(java.time.Instant.ofEpochMilli(word.getLastReviewsTimestampOld()).atZone(java.time.ZoneId.systemDefault()).toLocalDate())), 6, 0);
+
+        int wordReviewsCount = word.getReviewsCount();
+        int wordFailedReviews = word.getFailedReviews();
+        Long wordLastReviewsTimestamp = word.getLastReviewsTimestamp();
+        add(new Label(wordReviewsCount == 0 ? "/" : String.valueOf(wordReviewsCount)), 4, 0);
+        add(new Label(wordFailedReviews == 0 ? "/" : String.valueOf(wordFailedReviews)), 5, 0);
+        add(new Label(wordLastReviewsTimestamp == null ? "/" : java.time.format.DateTimeFormatter.ofPattern("MM/dd/yy").format(java.time.Instant.ofEpochMilli(wordLastReviewsTimestamp).atZone(java.time.ZoneId.systemDefault()).toLocalDate())), 6, 0);
 
         // Center each Label in its cell
         for (int i = 0; i < 7; i++) {

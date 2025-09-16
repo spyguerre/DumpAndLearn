@@ -1,5 +1,7 @@
 package dal.data.word;
 
+import dal.data.db.Db;
+
 public class Word {
     private long id;
     private String native_;
@@ -77,7 +79,11 @@ public class Word {
         this.timeStamp = timeStamp;
     }
 
-    public int getReviewsCountOld() {
+    public int getReviewsCount() {
+        return Db.getReviewsCount(this.id);
+    }
+
+    public Integer getReviewsCountOld() {
         return reviewsCount;
     }
 
@@ -85,7 +91,11 @@ public class Word {
         this.reviewsCount = reviewsCount;
     }
 
-    public int getFailedReviewsOld() {
+    public int getFailedReviews() {
+        return Db.getFailedReviewsCount(this.id);
+    }
+
+    public Integer getFailedReviewsOld() {
         return failedReviews;
     }
 
@@ -93,7 +103,11 @@ public class Word {
         this.failedReviews = failedReviews;
     }
 
-    public long getLastReviewsTimestampOld() {
+    public Long getLastReviewsTimestamp() {
+        return Db.getLastReviewTimestamp(this.id);
+    }
+
+    public Long getLastReviewsTimestampOld() {
         return lastReviewsTimestamp;
     }
 
