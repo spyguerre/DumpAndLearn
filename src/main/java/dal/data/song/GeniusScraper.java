@@ -161,10 +161,12 @@ public class GeniusScraper {
         // Construct the search query
         String query = songName + " " + artist + " lyrics site:genius.com";
 
-        // Python command to perform the search using googlesearch package
-        String command = "python -c \"from googlesearch import search; [print(url) for url in search('" + query.replace("'", "\\'") + "', num_results=10)]\"";
+        // Python command to perform the search using duckduckgo package
+        String command = "python -c \"from ddgs import DDGS; [print(r[\\\"href\\\"]) for r in DDGS().text(\\\"" + query.replace("'", "\\'") + "\\\", max_results=10)]\"";
 
         try {
+            System.out.println("Running command: " + command);
+
             // Run the Python command
             Process process = Runtime.getRuntime().exec(command);
 
@@ -269,7 +271,7 @@ public class GeniusScraper {
         String title = (titleElement != null) ? titleElement.text() : "Unknown Title";
 
         // Extract only the main artist (ignoring featured artists)
-        Element mainArtistElement = doc.selectFirst("div[class^=HeaderArtistAndTracklist-desktop__ListArtists-sc-] a[class^=StyledLink-sc-]");
+        Element mainArtistElement = doc.selectFirst("div[class^=SongHeader-desktop__CreditList-sc-] a[class^=StyledLink-sc-]");
         String artist = (mainArtistElement != null) ? mainArtistElement.text() : "Unknown Artist";
 
         return new String[]{title, artist};

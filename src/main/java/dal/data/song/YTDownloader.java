@@ -92,9 +92,12 @@ public abstract class YTDownloader {
         }
 
         // Construct the yt-dlp command with the desired video format (mp4)
-        String command = "yt-dlp -f \"bestvideo[height<=300][ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a][acodec^=mp4a]/best[height<=300][ext=mp4]\" --merge-output-format mp4 -o " + outputPath + " " + videoUrl;
+        // yt-dlp -f "bv*[height<=300][protocol^=m3u8]+ba/b[height<=300]" --extractor-args "youtube:player-client=default,mweb" --merge-output-format mp4 -o C:\projets_pycharm\Dump-And-Learn\downloads\music\5.mp4 https://www.youtube.com/watch?v=F4dctjz3tUk
+        String command = "yt-dlp -f \"bv*[height<=300][protocol^=m3u8]+ba/b[height<=300]\" --extractor-args \"youtube:player-client=default,mweb\" --merge-output-format mp4 -o " + outputPath + " " + videoUrl;
 
         try {
+            System.out.println("Executing command: " + command);
+
             // Execute the command
             Process process = Runtime.getRuntime().exec(command);
 
