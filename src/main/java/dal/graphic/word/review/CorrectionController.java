@@ -159,7 +159,7 @@ public class CorrectionController extends Controller {
             gridPane.getChildren().add(descriptionText);
 
             // Backend update.
-            Review review = new Review(currentWord.getId(), System.currentTimeMillis(), typedCorrectly, currentWord.getHintRevealed());
+            Review review = new Review(currentWord.getId(), System.currentTimeMillis(), typedCorrectly, currentWord.getHintRevealed(), currentWord.isWrittenInForeign());
             Db.insertReview(review);
             if (!typedCorrectly) {
                 wordsToCorrect.add(currentWord);

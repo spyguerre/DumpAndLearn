@@ -4,6 +4,7 @@ public enum ReviewPreference {
     ANY,
     RECENT,
     OLD,
+    LEAST_REVIEWED,
     OFTEN_FAILED;
 
     public static ReviewPreference getReviewPreference(String preference) {
@@ -11,6 +12,7 @@ public enum ReviewPreference {
             case "Any" -> ANY;
             case "Learn Recent Words" -> RECENT;
             case "Review Old Words" -> OLD;
+            case "Review Least Reviewed Words" -> LEAST_REVIEWED;
             case "Review Often Failed Words" -> OFTEN_FAILED;
             default -> throw new IllegalArgumentException();
         };
@@ -21,6 +23,7 @@ public enum ReviewPreference {
             case ANY -> "Any";
             case RECENT -> "Learn Recent Words";
             case OLD -> "Review Old Words";
+            case LEAST_REVIEWED -> "Least Reviewed";
             case OFTEN_FAILED -> "Review Often Failed Words";
         };
     }

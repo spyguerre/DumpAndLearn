@@ -35,15 +35,17 @@ public abstract class WordSelector {
         int categoryLimit = Math.max(1, (n+1) / 2); // Half the words follow a rule
 
         // Fetch words from the requested query
-        switch(preference) {
+        switch (preference) {
             case ANY -> {
                 List<Word> recentWords = fetchWords(RECENT, categoryLimit);
                 List<Word> oldWords = fetchWords(OLD, categoryLimit);
+                List<Word> leastReviewedWords = fetchWords(LEAST_REVIEWED, categoryLimit);
                 List<Word> difficultWords = fetchWords(OFTEN_FAILED, categoryLimit);
 
-                // Add priority words and track their IDs
-                addUniqueWords(selectedWords, selectedIds, recentWords, writeIn, (int) (1./3. * categoryLimit));
-                addUniqueWords(selectedWords, selectedIds, oldWords, writeIn, (int) (2./3. * categoryLimit));
+                // Add priority words and track their IDs (increasing limit to fill progressively).
+                addUniqueWords(selectedWords, selectedIds, recentWords, writeIn, (int) (1./4. * categoryLimit));
+                addUniqueWords(selectedWords, selectedIds, oldWords, writeIn, (int) (2./4. * categoryLimit));
+                addUniqueWords(selectedWords, selectedIds, leastReviewedWords, writeIn, (int) (3./4. * categoryLimit));
                 addUniqueWords(selectedWords, selectedIds, difficultWords, writeIn, categoryLimit);
             }
             case RECENT -> {
@@ -56,6 +58,11 @@ public abstract class WordSelector {
                 List<Word> oldWords = fetchWords(OLD, categoryLimit);
 
                 addUniqueWords(selectedWords, selectedIds, oldWords, writeIn, categoryLimit);
+            }
+            case LEAST_REVIEWED -> {
+                List<Word> leastReviewedWords = fetchWords(LEAST_REVIEWED, categoryLimit);
+
+                addUniqueWords(selectedWords, selectedIds, leastReviewedWords, writeIn, categoryLimit);
             }
             case OFTEN_FAILED -> {
                 List<Word> difficultWords = fetchWords(OFTEN_FAILED, categoryLimit);

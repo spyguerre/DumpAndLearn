@@ -96,12 +96,13 @@ public abstract class Db {
                 } else if (tableName.equals("reviews")) {
                     sql = """
                             CREATE TABLE reviews (
-                                id              INTEGER PRIMARY KEY AUTOINCREMENT,
-                                wordId                  REFERENCES words (id)\s
-                                                        NOT NULL,
-                                reviewTimestamp         NOT NULL,
+                                id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+                                wordId                     REFERENCES words (id)\s
+                                                           NOT NULL,
+                                reviewTimestamp            NOT NULL,
                                 success,
-                                hintUsed
+                                hintUsed,
+                                isWrittenInForeign
                             );
                             """;
                 } else {
@@ -132,7 +133,8 @@ public abstract class Db {
                         word.getId(),
                         word.getLastReviewsTimestampOld(),
                         i >= word.getFailedReviewsOld(),
-                        0
+                        0,
+                        true
                 );
                 insertReview(review);
             }
@@ -222,6 +224,16 @@ public abstract class Db {
                 FROM words w
                 WHERE (w.timestamp / 1000 + 2*7*24*60*60 - strftime('%s', 'now') < 0)
                 ORDER BY RANDOM() DESC
+                LIMIT ?
+                """;
+            case LEAST_REVIEWED -> """
+                SELECT w.*, (
+                    SELECT COUNT(*)
+                    FROM reviews r1
+                    WHERE w.id = r1.wordId
+                ) AS times_reviewed
+                FROM words w
+                ORDER BY times_reviewed ASC, timestamp ASC
                 LIMIT ?
                 """;
             case OFTEN_FAILED -> """
@@ -354,7 +366,7 @@ public abstract class Db {
     ///////// REVIEWS /////////
 
     public static void insertReview(Review review) {
-        String sql = "INSERT INTO reviews (wordId, reviewTimestamp, success, hintUsed) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO reviews (wordId, reviewTimestamp, success, hintUsed, isReviewedInForeign) VALUES (?, ?, ?, ?, ?)";
         update(sql, new Object[]{review.getWordId(), review.getReviewTimestamp(), review.isSuccess() ? 1 : 0, review.getHintUsed()});
     }
 

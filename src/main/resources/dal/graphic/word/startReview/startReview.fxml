@@ -64,6 +64,7 @@
                         <MenuItem mnemonicParsing="false" text="Any" />
                         <MenuItem mnemonicParsing="false" text="Learn Recent Words" />
                         <MenuItem mnemonicParsing="false" text="Review Old Words" />
+                        <MenuItem mnemonicParsing="false" text="Review Least Reviewed Words" />
                         <MenuItem mnemonicParsing="false" text="Review Often Failed Words" />
                      </items>
                   </MenuButton>
