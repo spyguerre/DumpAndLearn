@@ -23,7 +23,7 @@ public enum ReviewPreference {
             case ANY -> "Any";
             case RECENT -> "Learn Recent Words";
             case OLD -> "Review Old Words";
-            case LEAST_REVIEWED -> "Least Reviewed";
+            case LEAST_REVIEWED -> "Review Least Reviewed Words";
             case OFTEN_FAILED -> "Review Often Failed Words";
         };
     }

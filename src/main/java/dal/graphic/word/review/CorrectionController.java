@@ -94,7 +94,7 @@ public class CorrectionController extends Controller {
         gridPane.getColumnConstraints().addAll(emojiColumn, nativeColumn, foreignColumn, attemptColumn, descriptionColumn);
 
         for (WordReviewed currentWord : words) {
-            boolean typedCorrectly = isWordCorrect(currentWord);
+            int typedCorrectly = isWordCorrect(currentWord);
 
             // Create a row in the GridPane
             int rowIndex = gridPane.getChildren().size() / 5; // Get the row index based on current number of rows in the grid
@@ -102,9 +102,12 @@ public class CorrectionController extends Controller {
             // Emoji Column
             Text emoji = new Text();
             Color emojiColor;
-            if (typedCorrectly) {
+            if (typedCorrectly == allowedError) { // Word is written perfectly
                 emoji.setText("✅");
                 emojiColor = Color.GREEN;
+            } else if (typedCorrectly >= 0) { // Word is not exactly spelled correctly but within the margin or error
+                emoji.setText("‼");
+                emojiColor = Color.ORANGE;
             } else {
                 emoji.setText("❌");
                 emojiColor = Color.RED;
@@ -115,33 +118,27 @@ public class CorrectionController extends Controller {
             GridPane.setConstraints(emoji, 0, rowIndex + 1); // Start adding from row 1 (below titles)
             gridPane.getChildren().add(emoji);
 
-            // Set color for all Texts in the row (based on correctness)
-            Color rowColor = typedCorrectly ? Color.GREEN : Color.RED;
-
             // Native Word Column
             Text nativeText = new Text(currentWord.getNative_());
             nativeText.setTextAlignment(TextAlignment.CENTER);
-            nativeText.setStroke(rowColor);
-            nativeText.setFill(rowColor); // Ensure fill color is correctly applied (green or red)
+            nativeText.setStroke(emojiColor);
+            nativeText.setFill(emojiColor); // Ensure fill color is correctly applied (green or red)
             GridPane.setConstraints(nativeText, 1, rowIndex + 1);
             gridPane.getChildren().add(nativeText);
 
             // Foreign Word Column
             Text foreignText = new Text(currentWord.getForeign());
             foreignText.setTextAlignment(TextAlignment.CENTER);
-            foreignText.setStroke(rowColor);
-            foreignText.setFill(rowColor); // Ensure fill color is correctly applied (green or red)
+            foreignText.setStroke(emojiColor);
+            foreignText.setFill(emojiColor); // Ensure fill color is correctly applied (green or red)
             GridPane.setConstraints(foreignText, 2, rowIndex + 1);
             gridPane.getChildren().add(foreignText);
 
             // User Answer Column
             Text userAnswerText = new Text(currentWord.getUserAnswer());
             userAnswerText.setTextAlignment(TextAlignment.CENTER);
-            userAnswerText.setStroke(rowColor);
-            userAnswerText.setFill(rowColor); // Set fill color to match stroke (green or red)
-            if (!typedCorrectly) {
-                userAnswerText.setFill(Color.RED); // Fill red if the answer is incorrect
-            }
+            userAnswerText.setStroke(emojiColor);
+            userAnswerText.setFill(emojiColor); // Set fill color to match stroke (green or red)
             GridPane.setConstraints(userAnswerText, 3, rowIndex + 1);
             gridPane.getChildren().add(userAnswerText);
 
@@ -153,15 +150,15 @@ public class CorrectionController extends Controller {
                 descriptionText.setText(""); // Empty description if none is available
             }
             descriptionText.setTextAlignment(TextAlignment.CENTER);
-            descriptionText.setStroke(rowColor);
-            descriptionText.setFill(rowColor); // Ensure fill color is correctly applied (green or red)
+            descriptionText.setStroke(emojiColor);
+            descriptionText.setFill(emojiColor); // Ensure fill color is correctly applied (green or red)
             GridPane.setConstraints(descriptionText, 4, rowIndex + 1);
             gridPane.getChildren().add(descriptionText);
 
             // Backend update.
-            Review review = new Review(currentWord.getId(), System.currentTimeMillis(), typedCorrectly, currentWord.getHintRevealed(), currentWord.isWrittenInForeign());
+            Review review = new Review(currentWord.getId(), System.currentTimeMillis(), typedCorrectly >= 0, currentWord.getHintRevealed(), currentWord.isWrittenInForeign());
             Db.insertReview(review);
-            if (!typedCorrectly) {
+            if (typedCorrectly < 0) {
                 wordsToCorrect.add(currentWord);
             }
         }
@@ -190,7 +187,8 @@ public class CorrectionController extends Controller {
         System.out.println("Found " + rightWordsCount.getText());
     }
 
-    private boolean isWordCorrect(WordReviewed currentWord) {
+    // Returns allowedError if the word is written perfectly, between 0 and allowedError if it should be acceped, and a negative value when it should not be.
+    private int isWordCorrect(WordReviewed currentWord) {
         // Normalize & remove accents, then convert to lowercase
         String normalizedUserInput = normalizeWord(currentWord.getUserAnswer());
         String normalizedCorrection = normalizeWord(currentWord.isWrittenInForeign() ? currentWord.getForeign() : currentWord.getNative_());
@@ -199,7 +197,7 @@ public class CorrectionController extends Controller {
         int distance = new LevenshteinDistance().apply(normalizedUserInput, normalizedCorrection);
 
         // Check if within allowed error range
-        return distance <= allowedError;
+        return allowedError - distance;
     }
 
     private String normalizeWord(String input) {
